@@ -235,7 +235,7 @@ class AdminContentMigrateController extends Controller
         $this->fixDependencies($newH5p);
 
         // Create new version
-        event(new H5PWasSaved($newH5p, $request, ContentVersion::PURPOSE_UPDATE, $sourceH5p));
+        event(new H5PWasSaved($newH5p, $request));
 
         return $newH5p;
     }

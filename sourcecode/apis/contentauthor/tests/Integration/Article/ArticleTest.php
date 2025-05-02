@@ -3,7 +3,6 @@
 namespace Tests\Integration\Article;
 
 use App\Article;
-use App\Events\ArticleWasSaved;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
@@ -78,7 +77,6 @@ class ArticleTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content']);
-        Event::assertDispatched(ArticleWasSaved::class);
     }
 
     public function testCreateArticleWithMathContent()
@@ -321,20 +319,6 @@ class ArticleTest extends TestCase
         $language = $article->getISO6393Language();
 
         $this->assertEquals('eng', $language);
-    }
-
-    public function testSetParentVersionId()
-    {
-        $article = Article::factory()->create([
-            'parent_version_id' => 'original_parent_version_id',
-        ]);
-
-        $parentVersionId = 'new_parent_version_id';
-
-        $isChanged = $article->setParentVersionId($parentVersionId);
-
-        $this->assertTrue($isChanged);
-        $this->assertEquals($parentVersionId, $article->parent_version_id);
     }
 
     public function testScopeNoMaxScore()

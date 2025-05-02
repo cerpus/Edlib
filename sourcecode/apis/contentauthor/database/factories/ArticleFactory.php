@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Article;
+use App\Libraries\Versioning\VersionableObject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,22 +20,8 @@ class ArticleFactory extends Factory
             'content' => $this->faker->text,
             'original_id' => $this->faker->uuid,
             'parent_id' => null,
-            'parent_version_id' => null,
-            'version_id' => $this->faker->uuid,
+            'version_purpose' => VersionableObject::PURPOSE_INITIAL,
             'license' => '',
         ];
-    }
-
-    public function newlyCreated(): self
-    {
-        return $this->state(function () {
-            $id = $this->faker->uuid;
-
-            return [
-                'id' => $id,
-                'original_id' => $id,
-                'version_id' => 1,
-            ];
-        });
     }
 }

@@ -497,6 +497,10 @@ class Framework implements \H5PFrameworkInterface, Result
         $H5PContent->content_create_mode = $adapter->getAdapterName();
         $H5PContent->is_draft =  $content['is_draft'] ?? 1;
         $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
+        $H5PContent->parent_id = $content['parent_id'] ?? null;
+        if (isset($content['version_purpose'])) {
+            $H5PContent->version_purpose = $content['version_purpose'];
+        }
 
         $H5PContent->save();
         unset($metadata['title']);
@@ -511,20 +515,6 @@ class Framework implements \H5PFrameworkInterface, Result
         return $H5PContent->id;
     }
 
-
-    /**
-     * Update old content.
-     *
-     * @param array $content
-     *   An associative array containing:
-     *   - id: The content id
-     *   - params: The content in json format
-     *   - library: An associative array containing:
-     *     - libraryId: The id of the main library for this content
-     * @param int $contentMainId
-     *   Main id for the content if this is a system that supports versioning
-     * TODO: Implement this for real....
-     */
     public function updateContent($content, $contentMainId = null)
     {
         $metadataRaw = (array) $content['metadata'];

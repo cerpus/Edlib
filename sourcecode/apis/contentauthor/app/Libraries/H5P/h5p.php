@@ -7,6 +7,7 @@ namespace App\Libraries\H5P;
 use App\Content;
 use App\Libraries\H5P\Dataobjects\H5PView;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
+use App\Libraries\Versioning\VersionableObject;
 use H5PCore;
 use H5peditor;
 use H5PStorage;
@@ -35,7 +36,7 @@ class h5p
         $oldParams = null;
         if ($content !== null) {
             if ($content['useVersioning'] ?? false) {
-                $content['parent_content_id'] = $content['id'];
+                $content['parent_id'] = $content['id'];
                 unset($content['id']);
             }
             $oldLibrary = $content['library'];
@@ -44,6 +45,7 @@ class h5p
             $content = [
                 'disable' => H5PCore::DISABLE_NONE,
                 'user_id' => $userId,
+                'version_purpose' => VersionableObject::PURPOSE_CREATE,
             ];
         }
 

@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers\Admin;
 
-use App\ContentVersion;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -191,21 +190,14 @@ class AdminH5PDetailsControllerTest extends TestCase
         ]);
 
         $library = H5PLibrary::factory()->create();
-        $failedContent = H5PContent::factory()->create([
-            'version_id' => $this->faker->uuid,
+        $parentContent = H5PContent::factory()->create([
             'library_id' => $library->id,
             'updated_at' => Carbon::now()->sub('1d'),
         ]);
-        $versionContent = H5PContent::factory()->create([
-            'version_id' => $this->faker->uuid,
+        $childContent = H5PContent::factory()->create([
             'library_id' => $library->id,
             'updated_at' => Carbon::now(),
-        ]);
-        $versionId = $versionContent->version_id;
-
-        ContentVersion::factory()->create([
-            'id' => $versionId,
-            'content_id' => $versionContent->id,
+            'parent_id' => $parentContent->id,
         ]);
 
         $res = $this->withSession(['user' => $user])
@@ -226,13 +218,13 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertSame(2, $data['paginator']->count());
 
         $item = $data['paginator']->getCollection()->first();
-        $this->assertSame($versionContent->id, $item['item']->id);
+        $this->assertSame($childContent->id, $item['item']->id);
         $this->assertTrue($item['isLatest']);
         $this->assertSame($data['library']->id, $item['item']->library_id);
 
         $item = $data['paginator']->getCollection()->last();
-        $this->assertSame($failedContent->id, $item['item']->id);
-        $this->assertNull($item['isLatest']);
+        $this->assertSame($parentContent->id, $item['item']->id);
+        $this->assertFalse($item['isLatest']);
         $this->assertSame($data['library']->id, $item['item']->library_id);
     }
 
@@ -242,64 +234,41 @@ class AdminH5PDetailsControllerTest extends TestCase
             'roles' => ['superadmin'],
             'name' => 'Super Tester',
         ]);
-        $f4mId = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $parent = H5PContent::factory()->create([
-            'version_id' => $this->faker->uuid,
-            'library_id' => $library->id,
-        ]);
-        $content = H5PContent::factory()->create([
-            'id' => 42,
-            'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
         ]);
         $child = H5PContent::factory()->create([
-            'version_id' => $this->faker->uuid,
+            'id' => 42,
             'library_id' => $library->id,
+            'parent_id' => $parent->id,
         ]);
-
-        $parentVersion = ContentVersion::factory()->create([
-            'id' => $parent->version_id,
-            'content_id' => $parent->id,
-        ]);
-        $version = ContentVersion::factory()->create([
-            'id' => $content->version_id,
-            'content_id' => $content->id,
-            'parent_id' => $parentVersion->id,
-        ]);
-        $childVersion = ContentVersion::factory()->create([
-            'id' => $child->version_id,
-            'content_id' => $child->id,
-            'parent_id' => $version->id,
+        $grandchild = H5PContent::factory()->create([
+            'library_id' => $library->id,
+            'parent_id' => $child->id,
         ]);
 
         $response = $this->withSession(['user' => $user])
-            ->get(route('admin.content-details', $content))
+            ->get(route('admin.content-details', $child))
             ->assertOk()
             ->original;
 
         $data = $response->getData();
 
         $this->assertArrayHasKey('content', $data);
-        $this->assertArrayHasKey('requestedVersion', $data);
         $this->assertArrayHasKey('history', $data);
 
-        $this->assertNull($data['requestedVersion']);
-        $this->assertSame($content->id, $data['content']->id);
+        $this->assertSame($child->id, $data['content']->id);
 
         $this->assertInstanceOf(Collection::class, $data['history']);
         $this->assertCount(3, $data['history']);
-        $this->assertArrayHasKey($parentVersion->id, $data['history']);
-        $this->assertArrayHasKey($version->id, $data['history']);
-        $this->assertArrayHasKey($childVersion->id, $data['history']);
 
-        $history = $data['history']->get($version->id);
-        $this->assertIsArray($history);
-        $this->assertEquals($content->id, $history['content_id']);
-        $this->assertEquals($parent->version_id, $history['parent']);
+        $this->assertArrayHasKey($child->id, $data['history']);
+
+        $history = $data['history']->get($child->id);
+        $this->assertEquals($child->id, $history['content']['id']);
         $this->assertCount(1, $history['children']);
-        $this->assertEquals($child->version_id, $history['children'][0]['id']);
-        $this->assertEquals($child->id, $history['children'][0]['content_id']);
+        $this->assertContains($grandchild->id, $history['children']);
     }
 
     public function test_contentHistory_noResource(): void
@@ -311,7 +280,6 @@ class AdminH5PDetailsControllerTest extends TestCase
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
             'id' => 42,
-            'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
         ]);
 
@@ -323,8 +291,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $data = $response->getData();
 
         $this->assertSame($content->id, $data['content']['id']);
-        $this->assertNull($data['requestedVersion']);
-        $this->assertCount(0, $data['history']);
+        $this->assertCount(1, $data['history']);
     }
 
     public function test_libraryTranslation(): void
