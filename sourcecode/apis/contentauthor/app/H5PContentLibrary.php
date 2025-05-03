@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class H5PContentLibrary extends Model
 {
@@ -14,4 +15,9 @@ class H5PContentLibrary extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function library(): BelongsTo
+    {
+        return $this->belongsTo(H5PLibrary::class, 'library_id');
+    }
 }
