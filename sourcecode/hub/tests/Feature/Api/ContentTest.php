@@ -8,6 +8,7 @@ use App\Enums\ContentViewSource;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\Context;
 use App\Models\ContentViewsAccumulated;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -165,11 +166,15 @@ final class ContentTest extends TestCase
 
     public function testStoresContent(): void
     {
+        $context = Context::factory()->name('my_context')->create();
         $owner = User::factory()->create();
 
         $data = [
             'created_at' => $this->faker->dateTime->format('c'),
             'shared' => $this->faker->boolean,
+            'contexts' => [
+                'my_context',
+            ],
             'roles' => [
                 [
                     'user' => $owner->id,
@@ -198,6 +203,17 @@ final class ContentTest extends TestCase
                             ->where('shared', $data['shared'])
                             ->has('links.self')
                             ->has('versions')
+                            ->where('contexts', [
+                                'data' => [
+                                    [
+                                        'id' => $context->id,
+                                        'name' => 'my_context',
+                                        'links' => [
+                                            'self' => 'https://hub-test.edlib.test/api/contexts/my_context',
+                                        ],
+                                    ],
+                                ],
+                            ])
                             ->where('roles', [
                                 'data' => [
                                     [
