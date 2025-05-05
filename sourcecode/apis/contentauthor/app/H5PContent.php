@@ -49,7 +49,7 @@ use function route;
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  *
- * @template-implements VersionableObject<H5PContent>
+ * @template-implements VersionableObject<H5PContent, $this>
  */
 class H5PContent extends Content implements VersionableObject
 {

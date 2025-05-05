@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @template T of Model
- * @property-read T|null $parent
- * @property-read \Illuminate\Database\Eloquent\Collection<T> $children
+ * @template TRelated of Model
+ * @template TDeclaring of Model
+ * @property-read TRelated|null $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection<TRelated> $children
  */
 interface VersionableObject
 {
@@ -22,12 +23,12 @@ interface VersionableObject
     public const PURPOSE_TRANSLATION = 'Translation';
 
     /**
-     * @return HasMany<T, $this>
+     * @return HasMany<TRelated, TDeclaring>
      */
     public function children(): HasMany;
 
     /**
-     * @return BelongsTo<T, $this>
+     * @return BelongsTo<TRelated, TDeclaring>
      */
     public function parent(): BelongsTo;
 

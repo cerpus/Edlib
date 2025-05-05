@@ -24,6 +24,8 @@ use function route;
  *
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
+ *
+ * @template-implements VersionableObject<Link, $this>
  */
 class Link extends Content implements VersionableObject
 {

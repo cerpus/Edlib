@@ -44,7 +44,7 @@ use const LIBXML_HTML_NOIMPLIED;
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  *
- * @template-implements VersionableObject<Article>
+ * @template-implements VersionableObject<Article, $this>
  */
 class Article extends Content implements VersionableObject
 {
