@@ -2,19 +2,6 @@
 
 Take a look in the `.env.example` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
 
-# Initialize versioning
-
-Create the initial version of all content run the following command
-
-```
-$ CACHE_DRIVER=file php artisan cerpus:init-versioning
-```
-
-## Enabling context collaboration message processing
-
-In .env
-`FEATURE_CONTEXT_COLLABORATION=true`
-
 # LTI params
 
 Content Author will use some LTI parameters if passed in.

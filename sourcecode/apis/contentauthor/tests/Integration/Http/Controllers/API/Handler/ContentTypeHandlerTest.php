@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers\API\Handler;
 
-use App\Content;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\MultiChoice;
@@ -72,10 +71,6 @@ class ContentTypeHandlerTest extends TestCase
             'bulk_calculated' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
-        $this->assertDatabaseHas('content_versions', [
-            'content_id' => $content->id,
-            'content_type' => Content::TYPE_H5P,
-        ]);
 
         $data['sharing'] = true;
         $content = $handler->storeQuestionset($data);
@@ -87,10 +82,6 @@ class ContentTypeHandlerTest extends TestCase
             'bulk_calculated' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
-        $this->assertDatabaseHas('content_versions', [
-            'content_id' => $content->id,
-            'content_type' => Content::TYPE_H5P,
-        ]);
     }
 
     /**
@@ -147,10 +138,6 @@ class ContentTypeHandlerTest extends TestCase
             'bulk_calculated' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
-        $this->assertDatabaseHas('content_versions', [
-            'content_id' => $content->id,
-            'content_type' => Content::TYPE_H5P,
-        ]);
 
         $content = $handler->storeQuestionset($data);
         $this->assertNotEmpty($content);
@@ -161,9 +148,5 @@ class ContentTypeHandlerTest extends TestCase
             'bulk_calculated' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
-        $this->assertDatabaseHas('content_versions', [
-            'content_id' => $content->id,
-            'content_type' => Content::TYPE_H5P,
-        ]);
     }
 }

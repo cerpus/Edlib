@@ -189,8 +189,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         config(collect([
             'app.enable_licensing',
             'feature.licensing',
-            'feature.context-collaboration',
-            'feature.collaboration',
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
             'h5p.video.enable',
@@ -231,11 +229,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         //<!-- Global site tag (gtag.js) - Google Analytics -->
         //<script async src="https://www.googletagmanager.com/gtag/js?id=G-R51SSMVE78"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);}gtag('js', new Date()); gtag('config', 'G-R51SSMVE78'); </script>
         //TRACKINGDOC;
-    }
-
-    public function enableEverybodyIsCollaborators(): bool
-    {
-        return true;
     }
 
     public function getConfigJs(): array
