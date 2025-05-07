@@ -50,9 +50,6 @@
 
         .content-card-header {
             color: var(--bs-body-color);
-            @include media-breakpoint-up(md) {
-                color: $black;
-            }
         }
     }
 

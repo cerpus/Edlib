@@ -25,7 +25,7 @@
             <div class="col-2" aria-label="{{ trans('messages.views') }}">
                 {{ $content->viewsCount }}
                 @if(!$content->isPublished)
-                    <div class="badge text-bg-primary position-absolute end-0 top-0 d-none d-md-inline-block">
+                    <div class="badge text-bg-primary fw-normal position-absolute end-0 top-0 draft-badge">
                         {{ trans('messages.draft') }}
                     </div>
                 @endif
