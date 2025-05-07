@@ -5,7 +5,6 @@
     'expand' => false,
     'title' => null,
     'current' => null,
-    'layout' => 'grid',
 ])
 <!DOCTYPE html>
 <html
@@ -58,7 +57,7 @@
         @endif
 
         <div @class(['container-md' => !$expand, 'flex-grow-1'])>
-            <main @class(['h-100', 'd-flex', 'flex-column', 'main-container-grid' => $layout === 'grid', 'main-container-list' => $layout === 'list'])>
+            <main class="h-100 d-flex flex-column">
                 @unless ($noHeader)
                     <header @class(['container-md' => $expand])>
                         <h1 class="fs-2">{{ $title }}</h1>
