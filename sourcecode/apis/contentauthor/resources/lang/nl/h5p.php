@@ -107,7 +107,7 @@ return [
     "View the embed code for this content." => "Bekijk de invoegcode voor deze inhoud.",
     "Visit H5P.org to check out more cool content." => "Bezoek H5P.org om meer coole inhoud te bekijken.",
 
-    "We were unable to send information about your completion of this task. Please check your internet connection." => We konden geen informatie sturen over de voltooiing van deze taak. Controleer jouw internetverbinding.",
+    "We were unable to send information about your completion of this task. Please check your internet connection." => "We konden geen informatie sturen over de voltooiing van deze taak. Controleer jouw internetverbinding.",
 
     "Year" => "Jaar",
     "Years (from)" => "Jaren (van)",
