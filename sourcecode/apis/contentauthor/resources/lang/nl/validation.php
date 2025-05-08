@@ -54,8 +54,8 @@ return [
         'file' => 'Het veld :attributemoet minimaal :min kilobytes zijn.',
         'string' => 'Het veld :attribute moet minimaal :min karakters zijn.',
         'array' => 'Het veld :attribute moet minimaal :min items bevatten.',
-
-'not_in' => 'Het geselecteerde veld :attribute is ongeldig.',
+    ],
+    'not_in' => 'Het geselecteerde veld :attribute is ongeldig.',
     'numeric' => 'Het veld :attribute moet een nummer zijn.',
     'regex' => 'Het formaat van het veld :attribute is ongeldig.',
     'required' => 'Het veld :attribute is verplicht.',
