@@ -201,6 +201,7 @@ return [
         'en' => 'English',
         'ko' => '한국어',
         'nb' => 'Norsk',
+        'nl' => 'Nederlands',
         'nn' => 'Nynorsk',
         'sv' => 'Svenska',
         'zh-hans' => '简体中文',
