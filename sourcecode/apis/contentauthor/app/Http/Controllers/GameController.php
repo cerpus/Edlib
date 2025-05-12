@@ -9,7 +9,6 @@ use App\Traits\ReturnToCore;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 class GameController extends Controller
@@ -46,10 +45,6 @@ class GameController extends Controller
         $gamehandler = app(GameHandler::class);
         $request->request->add(json_decode($request->get('questionSetJsonData'), true));
         $updatedGame = $gamehandler->update($game, $request);
-        if ($game->isOwner(Session::get('authId'))) {
-            $collaborators = explode(',', $request->input('col-emails', ''));
-            $game->setCollaborators($collaborators);
-        }
 
         $url = $this->getRedirectToCoreUrl(
             $updatedGame->toLtiContent(

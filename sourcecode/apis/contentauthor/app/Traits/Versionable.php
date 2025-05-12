@@ -2,45 +2,29 @@
 
 namespace App\Traits;
 
-use App\ContentVersion;
+use App\Libraries\Versioning\VersionableObject;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property VersionableObject::PURPOSE_* $version_purpose
+ * @mixin Model
+ */
 trait Versionable
 {
-    public function fetchVersionData(): ?ContentVersion
+    public function parent(): BelongsTo
     {
-        return $this->getVersion();
+        return $this->belongsTo(static::class, 'parent_id');
     }
 
-    public function getParent(): ?ContentVersion
+    public function children(): HasMany
     {
-        return $this->getVersion()?->previousVersion;
+        return $this->hasMany(static::class, 'parent_id');
     }
 
-    public function getParentIds(): array
+    public function getVersionPurpose(): string
     {
-        $parent = $this->getParent();
-        $parentIds = [];
-        if (is_object($parent)) {
-            while ($parent) {
-                $parentIds[] = $parent->content_id;
-                $parent = $parent->previousVersion;
-            }
-        }
-
-        return $parentIds;
-    }
-
-    public function getChildren(): array
-    {
-        return $this->getVersion()?->nextVersions->toArray();
-    }
-
-    public function getVersion(): ContentVersion|null
-    {
-        if ($this->{$this->getVersionColumn()}) {
-            return ContentVersion::find($this->{$this->getVersionColumn()});
-        }
-
-        return null;
+        return $this->version_purpose;
     }
 }
