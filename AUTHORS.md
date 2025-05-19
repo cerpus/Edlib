@@ -25,7 +25,7 @@
 
 - [Jan Frode Lindsø](https://github.com/janlindso) ([NDLA](https://ndla.no))
 - [Jeonghun Oh](https://github.com/totoromaum)
-- [Katrien Bernaerts](https://github.com/katrienbe) ([Kenniscentrum Digisprong](www.digisprong.be)
+- [Katrien Bernaerts](https://github.com/katrienbe) ([Kenniscentrum Digisprong](www.digisprong.be))
 - Knut Inge Skifjeld ([NDLA](https://ndla.no))
 - Marc Von Opstal ([NDLA](https://ndla.no))
 - [Zheng Xu](https://github.com/samumist)
