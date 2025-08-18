@@ -119,6 +119,8 @@ class AdminContentMigrateController extends Controller
     private function alterParameters(string $parameters): string
     {
         $content = json_decode($parameters, associative: true);
+        $content['threeImage']['wasConvertedFromVirtualTour'] = true;
+
         for ($i = 0; $i < count($content['threeImage']['scenes'] ?? []); $i++) {
             $content['threeImage']['scenes'][$i]['enableZoom'] = false;
 
