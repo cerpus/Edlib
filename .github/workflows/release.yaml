@@ -131,6 +131,7 @@ jobs:
     if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
     needs:
       - get_variables
+      - create_release
     uses: ./.github/workflows/deploy-eb.yaml
     with:
       version: ${{ needs.get_variables.outputs.releaseRef }}
