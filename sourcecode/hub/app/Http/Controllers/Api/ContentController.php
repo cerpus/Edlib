@@ -54,6 +54,8 @@ final readonly class ContentController
             $content->fill($request->validated());
             $content->saveOrFail();
 
+            $content->contexts()->sync($request->getContexts());
+
             foreach ($request->getRoles() as ['user' => $user, 'role' => $role]) {
                 $content->users()->attach($user, ['role' => $role]);
             }
