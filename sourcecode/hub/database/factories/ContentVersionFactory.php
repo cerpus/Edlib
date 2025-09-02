@@ -62,7 +62,7 @@ final class ContentVersionFactory extends Factory
     {
         return $this->state([
             'displayed_content_type' => $displayedContentType,
-            'displayed_content_type_normalized' => $displayedContentType
+            'displayed_content_type_normalized' => $displayedContentType !== null
                 ? mb_strtolower($displayedContentType, 'UTF-8')
                 : null,
         ]);
