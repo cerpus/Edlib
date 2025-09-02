@@ -41,10 +41,10 @@ final class ResourceCopyrightTest extends TestCase
             internalLtiPlatformKey: LtiPlatform::factory()->create()->key,
         ));
 
-        $tag = $this->faker->uuid;
+        $edlib2UsageId = $this->faker->uuid;
 
         Content::factory()
-            ->tag('edlib2_usage_id:' . $tag)
+            ->edlib2UsageId($edlib2UsageId)
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
@@ -52,7 +52,7 @@ final class ResourceCopyrightTest extends TestCase
             )
             ->create();
 
-        $this->getJson('https://hub-test-ndla-legacy.edlib.test/' . $version . '/resource/' . $tag . '/copyright')
+        $this->getJson('https://hub-test-ndla-legacy.edlib.test/' . $version . '/resource/' . $edlib2UsageId . '/copyright')
             ->assertOk()
             ->assertJson([
                 'h5p' => [],
@@ -78,10 +78,10 @@ final class ResourceCopyrightTest extends TestCase
             internalLtiPlatformKey: LtiPlatform::factory()->create()->key,
         ));
 
-        $tag = $this->faker->uuid;
+        $edlib2UsageId = $this->faker->uuid;
 
         Content::factory()
-            ->tag('edlib2_usage_id:' . $tag)
+            ->edlib2UsageId($edlib2UsageId)
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
@@ -89,7 +89,7 @@ final class ResourceCopyrightTest extends TestCase
             )
             ->create();
 
-        $this->getJson('https://hub-test-ndla-legacy.edlib.test/v2/resource/' . $tag . '/copyright')
+        $this->getJson('https://hub-test-ndla-legacy.edlib.test/v2/resource/' . $edlib2UsageId . '/copyright')
             ->assertNotFound();
     }
 }

@@ -12,17 +12,17 @@ use App\Http\Controllers\NdlaLegacy\SwaggerController;
 use App\Http\Controllers\NdlaLegacy\ViewResourceController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/resource/{edlib2UsageContent}')
+Route::get('/resource/{content:edlib2_usage_id}')
     ->uses(ViewResourceController::class)
     ->name('ndla-legacy.resource');
 
-Route::get('/v1/resource/{edlib2UsageContent}/copyright')
+Route::get('/v1/resource/{content:edlib2_usage_id}/copyright')
     ->uses(ResourceCopyrightController::class);
 
-Route::get('/v2/resource/{edlib2UsageContent}/copyright')
+Route::get('/v2/resource/{content:edlib2_usage_id}/copyright')
     ->uses(ResourceCopyrightController::class);
 
-Route::get('/v1/resource/{edlib2UsageContent}/info')
+Route::get('/v1/resource/{content:edlib2_usage_id}/info')
     ->uses(ResourceInformationController::class);
 
 Route::put('/v1/resource/{id}/publish')

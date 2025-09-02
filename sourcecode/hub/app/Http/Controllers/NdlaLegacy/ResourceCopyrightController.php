@@ -24,9 +24,9 @@ final readonly class ResourceCopyrightController
 {
     public function __construct(private NdlaLegacyConfig $config) {}
 
-    public function __invoke(Content $edlib2UsageContent): JsonResponse
+    public function __invoke(Content $content): JsonResponse
     {
-        $launchUrl = $edlib2UsageContent->latestVersion?->lti_launch_url;
+        $launchUrl = $content->latestVersion?->lti_launch_url;
         assert($launchUrl !== null);
 
         $caId = $this->config->extractH5pIdFromUrl($launchUrl);

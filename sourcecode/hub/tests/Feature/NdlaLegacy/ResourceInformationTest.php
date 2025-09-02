@@ -39,10 +39,10 @@ final class ResourceInformationTest extends TestCase
             internalLtiPlatformKey: LtiPlatform::factory()->create()->id,
         ));
 
-        $tag = $this->faker->uuid;
+        $edlib2UsageId = $this->faker->uuid;
 
         Content::factory()
-            ->tag('edlib2_usage_id:' . $tag)
+            ->edlib2UsageId($edlib2UsageId)
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
@@ -50,7 +50,7 @@ final class ResourceInformationTest extends TestCase
             )
             ->create();
 
-        $this->getJson('https://hub-test-ndla-legacy.edlib.test/v1/resource/' . $tag . '/info')
+        $this->getJson('https://hub-test-ndla-legacy.edlib.test/v1/resource/' . $edlib2UsageId . '/info')
             ->assertOk()
             ->assertJson([
                 'proxied' => 'json data',

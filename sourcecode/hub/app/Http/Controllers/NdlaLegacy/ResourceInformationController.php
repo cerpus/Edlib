@@ -26,9 +26,9 @@ final readonly class ResourceInformationController
 {
     public function __construct(private NdlaLegacyConfig $config) {}
 
-    public function __invoke(Content $edlib2UsageContent): JsonResponse
+    public function __invoke(Content $content): JsonResponse
     {
-        $version = $edlib2UsageContent->latestVersion ?? abort(404);
+        $version = $content->latestVersion ?? abort(404);
 
         $caId = $this->config->extractH5pIdFromUrl($version->lti_launch_url);
         if ($caId === null) {

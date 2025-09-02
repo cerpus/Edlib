@@ -17,7 +17,7 @@ class ViewResourceTest extends TestCase
         $this->app->make('config')->set('ndla-legacy.domain', null);
 
         Content::factory()
-            ->tag('edlib2_usage_id:8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
+            ->edlib2UsageId('8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
             ->withPublishedVersion()
             ->create();
 
@@ -28,7 +28,7 @@ class ViewResourceTest extends TestCase
     public function testRedirectsFromLegacyResourceUrl(): void
     {
         $content = Content::factory()
-            ->tag('edlib2_usage_id:8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
+            ->edlib2UsageId('8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
             ->withPublishedVersion()
             ->create();
 
@@ -39,7 +39,7 @@ class ViewResourceTest extends TestCase
     public function testRedirectIncludesLocale(): void
     {
         $content = Content::factory()
-            ->tag('edlib2_usage_id:8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
+            ->edlib2UsageId('8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
             ->withPublishedVersion()
             ->create();
 

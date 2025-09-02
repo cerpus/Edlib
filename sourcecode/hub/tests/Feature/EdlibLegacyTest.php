@@ -19,7 +19,7 @@ final class EdlibLegacyTest extends TestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
-            ->tag('edlib2_id:a3dcbd28-bf37-4123-ac5e-ba2f72a8f420')
+            ->edlib2Id('a3dcbd28-bf37-4123-ac5e-ba2f72a8f420')
             ->create();
 
         $this->get($url)
