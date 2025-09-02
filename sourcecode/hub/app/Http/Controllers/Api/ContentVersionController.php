@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\Api\ContentVersionRequest;
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Models\Tag;
 use App\Transformers\ContentVersionTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;

@@ -36,7 +36,6 @@ use Laravel\Scout\Searchable;
 use PDO;
 
 use function assert;
-use function property_exists;
 
 class Content extends Model
 {
