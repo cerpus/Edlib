@@ -22,7 +22,7 @@ class MigrateTagsTest extends TestCase
                 ContentVersion::factory()
                     ->title('My content')
                     ->displayedContentType(null)
-                    ->withTag('h5p:H5P.SomeLibrary')
+                    ->withTag('h5p:H5P.SomeLibrary'),
             )
             ->create();
 
