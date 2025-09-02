@@ -13,14 +13,14 @@ use function redirect;
 
 final readonly class EdlibLegacyController
 {
-    public function redirectFromEdlib2Id(Content $edlib2Content): RedirectResponse
+    public function redirectFromEdlib2Id(Content $content): RedirectResponse
     {
-        return redirect()->route('content.embed', [$edlib2Content]);
+        return redirect()->route('content.embed', [$content]);
     }
 
-    public function redirectLtiLaunch(Content $edlib2UsageContent): View
+    public function redirectLtiLaunch(Content $content): View
     {
-        $version = $edlib2UsageContent->latestPublishedVersion?->first()
+        $version = $content->latestPublishedVersion?->first()
             ?? throw new NotFoundHttpException();
         $ltiRequest = $version->toLtiLaunch()->getRequest();
 

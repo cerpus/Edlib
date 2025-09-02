@@ -27,7 +27,7 @@ final class CopyTest extends TestCase
         $content = Content::factory()
             ->withPublishedVersion()
             ->withContext(Context::factory()->name('my_context'))
-            ->tag('edlib2_usage_id:f4d10eb4-a6af-4c18-9736-b16b70959c66')
+            ->edlib2UsageId('f4d10eb4-a6af-4c18-9736-b16b70959c66')
             ->create();
 
         $this->withToken($jwt)
@@ -38,22 +38,24 @@ final class CopyTest extends TestCase
             ->assertJson(function (AssertableJson $json) use ($content) {
                 $json->has('url');
 
-                $content = Content::where('id', '<>', $content->id)->firstOrFail();
-                $expectedId = $content
-                    ->tags()
-                    ->where('prefix', 'edlib2_usage_id')
-                    ->firstOrFail()
-                    ->name;
+                $newUsageId = preg_replace(
+                    '!^https://hub-test-ndla-legacy.edlib.test/resource/([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}).*!',
+                    '$1',
+                    $json->toArray()['url'],
+                );
+                $this->assertNotSame($content->edlib2_usage_id, $newUsageId);
+
+                $copiedContent = Content::where('edlib2_usage_id', $newUsageId)->firstOrFail();
 
                 $this->assertSame(
                     ['my_context'],
-                    $content->contexts
+                    $copiedContent->contexts
                         ->map(fn(Context $context) => $context->name)
                         ->toArray(),
                 );
 
                 $this->assertSame(
-                    'https://hub-test-ndla-legacy.edlib.test/resource/' . $expectedId,
+                    'https://hub-test-ndla-legacy.edlib.test/resource/' . $newUsageId,
                     $json->toArray()['url'],
                 );
             });

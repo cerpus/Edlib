@@ -27,9 +27,7 @@ final readonly class OembedController
     {
         $id = $request->getResourceId($this->config);
 
-        $content = Content::ofTag(['prefix' => 'edlib2_usage_id', 'name' => $id])
-            ->limit(1)
-            ->firstOrFail();
+        $content = Content::where('edlib2_usage_id', $id)->firstOrFail();
 
         $format = OembedFormat::from($request->validated('format', 'json'));
 

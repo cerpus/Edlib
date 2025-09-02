@@ -79,7 +79,7 @@ final class SelectTest extends TestCase
         ]);
 
         $content = Content::factory()
-            ->tag('edlib2_usage_id:dd72be4f-672d-44b4-bc0c-570947b17437')
+            ->edlib2UsageId('dd72be4f-672d-44b4-bc0c-570947b17437')
             ->withPublishedVersion()
             ->create();
 

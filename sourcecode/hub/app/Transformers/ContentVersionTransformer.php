@@ -44,6 +44,7 @@ final class ContentVersionTransformer extends TransformerAbstract
             'published' => $version->published,
             'min_score' => $version->min_score,
             'max_score' => $version->max_score,
+            'displayed_content_type' => $version->displayed_content_type,
             'links' => [
                 'self' => route('api.contents.versions.show', [$version->content_id, $version->id]),
                 'content' => route('api.contents.show', [$version->content_id]),

@@ -73,7 +73,7 @@ final class ContentTest extends TestCase
 
         $content = Content::factory()
             ->withPublishedVersion()
-            ->tag('edlib2_usage_id:a4e99aa5-a68c-4d26-9118-451fc05812b5')
+            ->edlib2UsageId('a4e99aa5-a68c-4d26-9118-451fc05812b5')
             ->create();
 
         $parameters = $this->app->make(Signer::class)

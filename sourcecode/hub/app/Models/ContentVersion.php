@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Session;
 use function app;
 use function assert;
 use function is_string;
+use function mb_strtolower;
 use function session;
 use function url;
 
@@ -254,15 +255,34 @@ class ContentVersion extends Model
             ->toArray();
     }
 
-    public function getDisplayedContentType(): string
+    /**
+     * @param string[] $tags
+     */
+    public function handleSerializedTags(array $tags): void
     {
-        $tag = $this->tags()->where('prefix', 'h5p')->first();
+        foreach ($tags as $tag) {
+            // TODO: dedicated LTI-DL field for this
+            if (str_starts_with($tag, 'h5p:')) {
+                $this->displayed_content_type = substr($tag, 4);
+            }
 
-        if ($tag) {
-            return $tag->pivot->verbatim_name ?? $tag->name;
+            $this->tags()->attach(Tag::findOrCreateFromString($tag), [
+                'verbatim_name' => Tag::extractVerbatimName($tag),
+            ]);
         }
+    }
 
-        return (string) $this->tool?->name;
+    public function getDisplayedContentTypeAttribute(): string
+    {
+        return $this->attributes['displayed_content_type'] ?? $this->tool->name ?? '';
+    }
+
+    public function setDisplayedContentTypeAttribute(string|null $contentType): void
+    {
+        $this->attributes['displayed_content_type'] = $contentType;
+        $this->attributes['displayed_content_type_normalized'] = $contentType !== null
+            ? mb_strtolower($contentType, 'UTF-8')
+            : null;
     }
 
     public function givesScore(): bool

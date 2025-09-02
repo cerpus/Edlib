@@ -44,18 +44,6 @@ class RouteServiceProvider extends ServiceProvider
                 ->firstOrFail();
         });
 
-        Route::bind('edlib2UsageContent', function (string $value): Content {
-            return Content::ofTag([
-                'prefix' => 'edlib2_usage_id',
-                'name' => $value,
-            ])->limit(1)->firstOrFail();
-        });
-
-        Route::bind('edlib2Content', fn(string $value) => Content::ofTag([
-            'prefix' => 'edlib2_id',
-            'name' => $value,
-        ])->limit(1)->firstOrFail());
-
         $this->configureRateLimiting();
 
         $this->routes(function (NdlaLegacyConfig $ndlaLegacy) {

@@ -75,7 +75,7 @@
                     <tr>
                         <th scope="row">{{ trans('messages.content-type') }}</th>
                         <td>
-                            {{ $version->getDisplayedContentType() }}
+                            {{ $version->displayed_content_type }}
                         </td>
                     </tr>
                     <tr>

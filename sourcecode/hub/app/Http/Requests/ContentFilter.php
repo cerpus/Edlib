@@ -347,7 +347,7 @@ class ContentFilter extends FormRequest
                     createdAt: $version->created_at?->toImmutable(),
                     isPublished: $version->published,
                     viewsCount: $item['views'] ?? 0,
-                    contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
+                    contentType: $item['content_type'] ?? $version->displayed_content_type,
                     languageIso639_3: strtoupper($version->language_iso_639_3),
                     languageDisplayName: $languageName,
                     users: $content->users->map(fn($user) => $user->name)->join(', '),

@@ -6,7 +6,6 @@ namespace App\Http\Controllers\NdlaLegacy;
 
 use App\Configuration\NdlaLegacyConfig;
 use App\Models\Content;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,19 +29,16 @@ final readonly class CopyController
         assert($user instanceof User);
 
         $oldId = $this->config->extractEdlib2IdFromUrl($request->input('url', ''));
-        $original = Content::ofTag('edlib2_usage_id:' . $oldId)
-            ->limit(1)
-            ->firstOrFail();
+        $original = Content::where('edlib2_usage_id', $oldId)->firstOrFail();
 
         $newId = DB::transaction(function () use ($original, $user) {
             $copy = $original->createCopyBelongingTo($user);
-
-            $tag = Tag::findOrCreateFromString('edlib2_usage_id:' . Str::uuid());
-            $copy->tags()->attach($tag);
+            $copy->edlib2_usage_id = (string) Str::uuid();
+            $copy->save();
 
             $copy->contexts()->syncWithoutDetaching($original->contexts);
 
-            return $tag->name;
+            return $copy->edlib2_usage_id;
         });
 
         return response()->json([

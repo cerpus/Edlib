@@ -239,7 +239,7 @@ Route::prefix('/lti')->middleware([
         ->whereUlid(['content', 'version'])
         ->scopeBindings();
 
-    Route::post('/content/by-edlib2-usage/{edlib2UsageContent}')
+    Route::post('/content/by-edlib2-usage/{content:edlib2_usage_id}')
         ->uses([LtiController::class, 'content']);
 
     Route::post('/dl')

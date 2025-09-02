@@ -84,7 +84,8 @@ final class ContentTest extends TestCase
                             ->where('links.lti_tool', 'https://hub-test.edlib.test/api/lti-tools/' . $version->lti_tool_id)
                             ->where('tags', ['data' => []])
                             ->where('min_score', '0.00')
-                            ->where('max_score', '0.00'),
+                            ->where('max_score', '0.00')
+                            ->where('displayed_content_type', 'H5P.CoursePresentation'),
                     )
                     ->has(
                         'meta',
@@ -247,6 +248,7 @@ final class ContentTest extends TestCase
                             ->where('published', $data['published'])
                             ->where('min_score', $data['min_score'])
                             ->where('max_score', $data['max_score'])
+                            ->where('displayed_content_type', 'H5P.CoursePresentation')
                             ->where('tags', [
                                 'data' => [
                                     [
@@ -311,6 +313,7 @@ final class ContentTest extends TestCase
                             ->has('published')
                             ->has('min_score')
                             ->has('max_score')
+                            ->has('displayed_content_type')
                             ->where('tags', ['data' => []])
                             ->where('links.lti_tool', 'https://hub-test.edlib.test/api/lti-tools/' . $data['lti_tool_id']),
                     ),
