@@ -117,15 +117,8 @@ class Content extends Model
             $version->published = false;
             $version->title .= ' ' . trans('messages.content-copy-suffix');
             $copy->versions()->save($version);
-
-            foreach ($previousVersion->tags()->where('prefix', 'h5p')->get() as $tag) {
-                assert(property_exists($tag, 'original') && array_key_exists('pivot_verbatim_name', $tag->original));
-
-                $version->tags()->attach($tag, [
-                    'verbatim_name' => $tag->original['pivot_verbatim_name'],
-                ]);
-            }
-
+            // TODO: decide how tags in copied content should be handled.
+            // as of now, they are not copied.
             $copy->users()->save($user, ['role' => ContentRole::Owner]);
             $copy->save();
 
@@ -203,12 +196,7 @@ class Content extends Model
 
             if (count($item->getTags()) > 0) {
                 $version->saveQuietly();
-
-                foreach ($item->getTags() as $tag) {
-                    $version->tags()->attach(Tag::findOrCreateFromString($tag), [
-                        'verbatim_name' => Tag::extractVerbatimName($tag),
-                    ]);
-                }
+                $version->handleSerializedTags($item->getTags());
             }
         }
 
@@ -504,7 +492,7 @@ class Content extends Model
             'language_iso_639_3' => $version->language_iso_639_3,
             'tags' => $version->getSerializedTags(),
             'gives_score' => $version->givesScore(),
-            'content_type' => $version->getDisplayedContentType(),
+            'content_type' => $version->displayed_content_type,
             'views' => $this->countTotalViews(),
         ];
     }

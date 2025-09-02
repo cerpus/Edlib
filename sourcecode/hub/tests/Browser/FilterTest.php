@@ -7,7 +7,6 @@ namespace Tests\Browser;
 use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Models\Tag;
 use Illuminate\Support\Carbon;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ContentCard;
@@ -81,7 +80,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('magiccontent')),
+                    ->displayedContentType('h5p.magiccontent'),
             )
             ->shared()
             ->createQuietly();
@@ -90,7 +89,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('techtype'))
+                    ->displayedContentType('h5p.techtype')
                     ->state([
                         'title' => 'Find me',
                     ]),
@@ -98,7 +97,6 @@ final class FilterTest extends DuskTestCase
             ->shared()
             ->createQuietly();
 
-        // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
@@ -153,7 +151,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('magiccontent')),
+                    ->displayedContentType('h5p.magiccontent'),
             )
             ->shared()
             ->createQuietly();
@@ -162,7 +160,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('techtype'))
+                    ->displayedContentType('h5p.techtype')
                     ->state([
                         'title' => 'Find me',
                     ]),
@@ -170,7 +168,6 @@ final class FilterTest extends DuskTestCase
             ->shared()
             ->createQuietly();
 
-        // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
@@ -216,7 +213,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('magiccontent')),
+                    ->displayedContentType('h5p.magiccontent'),
             )
             ->shared()
             ->createQuietly();
@@ -225,7 +222,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('techtype'))
+                    ->displayedContentType('h5p.techtype')
                     ->state([
                         'title' => 'Find me',
                     ]),
@@ -233,7 +230,6 @@ final class FilterTest extends DuskTestCase
             ->shared()
             ->createQuietly();
 
-        // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
@@ -433,7 +429,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
+                    ->displayedContentType('h5p.magiccontent')
                     ->state([
                         'language_iso_639_3' => 'nob',
                         'title' => 'Norsk bokmål innhold',
@@ -446,7 +442,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('techtype'))
+                    ->displayedContentType('h5p.techtype')
                     ->state([
                         'language_iso_639_3' => 'eng',
                         'title' => 'English content',
@@ -455,7 +451,6 @@ final class FilterTest extends DuskTestCase
             ->shared()
             ->createQuietly();
 
-        // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
@@ -523,7 +518,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
+                    ->displayedContentType('h5p.magiccontent')
                     ->state([
                         'language_iso_639_3' => 'nob',
                         'title' => 'Norsk bokmål innhold',
@@ -536,7 +531,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('techtype'))
+                    ->displayedContentType('h5p.techtype')
                     ->state([
                         'language_iso_639_3' => 'eng',
                         'title' => 'English content',
@@ -545,7 +540,6 @@ final class FilterTest extends DuskTestCase
             ->shared()
             ->createQuietly();
 
-        // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
@@ -605,7 +599,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
+                    ->displayedContentType('h5p.magiccontent')
                     ->state([
                         'language_iso_639_3' => 'nob',
                     ]),
@@ -617,7 +611,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag(Tag::factory()->asH5PContentType('deletedcontent'))
+                    ->displayedContentType('deletedcontent')
                     ->state([
                         'language_iso_639_3' => 'swe',
                     ]),
@@ -627,7 +621,6 @@ final class FilterTest extends DuskTestCase
                 'deleted_at' => Carbon::now(),
             ]);
 
-        // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
@@ -654,14 +647,11 @@ final class FilterTest extends DuskTestCase
 
     public function testCanSeeResultCountInFilterOptions(): void
     {
-        $tagMagic = Tag::factory()->asH5PContentType('magiccontent')->create();
-        $tagTech = Tag::factory()->asH5PContentType('techtype')->create();
-
         Content::factory()
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag($tagMagic)
+                    ->displayedContentType('h5p.magiccontent')
                     ->state([
                         'language_iso_639_3' => 'nob',
                         'title' => 'Norwegian magic',
@@ -674,7 +664,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag($tagMagic)
+                    ->displayedContentType('h5p.magiccontent')
                     ->state([
                         'language_iso_639_3' => 'swe',
                         'title' => 'Swedish magic',
@@ -687,7 +677,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag($tagTech)
+                    ->displayedContentType('h5p.techtype')
                     ->state([
                         'language_iso_639_3' => 'nob',
                         'title' => 'Norwegian tech',
@@ -700,7 +690,7 @@ final class FilterTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->withTag($tagTech)
+                    ->displayedContentType('h5p.techtype')
                     ->state([
                         'language_iso_639_3' => 'swe',
                         'title' => 'Swedish tech',
@@ -709,7 +699,6 @@ final class FilterTest extends DuskTestCase
             ->shared()
             ->createQuietly();
 
-        // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
         $this->browse(

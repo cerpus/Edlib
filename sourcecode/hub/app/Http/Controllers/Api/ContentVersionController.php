@@ -35,12 +35,7 @@ final readonly class ContentVersionController
             $version = new ContentVersion();
             $version->fill($request->validated());
             $apiContent->versions()->save($version);
-
-            foreach ($request->getTags() as $tag) {
-                $version->tags()->attach(Tag::findOrCreateFromString($tag), [
-                    'verbatim_name' => Tag::extractVerbatimName($tag),
-                ]);
-            }
+            $version->handleSerializedTags($request->getTags());
 
             return $version;
         });
