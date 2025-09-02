@@ -272,6 +272,11 @@ class ContentVersion extends Model
         }
     }
 
+    public function getRawDisplayedContentType(): string|null
+    {
+        return $this->attributes['displayed_content_type'];
+    }
+
     public function getDisplayedContentTypeAttribute(): string
     {
         return $this->attributes['displayed_content_type'] ?? $this->tool->name ?? '';

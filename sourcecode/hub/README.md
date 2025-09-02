@@ -2,6 +2,12 @@
 
 TODO: write the rest of the README
 
+## Tag migration
+
+Edlibs from before September 2025 should have `php artisan edlib:migrate-tags`
+run on them to ensure content types on old contents are correctly displayed and
+filterable.
+
 ## Using ngrok for development
 
 Social login requires the dev environment to be available over the web for some
