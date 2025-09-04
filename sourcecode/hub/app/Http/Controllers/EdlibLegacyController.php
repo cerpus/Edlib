@@ -18,10 +18,9 @@ final readonly class EdlibLegacyController
         return redirect()->route('content.embed', [$content]);
     }
 
-    public function redirectLtiLaunch(Content $content): View
+    public function redirectLtiLaunch(Content $edlib2UsageContent): View
     {
-        $version = $content->latestPublishedVersion?->first()
-            ?? throw new NotFoundHttpException();
+        $version = $edlib2UsageContent->latestPublishedVersion ?? throw new NotFoundHttpException();
         $ltiRequest = $version->toLtiLaunch()->getRequest();
 
         return view('lti.redirect', [

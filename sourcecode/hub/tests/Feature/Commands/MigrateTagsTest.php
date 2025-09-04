@@ -31,7 +31,7 @@ class MigrateTagsTest extends TestCase
         $content->refresh();
 
         $this->assertSame('5e60a4f8-dbae-4a5f-8f8f-bd8e5befd13d', $content->edlib2_id);
-        $this->assertSame('da04f2de-256f-4a0b-b766-681629c19520', $content->edlib2_usage_id);
+        $this->assertSame('da04f2de-256f-4a0b-b766-681629c19520', $content->edlib2Usages()->firstOrFail()->edlib2_usage_id);
         $this->assertSame('H5P.SomeLibrary', $content->latestVersion?->getRawDisplayedContentType());
     }
 }

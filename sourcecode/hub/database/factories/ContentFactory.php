@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Enums\ContentRole;
 use App\Models\Content;
+use App\Models\ContentEdlib2Usage;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
 use App\Models\ContentViewsAccumulated;
@@ -28,7 +29,6 @@ final class ContentFactory extends Factory
         return [
             'shared' => $this->faker->boolean,
             'edlib2_id' => null,
-            'edlib2_usage_id' => null,
         ];
     }
 
@@ -60,11 +60,13 @@ final class ContentFactory extends Factory
         ]);
     }
 
-    public function edlib2UsageId(string|null $edlib2UsageId): self
+    public function edlib2UsageId(string $edlib2UsageId): self
     {
-        return $this->state([
+        $usage = ContentEdlib2Usage::factory()->state([
             'edlib2_usage_id' => $edlib2UsageId,
         ]);
+
+        return $this->has($usage, 'edlib2Usages');
     }
 
     public function trashed(DateTimeInterface|null $deletedAt = null): self

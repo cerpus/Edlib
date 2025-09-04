@@ -284,6 +284,23 @@ class Content extends Model
     }
 
     /**
+     * @return HasMany<ContentEdlib2Usage, $this>
+     */
+    public function edlib2Usages(): HasMany
+    {
+        return $this->hasMany(ContentEdlib2Usage::class, 'content_id');
+    }
+
+    public static function firstWithEdlib2UsageIdOrFail(string $usageId): self
+    {
+        /** @var Content */
+        return self::whereHas('edlib2Usages', function (Builder $query) use ($usageId): void {
+            /** @var Builder<ContentEdlib2Usage> $query */
+            $query->where('edlib2_usage_id', $usageId);
+        })->firstOrFail();
+    }
+
+    /**
      * @return HasMany<ContentView, $this>
      */
     public function views(): HasMany

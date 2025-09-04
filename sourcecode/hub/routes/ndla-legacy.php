@@ -12,18 +12,22 @@ use App\Http\Controllers\NdlaLegacy\SwaggerController;
 use App\Http\Controllers\NdlaLegacy\ViewResourceController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/resource/{content:edlib2_usage_id}')
+Route::get('/resource/{edlib2UsageContent}')
     ->uses(ViewResourceController::class)
-    ->name('ndla-legacy.resource');
+    ->name('ndla-legacy.resource')
+    ->whereUuid('edlib2UsageContent');
 
-Route::get('/v1/resource/{content:edlib2_usage_id}/copyright')
-    ->uses(ResourceCopyrightController::class);
+Route::get('/v1/resource/{edlib2UsageContent}/copyright')
+    ->uses(ResourceCopyrightController::class)
+    ->whereUuid('edlib2UsageContent');
 
-Route::get('/v2/resource/{content:edlib2_usage_id}/copyright')
-    ->uses(ResourceCopyrightController::class);
+Route::get('/v2/resource/{edlib2UsageContent}/copyright')
+    ->uses(ResourceCopyrightController::class)
+    ->whereUuid('edlib2UsageContent');
 
-Route::get('/v1/resource/{content:edlib2_usage_id}/info')
-    ->uses(ResourceInformationController::class);
+Route::get('/v1/resource/{edlib2UsageContent}/info')
+    ->uses(ResourceInformationController::class)
+    ->whereUuid('edlib2UsageContent');
 
 Route::put('/v1/resource/{id}/publish')
     ->middleware(['auth:ndla-legacy'])

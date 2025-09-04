@@ -59,9 +59,7 @@ final readonly class SelectController
             abort(404, 'No Edlib 2 ID');
         }
 
-        $contentId = Content::where('edlib2_usage_id', $resourceId)
-            ->firstOrFail()
-            ->id;
+        $contentId = Content::firstWithEdlib2UsageIdOrFail($resourceId)->id;
 
         $url = url()->temporarySignedRoute('ndla-legacy.select-iframe', 30, [
             'user' => $encrypter->encrypt([
@@ -152,13 +150,13 @@ final readonly class SelectController
             },
         )->firstOrFail();
 
-        $edlib2UsageId = $content->edlib2_usage_id ??= (string) Str::uuid();
+        $usage = $content->edlib2Usages()->firstOrCreate();
 
         return response()->view('ndla-legacy.return', [
             'type' => 'h5p',
-            'embed_id' => $edlib2UsageId,
+            'embed_id' => $usage->edlib2_usage_id,
             'oembed_url' => route('ndla-legacy.oembed', [
-                'url' => route('ndla-legacy.resource', [$edlib2UsageId]),
+                'url' => route('ndla-legacy.resource', [$usage->edlib2_usage_id]),
             ]),
         ]);
     }

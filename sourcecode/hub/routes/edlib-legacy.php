@@ -18,14 +18,14 @@ Route::domain('www.h5p.ndla.no')
 
 Route::middleware([LtiValidatedRequest::class . ':platform'])->group(function () {
     Route::domain('core.cerpus-course.com')
-        ->post('/lti/launch/{content:edlib2_usage_id}')
+        ->post('/lti/launch/{edlib2UsageContent}')
         ->uses([EdlibLegacyController::class, 'redirectLtiLaunch'])
-        ->whereUuid('content');
+        ->whereUuid('edlib2UsageContent');
 
     // Doesn't actually match what used to be on that endpoint, but Gamilab will
     // only send LTI requests here now.
     Route::domain('api.edlib.com')
-        ->post('/lti/v2/lti-links/{content:edlib2_usage_id}')
+        ->post('/lti/v2/lti-links/{edlib2UsageContent}')
         ->uses([EdlibLegacyController::class, 'redirectLtiLaunch'])
-        ->whereUuid('content');
+        ->whereUuid('edlib2UsageContent');
 });
