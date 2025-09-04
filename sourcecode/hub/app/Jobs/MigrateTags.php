@@ -62,13 +62,11 @@ class MigrateTags implements ShouldQueue, ShouldBeUnique
         SQL);
 
         DB::update(<<<SQL
-        UPDATE contents SET edlib2_usage_id = (
-            SELECT CAST(tags.name AS UUID)
-            FROM content_tag
-            JOIN tags ON content_tag.tag_id = tags.id
-            WHERE tags.prefix = 'edlib2_usage_id' AND content_tag.content_id = contents.id
-            LIMIT 1
-        ) WHERE edlib2_usage_id IS NULL
+        INSERT INTO content_edlib2_usages (content_id, edlib2_usage_id)
+        SELECT content_tag.content_id, CAST(tags.name AS UUID)
+        FROM content_tag
+        JOIN tags ON content_tag.tag_id = tags.id
+        WHERE tags.prefix = 'edlib2_usage_id';
         SQL);
     }
 }

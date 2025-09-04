@@ -17,7 +17,7 @@ use function redirect;
  */
 final readonly class ViewResourceController
 {
-    public function __invoke(Content $content, Request $request): RedirectResponse
+    public function __invoke(Content $edlib2UsageContent, Request $request): RedirectResponse
     {
         $query = [];
 
@@ -27,7 +27,7 @@ final readonly class ViewResourceController
         }
 
         return redirect()->route('content.embed', [
-            $content,
+            $edlib2UsageContent,
             ...$query,
         ]);
     }

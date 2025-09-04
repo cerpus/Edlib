@@ -10,7 +10,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 use function assert;
 use function response;
@@ -28,21 +27,22 @@ final readonly class CopyController
         $user = $request->user();
         assert($user instanceof User);
 
-        $oldId = $this->config->extractEdlib2IdFromUrl($request->input('url', ''));
-        $original = Content::where('edlib2_usage_id', $oldId)->firstOrFail();
+        $oldUsageId = $this->config->extractEdlib2IdFromUrl($request->input('url', ''))
+            ?? abort(404, 'Could not extract Edlib 2 URL');
+        $original = Content::firstWithEdlib2UsageIdOrFail($oldUsageId);
 
-        $newId = DB::transaction(function () use ($original, $user) {
+        $newUsageId = DB::transaction(function () use ($original, $user) {
             $copy = $original->createCopyBelongingTo($user);
-            $copy->edlib2_usage_id = (string) Str::uuid();
+            $usage = $copy->edlib2Usages()->create();
             $copy->save();
 
             $copy->contexts()->syncWithoutDetaching($original->contexts);
 
-            return $copy->edlib2_usage_id;
+            return $usage->edlib2_usage_id;
         });
 
         return response()->json([
-            'url' => route('ndla-legacy.resource', [$newId]),
+            'url' => route('ndla-legacy.resource', [$newUsageId]),
         ]);
     }
 }

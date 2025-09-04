@@ -24,7 +24,7 @@ final class CopyTest extends TestCase
             'scope' => 'openid profile email',
         ]);
 
-        $content = Content::factory()
+        Content::factory()
             ->withPublishedVersion()
             ->withContext(Context::factory()->name('my_context'))
             ->edlib2UsageId('f4d10eb4-a6af-4c18-9736-b16b70959c66')
@@ -35,7 +35,7 @@ final class CopyTest extends TestCase
                 'url' => 'https://hub-test-ndla-legacy.edlib.test/resource/f4d10eb4-a6af-4c18-9736-b16b70959c66',
             ])
             ->assertOk()
-            ->assertJson(function (AssertableJson $json) use ($content) {
+            ->assertJson(function (AssertableJson $json) {
                 $json->has('url');
 
                 $newUsageId = preg_replace(
@@ -43,9 +43,9 @@ final class CopyTest extends TestCase
                     '$1',
                     $json->toArray()['url'],
                 );
-                $this->assertNotSame($content->edlib2_usage_id, $newUsageId);
+                $this->assertNotSame('f4d10eb4-a6af-4c18-9736-b16b70959c66', $newUsageId);
 
-                $copiedContent = Content::where('edlib2_usage_id', $newUsageId)->firstOrFail();
+                $copiedContent = Content::firstWithEdlib2UsageIdOrFail($newUsageId);
 
                 $this->assertSame(
                     ['my_context'],

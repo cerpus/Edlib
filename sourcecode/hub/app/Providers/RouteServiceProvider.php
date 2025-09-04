@@ -44,6 +44,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->firstOrFail();
         });
 
+        Route::bind('edlib2UsageContent', fn(string $value) => Content::firstWithEdlib2UsageIdOrFail($value));
+
         $this->configureRateLimiting();
 
         $this->routes(function (NdlaLegacyConfig $ndlaLegacy) {
