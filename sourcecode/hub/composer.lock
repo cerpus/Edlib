@@ -2802,16 +2802,16 @@
         },
         {
             "name": "meilisearch/meilisearch-php",
-            "version": "v1.13.0",
+            "version": "v1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/meilisearch/meilisearch-php.git",
-                "reference": "16a3c31ddbe8eaec3aa1e1da3bada906d57dfc66"
+                "reference": "04f7e5454dcd21b968771ec7c05a88ef852f501c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/meilisearch/meilisearch-php/zipball/16a3c31ddbe8eaec3aa1e1da3bada906d57dfc66",
-                "reference": "16a3c31ddbe8eaec3aa1e1da3bada906d57dfc66",
+                "url": "https://api.github.com/repos/meilisearch/meilisearch-php/zipball/04f7e5454dcd21b968771ec7c05a88ef852f501c",
+                "reference": "04f7e5454dcd21b968771ec7c05a88ef852f501c",
                 "shasum": ""
             },
             "require": {
@@ -2821,19 +2821,19 @@
                 "psr/http-client": "^1.0"
             },
             "require-dev": {
-                "guzzlehttp/guzzle": "^7.8.1",
                 "http-interop/http-factory-guzzle": "^1.2.0",
                 "php-cs-fixer/shim": "^3.59.3",
-                "phpstan/extension-installer": "^1.4.1",
                 "phpstan/phpstan": "^2.0",
                 "phpstan/phpstan-deprecation-rules": "^2.0",
                 "phpstan/phpstan-phpunit": "^2.0",
                 "phpstan/phpstan-strict-rules": "^2.0",
-                "phpunit/phpunit": "^9.5 || ^10.5"
+                "phpunit/phpunit": "^9.5 || ^10.5",
+                "symfony/http-client": "^5.4|^6.0|^7.0"
             },
             "suggest": {
                 "guzzlehttp/guzzle": "Use Guzzle ^7 as HTTP client",
-                "http-interop/http-factory-guzzle": "Factory for guzzlehttp/guzzle"
+                "http-interop/http-factory-guzzle": "Factory for guzzlehttp/guzzle",
+                "symfony/http-client": "Use Symfony Http client"
             },
             "type": "library",
             "autoload": {
@@ -2863,9 +2863,9 @@
             ],
             "support": {
                 "issues": "https://github.com/meilisearch/meilisearch-php/issues",
-                "source": "https://github.com/meilisearch/meilisearch-php/tree/v1.13.0"
+                "source": "https://github.com/meilisearch/meilisearch-php/tree/v1.16.0"
             },
-            "time": "2025-02-17T12:48:45+00:00"
+            "time": "2025-09-10T08:50:58+00:00"
         },
         {
             "name": "monolog/monolog",
