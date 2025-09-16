@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
 use App\Libraries\H5P\h5p;
+use App\Libraries\Versioning\VersionableObject;
 use App\Lti\LtiRequest;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
@@ -25,6 +25,7 @@ use H5PContentValidator;
 use H5PCore;
 use H5PFrameworkInterface;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -58,14 +59,15 @@ class AdminContentMigrateController extends Controller
                 $migrated = $this->migrate($fromLibrary, $toLibrary, $request->input('content'));
             }
 
-            $contents = ContentVersion::leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+            $contents = H5PContent::select('h5p_contents.*')
+                ->leftJoin(DB::raw('h5p_contents as cv'), 'cv.parent_id', '=', 'h5p_contents.id')
+                ->where('h5p_contents.library_id', $fromLibrary->id)
                 ->where(function ($query) {
                     $query
-                        ->whereNull('cv.content_id')
-                        ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
+                        ->whereNull('cv.id')
+                        ->orWhereNotIn('cv.version_purpose', [VersionableObject::PURPOSE_UPGRADE, VersionableObject::PURPOSE_UPDATE]);
                 })
-                ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
-                ->where('h5p_contents.library_id', $fromLibrary->id)
+                ->orderBy('h5p_contents.id')
                 ->get();
         }
 
@@ -188,8 +190,7 @@ class AdminContentMigrateController extends Controller
 
     private function checkContent(H5PContent $content): void
     {
-        $version = $content->getVersion();
-        if (!$version->isLeaf()) {
+        if (H5PContent::where('parent_id', $content->id)->exists()) {
             throw new RuntimeException('Content is not latest version');
         }
     }
