@@ -130,7 +130,6 @@ class GameControllerTest extends TestCase
         $this->assertInstanceOf(View::class, $response);
         $data = $response->getData();
 
-        $this->assertArrayHasKey('emails', $data);
         $this->assertArrayHasKey('editorSetup', $data);
         $this->assertArrayHasKey('state', $data);
 

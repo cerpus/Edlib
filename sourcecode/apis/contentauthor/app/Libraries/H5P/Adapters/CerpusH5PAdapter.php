@@ -141,11 +141,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return null;
     }
 
-    public function enableEverybodyIsCollaborators(): bool
-    {
-        return false;
-    }
-
     public function getConfigJs(): array
     {
         return array_unique([

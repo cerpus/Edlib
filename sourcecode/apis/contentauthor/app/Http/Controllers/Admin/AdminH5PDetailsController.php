@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\ContentVersion;
+use App\Content;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -14,10 +14,8 @@ use ErrorException;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class AdminH5PDetailsController extends Controller
@@ -122,24 +120,13 @@ class AdminH5PDetailsController extends Controller
             ->offset($pageSize * ($page - 1))
             ->get()
             ->map(function (H5PContent $row) use (&$latestCount) {
-                try {
-                    $latest = null;
-                    if ($row->version_id) {
-                        $latest = ContentVersion::latestLeaf($row->version_id);
-                    }
-                    $isLatest = (empty($latest) || $row->version_id === $latest->id);
-                    $latestCount += $isLatest ? 1 : 0;
+                $isLatest = $row->children()->doesntExist();
+                $latestCount += $isLatest ? 1 : 0;
 
-                    return [
-                        'item' => $row,
-                        'isLatest' => $isLatest,
-                    ];
-                } catch (ModelNotFoundException) {
-                    return [
-                        'item' => $row,
-                        'isLatest' => null,
-                    ];
-                }
+                return [
+                    'item' => $row,
+                    'isLatest' => $isLatest,
+                ];
             });
 
         return view('admin.library-upgrade.library-content', [
@@ -152,20 +139,12 @@ class AdminH5PDetailsController extends Controller
         ]);
     }
 
-    public function contentHistory(H5PContent $content, ContentVersion $version = null): View
+    public function contentHistory(H5PContent $content): View
     {
-        $versions = collect();
-        $history = [];
-        if ($version !== null && $content->id === $version->content_id) {
-            $history = $this->getVersions($version, $versions);
-        } elseif ($content->version_id) {
-            $data = $content->getVersion();
-            $history = $data ? $this->getVersions($data, $versions) : [];
-        }
+        $history = Content::collectVersionData($content);
 
         return view('admin.library-upgrade.content-details', [
             'content' => $content,
-            'requestedVersion' => $version,
             'history' => $history,
         ]);
     }
@@ -233,56 +212,5 @@ class AdminH5PDetailsController extends Controller
             ),
             'messages' => $messages,
         ]);
-    }
-
-    private function getVersions(ContentVersion $versionData, Collection $stack, $getChildren = true): Collection
-    {
-        $versionArray = $versionData->toArray();
-        $versionArray['versionDate'] = $versionData->created_at;
-        $versionArray['content'] = $this->getContentInfo($versionData);
-        $parent = $versionData->previousVersion;
-        if (!empty($parent)) {
-            $this->getVersions($parent, $stack, false);
-            $versionArray['parent'] = $parent->id;
-        }
-        $children = $versionData->nextVersions;
-        if ($children->isNotEmpty()) {
-            $versionArray['children'] = [];
-            foreach ($children as $child) {
-                if ($getChildren) {
-                    $this->getVersions($child, $stack, false);
-                }
-                $versionArray['children'][] = [
-                    'id' => $child->id,
-                    'content_id' => $child->content_id,
-                    'versionDate' => $child->created_at,
-                    'version_purpose' => $child->version_purpose,
-                    'content' => $this->getContentInfo($versionData),
-                ];
-            }
-        }
-        if (!$stack->has($versionData->id)) {
-            $stack->put($versionData->id, $versionArray);
-        }
-
-        return $stack;
-    }
-
-    private function getContentInfo(ContentVersion $version): array
-    {
-        $content = $version->getContent();
-
-        if (!empty($content)) {
-            $library = $content->library;
-            return [
-                'title' => $content->title,
-                'license' => $content->license,
-                'language' => $content->language_iso_639_3,
-                'library_id' => $library->id,
-                'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
-            ];
-        }
-
-        return [];
     }
 }

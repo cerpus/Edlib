@@ -4,19 +4,17 @@ namespace App;
 
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\LtiContent;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Attributable;
 use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
-use App\Traits\Versionable;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Collection as LaravelCollection;
 
 use function htmlspecialchars_decode;
 use function property_exists;
@@ -29,12 +27,10 @@ use const ENT_QUOTES;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property string $title
- * @property string|null $version_id
  * @property int|null $max_score
  * @property int $bulk_calculated
  * @property string $license
  * @property string $node_id
- * @property Collection $collaborators
  * @property bool $is_draft
  * @property-read string|null $title_clean
  * @property-read NdlaIdMapper|null $ndlaMapper
@@ -49,20 +45,14 @@ abstract class Content extends Model
     use HasLanguage;
     use HasTranslations;
     use Attributable;
-    use Versionable;
+
     public const TYPE_ARTICLE = 'article';
     public const TYPE_GAME = 'game';
     public const TYPE_H5P = 'h5p';
     public const TYPE_LINK = 'link';
     public const TYPE_QUESTIONSET = 'questionset';
 
-    // These should be made to clean things up a bit:
-    // HasLicense / Licenseable
-    // HasCollaborators / Collaboratable(?)
-    // HasVersions / Versionable
-
     public string $userColumn = 'user_id';
-    private string $versionColumn = 'version_id';
     public string $editRouteName;
 
     protected $casts = [
@@ -120,56 +110,6 @@ abstract class Content extends Model
         return License::isContentCopyable($this->license);
     }
 
-    public function isCollaborator(): bool
-    {
-        if (app(H5PAdapterInterface::class)->enableEverybodyIsCollaborators()) {
-            return true;
-        }
-
-        if (empty($this->collaborators)) {
-            return false;
-        }
-
-        return $this->collaborators
-            ->map(function ($collaborator) {
-                return $collaborator->email;
-            })
-            ->filter(function ($email) {
-                return in_array($email, Session::get('verifiedEmails', [Session::get('email')]));
-            })
-            ->isNotEmpty();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function isExternalCollaborator($currentUserId): bool
-    {
-        if (CollaboratorContext::isUserCollaborator($currentUserId, $this->id)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @deprecated This is flawed logic
-     */
-    public function shouldCreateFork($userId): bool
-    {
-        return !$this->isOwner($userId) && !$this->isCollaborator() && $this->isCopyable();
-    }
-
-    public function canUpdateOriginalResource(mixed $userId): bool
-    {
-        return $this->isOwner($userId) || $this->isCollaborator();
-    }
-
-    public function shouldCreateForkBasedOnSession($username = 'authId'): bool
-    {
-        return $this->shouldCreateFork(Session::get($username, false));
-    }
-
     protected function getRequestTitle(Request $request)
     {
         return $request->get('title');
@@ -188,40 +128,6 @@ abstract class Content extends Model
     public function getContentLicense(): string
     {
         return $this->license ?? '';
-    }
-
-    /**
-     * Return a sorted, lowercased, comma-separated list of collaborators in the request
-     *
-     * @return string
-     */
-    protected function getRequestCollaborators(Request $request)
-    {
-        $requestCollaborators = collect(explode(',', $request->get('collaborators')))
-            ->each(function ($collaborator) {
-                return strtolower($collaborator);
-            })
-            ->sort()
-            ->all();
-
-        return implode(',', $requestCollaborators);
-    }
-
-    /**
-     * Return a sorted, lowercased, comma-separated list of collaborators attached to the content
-     *
-     * @return string
-     */
-    protected function getContentCollaborators()
-    {
-        $collaborators = $this->collaborators
-            ->map(function ($collaborator) {
-                return strtolower($collaborator->email);
-            })
-            ->sort()
-            ->all();
-
-        return implode(',', $collaborators);
     }
 
     /**
@@ -252,44 +158,21 @@ abstract class Content extends Model
         return $title || $content || $license;
     }
 
-    /**
-     * @param Builder<self> $query
-     */
-    public function scopeUnversioned(Builder $query): void
-    {
-        $query->where('version_id', null);
-    }
-
-    public function getVersionColumn()
-    {
-        return $this->versionColumn;
-    }
-
+    /** TODO: on the chopping block */
     public function isImported(): bool
     {
         if ($this->ndlaMapper) {
             return true;
         }
 
-        $versionData = $this->getVersion();
-
-        if (empty($versionData)) {
-            return false;
+        $content = $this;
+        while ($content = $content->parent) {
+            if ($content->ndlaMapper) {
+                return true;
+            }
         }
-        $ndlaMapperCollection = NdlaIdMapper::whereIn('ca_id', $this->getVersionedIds($versionData))
-            ->latest()
-            ->get();
-        return $ndlaMapperCollection->isNotEmpty();
-    }
 
-    private function getVersionedIds(ContentVersion $version): array
-    {
-        $id = [$version->content_id];
-        $parent = $version->previousVersion;
-        if ($parent) {
-            return array_merge($id, $this->getVersionedIds($parent));
-        }
-        return $id;
+        return false;
     }
 
     public function isDraft(): bool
@@ -319,21 +202,9 @@ abstract class Content extends Model
         return null;
     }
 
-    public function getEditUrl($latest = false): ?string
+    public function getEditUrl(): string
     {
-        if (empty($this->editRouteName)) {
-            return null;
-        }
-
-        $editUrl = route($this->editRouteName, $this->id);
-        if ($latest) {
-            $latestVersion = ContentVersion::latestLeaf($this->version_id);
-            if ($this->version_id !== $latestVersion->id) {
-                $editUrl = route($this->editRouteName, $latestVersion->content_id);
-            }
-        }
-
-        return $editUrl;
+        return route($this->editRouteName, $this->id);
     }
 
     public function getMaxScore(): int|null
@@ -381,5 +252,63 @@ abstract class Content extends Model
             tags: $this->getTags(),
             maxScore: $this->getMaxScore(),
         );
+    }
+
+    /**
+     * Used for some admin pages.
+     *
+     * @return LaravelCollection<int|string, array{
+     *     content: array{
+     *         id: int|string,
+     *         title: string,
+     *         created: string,
+     *         contentType: string,
+     *         library?: string
+     *     },
+     *     version_purpose: VersionableObject::PURPOSE_*,
+     *     children: list<int|string>,
+     *     parent: int|string,
+     * }>
+     */
+    public static function collectVersionData(
+        Content&VersionableObject $content,
+        LaravelCollection $stack = new LaravelCollection(),
+        bool $getChildren = true,
+    ): LaravelCollection {
+        $versionData = [
+            'content' => [
+                'id' => $content->id,
+                'title' => $content->title,
+                'created_at' => $content->created_at,
+                'contentType' => $content->getContentType(),
+                'license' => $content->getContentLicense(),
+                'language' => $content->getISO6393Language(),
+            ],
+            'version_purpose' => $content->getVersionPurpose(),
+        ];
+
+        if ($content instanceof H5PContent) {
+            $versionData['content']['library_id'] = $content->library_id;
+            $versionData['content']['library'] = $content->library->getLibraryString(true);
+        }
+
+        if ($content->parent) {
+            self::collectVersionData($content->parent, $stack, false);
+            $versionData['parent'] = $content->parent->id;
+        }
+
+        $versionData['children'] = [];
+        foreach ($content->children as $child) {
+            if ($getChildren) {
+                self::collectVersionData($child, $stack);
+            }
+            $versionData['children'][] = $child->id;
+        }
+
+        if (!$stack->has($content->id)) {
+            $stack->put($content->id, $versionData);
+        }
+
+        return $stack;
     }
 }

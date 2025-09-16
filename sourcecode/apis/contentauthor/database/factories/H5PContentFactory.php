@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\H5PContent;
+use App\Libraries\Versioning\VersionableObject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,10 +29,11 @@ class H5PContentFactory extends Factory
             'license' => '',
             'keywords' => null,
             'description' => null,
-            'version_id' => null,
             'max_score' => 0,
             'content_create_mode' => 'unitTest',
             'language_iso_639_3' => $this->faker->randomElement(['eng', 'nno', 'nob', 'sma', 'sme', 'swe']),
+            'parent_id' => null,
+            'version_purpose' => VersionableObject::PURPOSE_INITIAL,
         ];
     }
 }

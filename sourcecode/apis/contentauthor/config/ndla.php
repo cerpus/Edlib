@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'export' => [
-        'collaborators' => env('NDLA_EXPORT_COLLABORATORS', ""),
-    ],
 
     'video' => [
         'url' => env('NDLA_H5P_VIDEO_URL'),

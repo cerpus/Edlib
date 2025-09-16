@@ -5,6 +5,7 @@ namespace App;
 use App\Http\Libraries\ArticleFileVersioner;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\Versioning\VersionableObject;
+use App\Traits\Versionable;
 use Carbon\Carbon;
 use Cerpus\Helper\Clients\Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
@@ -15,7 +16,6 @@ use GuzzleHttp\Utils as GuzzleUtils;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -32,8 +32,6 @@ use const LIBXML_HTML_NOIMPLIED;
 /**
  * @property string $id
  * @property ?string $parent_id
- * @property ?string $parent_version_id
- * @property ?string $version_id
  * @property ?string $original_id
  * @property string $owner_id
  * @property string $content
@@ -41,16 +39,17 @@ use const LIBXML_HTML_NOIMPLIED;
  * @property ?string $node_id
  * @property ?string $ndla_url
  *
- * @property Collection<Collaborator> $collaborators
- *
  * @method static Builder|null|self noMaxScore()
  * @method static Builder|null|self ofBulkCalculated($type)
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
+ *
+ * @template-implements VersionableObject<Article>
  */
 class Article extends Content implements VersionableObject
 {
     use HasFactory;
+    use Versionable;
 
     public const TMP_UPLOAD_SESSION_KEY = 'articleTmpFiles';
 
@@ -67,6 +66,10 @@ class Article extends Content implements VersionableObject
     protected $dates = ['deleted_at', "updated_at", "created_at"];
     protected $fillable = ['title', 'content'];
 
+    protected $attributes = [
+        'version_purpose' => VersionableObject::PURPOSE_INITIAL,
+    ];
+
     public function render(): string
     {
         if (!$this->content) {
@@ -74,14 +77,6 @@ class Article extends Content implements VersionableObject
         }
 
         return self::rewriteUploadUrls($this->content);
-    }
-
-    /**
-     * @return HasMany<ArticleCollaborator, $this>
-     */
-    public function collaborators(): HasMany
-    {
-        return $this->hasMany(ArticleCollaborator::class);
     }
 
     /**
@@ -100,14 +95,6 @@ class Article extends Content implements VersionableObject
     public function givesScore(): int
     {
         return 0;
-    }
-
-    /**
-     * @return BelongsTo<Article, $this>
-     */
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Article::class, 'parent_id');
     }
 
     public function getOriginalIdAttribute($originalId)
@@ -148,9 +135,8 @@ class Article extends Content implements VersionableObject
             $newArticle->owner_id = $owner;
         }
         $newArticle->parent_id = $this->id;
-        $newArticle->parent_version_id = $this->version_id;
         $newArticle->original_id = $this->original_id;
-        $newArticle->version_id = null;
+        $newArticle->version_purpose = VersionableObject::PURPOSE_COPY;
         $newArticle->save();
 
         $newArticle->setAttribution($this->getAttribution());
@@ -230,21 +216,6 @@ class Article extends Content implements VersionableObject
     public function getOwnerId(): string
     {
         return $this->owner_id;
-    }
-
-    public function setParentVersionId(string $parentVersionId): bool
-    {
-        if ($this->parent_version_id !== $parentVersionId) {
-            $this->parent_version_id = $parentVersionId;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function setVersionId(string $versionId): void
-    {
-        $this->version_id = $versionId;
     }
 
     public function getUrl(): string

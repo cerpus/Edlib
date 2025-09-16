@@ -47,10 +47,7 @@ class ArticleFileVersionerTest extends TestCase
     public function testSetup()
     {
         $this->setUpOriginal();
-        $this->newArticle = Article::factory()->create([
-            'parent_id' => $this->originalArticle->id,
-            'parent_version_id' => $this->originalArticle->version_id,
-        ]);
+        $this->newArticle = Article::factory()->create();
 
         $originalFileCount = $this->originalArticle->files()->count();
         $this->assertEquals(1, $originalFileCount);
@@ -61,10 +58,7 @@ class ArticleFileVersionerTest extends TestCase
     public function testFileCopy()
     {
         $this->setUpOriginal();
-        $this->newArticle = Article::factory()->create([
-            'parent_id' => $this->originalArticle->id,
-            'parent_version_id' => $this->originalArticle->version_id,
-        ]);
+        $this->newArticle = Article::factory()->create();
         $articleFileVersioner = new ArticleFileVersioner($this->originalArticle, $this->newArticle);
         $articleFileVersioner->copy();
         $this->assertTrue(Storage::disk()->has('/article-uploads/' . $this->originalArticle->id . '/tree.jpg'));
@@ -74,10 +68,7 @@ class ArticleFileVersionerTest extends TestCase
     public function testDatabaseUpdate()
     {
         $this->setUpOriginal();
-        $this->newArticle = Article::factory()->create([
-            'parent_id' => $this->originalArticle->id,
-            'parent_version_id' => $this->originalArticle->version_id,
-        ]);
+        $this->newArticle = Article::factory()->create();
         $articleFileVersioner = new ArticleFileVersioner($this->originalArticle, $this->newArticle);
         $articleFileVersioner->copy()->updateDatabase();
 
@@ -91,8 +82,6 @@ class ArticleFileVersionerTest extends TestCase
         $this->setUpOriginal();
         $this->newArticle = Article::factory()->create([
             'content' => $this->originalArticle->content,
-            'parent_id' => $this->originalArticle->id,
-            'parent_version_id' => $this->originalArticle->version_id,
         ]);
         $articleFileVersioner = new ArticleFileVersioner($this->originalArticle, $this->newArticle);
         $newArticle = $articleFileVersioner->copy()->updateDatabase()->rewriteFilePath()->getNewArticle();

@@ -3,11 +3,11 @@
 namespace App;
 
 use App\Libraries\Versioning\VersionableObject;
+use App\Traits\Versionable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Iso639p3;
 
@@ -22,8 +22,6 @@ use function route;
  * @property string $link_text
  * @property ?string $metadata
  *
- * @property Collection<Collaborator> $collaborators
- *
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
@@ -31,20 +29,13 @@ class Link extends Content implements VersionableObject
 {
     use HasFactory;
     use HasUuids;
+    use Versionable;
 
     public string $editRouteName = 'link.edit'; // note: doesn't work anymore
 
     public function givesScore(): int
     {
         return 0;
-    }
-
-    /**
-     * @return HasMany<ArticleCollaborator, $this>
-     */
-    public function collaborators(): HasMany
-    {
-        return $this->hasMany(ArticleCollaborator::class, 'article_id');
     }
 
     public function getContentOwnerId(): string
@@ -55,18 +46,6 @@ class Link extends Content implements VersionableObject
     public function getISO6393Language(): string
     {
         return Iso639p3::code3letters('eng');
-    }
-
-    public function makeCopy($owner = null): static
-    {
-        $newLink = $this->replicate();
-        //$newLink->id = Uuid::uuid4()->toString();
-        if (!is_null($owner)) {
-            $newLink->owner_id = $owner;
-        }
-        $newLink->save();
-
-        return $newLink;
     }
 
     protected function getRequestContent(Request $request)
@@ -92,16 +71,6 @@ class Link extends Content implements VersionableObject
     public function getOwnerId(): string
     {
         return $this->owner_id;
-    }
-
-    public function setParentVersionId(string $parentVersionId): bool
-    {
-        return false; // Not stored
-    }
-
-    public function setVersionId(string $versionId): void
-    {
-        $this->version_id = $versionId;
     }
 
     public function getUrl(): string

@@ -31,7 +31,3 @@
         </div>
     </div>
 @endsection
-
-@push('styles')
-    <link href="{{ mix('css/admin.css') }}" rel="stylesheet">
-@endpush

@@ -6,7 +6,7 @@ use App\Exceptions\GameTypeNotFoundException;
 use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
-use App\Traits\Collaboratable;
+use App\Traits\Versionable;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -34,9 +34,9 @@ use function route;
  */
 class Game extends Content implements VersionableObject
 {
-    use Collaboratable;
     use HasFactory;
     use HasUuids;
+    use Versionable;
 
     public string $editRouteName = 'game.edit';
 
@@ -117,17 +117,6 @@ class Game extends Content implements VersionableObject
     public function getOwnerId(): string
     {
         return $this->owner;
-    }
-
-    public function setParentVersionId(string $parentVersionId): bool
-    {
-        // Do nothing
-        return false;
-    }
-
-    public function setVersionId(string $versionId): void
-    {
-        $this->version_id = $versionId;
     }
 
     public function getUrl(): string
