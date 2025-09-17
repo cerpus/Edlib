@@ -31,6 +31,8 @@ use function route;
  * @method static self|Builder make(array $attributes = [])
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
+ *
+ * @template-implements VersionableObject<Game>
  */
 class Game extends Content implements VersionableObject
 {

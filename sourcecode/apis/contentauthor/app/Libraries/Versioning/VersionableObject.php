@@ -22,12 +22,12 @@ interface VersionableObject
     public const PURPOSE_TRANSLATION = 'Translation';
 
     /**
-     * @return HasMany<T, $this>
+     * @return HasMany<T, covariant T>
      */
     public function children(): HasMany;
 
     /**
-     * @return BelongsTo<T, $this>
+     * @return BelongsTo<T, covariant T>
      */
     public function parent(): BelongsTo;
 
