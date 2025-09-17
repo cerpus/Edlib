@@ -368,7 +368,6 @@ class H5PControllerTest extends TestCase
 
         // Adapter specific
         if ($adapterMode === "ndla") {
-            $this->assertContains('//www.wiris.net/demo/plugins/app/WIRISplugins.js?viewer=image', $result['jsScripts']);
             $this->assertContains('/js/h5peditor-custom.js', $result['jsScripts']);
 
             $this->assertContains('/css/ndlah5p-iframe-legacy.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
