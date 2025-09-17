@@ -25,7 +25,6 @@ use H5PContentValidator;
 use H5PCore;
 use H5PFrameworkInterface;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
