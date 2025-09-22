@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 return [
     'sign-up' => (bool) env('FEATURE_SIGNUP_ENABLED', true),
