@@ -314,6 +314,7 @@ class Content extends Model
             /** @var Content */
             return Cache::remember($cacheKey, 3600, function () use ($usageId) {
                 return self::whereHas('edlib2Usages', function (Builder $query) use ($usageId): void {
+                    /** @var Builder<ContentEdlib2Usage> $query */
                     $query->where('edlib2_usage_id', $usageId);
                 })->firstOrFail();
             });
@@ -321,6 +322,7 @@ class Content extends Model
 
         /** @var Content */
         return self::whereHas('edlib2Usages', function (Builder $query) use ($usageId): void {
+            /** @var Builder<ContentEdlib2Usage> $query */
             $query->where('edlib2_usage_id', $usageId);
         })->firstOrFail();
     }
