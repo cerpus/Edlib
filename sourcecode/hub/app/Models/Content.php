@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
@@ -15,24 +13,25 @@ use Carbon\CarbonImmutable;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Database\Factories\ContentFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Laravel\Scout\Builder as ScoutBuilder;
+use Laravel\Scout\Searchable;
 use DateTimeImmutable;
 use DateTimeZone;
 use DomainException;
 use DOMDocument;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\UniqueConstraintViolationException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Laravel\Scout\Builder as ScoutBuilder;
-use Laravel\Scout\Searchable;
 use PDO;
 
 use function assert;
@@ -74,6 +73,17 @@ class Content extends Model
         static::addGlobalScope('atLeastOneVersion', function (Builder $query) {
             $query->whereHas('versions');
         });
+
+        // Clear cache when content is updated or deleted (only if caching is enabled)
+        if (config('features.cache-edlib2-usage-lookups')) {
+            static::saved(function (self $content) {
+                $content->clearEdlib2UsageCache();
+            });
+
+            static::deleted(function (self $content) {
+                $content->clearEdlib2UsageCache();
+            });
+        }
     }
 
     public function getTitle(): string
@@ -130,7 +140,8 @@ class Content extends Model
      */
     public function latestVersion(): HasOne
     {
-        return $this->hasOne(ContentVersion::class)
+        return $this
+            ->hasOne(ContentVersion::class)
             ->with(['tool'])
             ->latestOfMany();
     }
@@ -140,7 +151,8 @@ class Content extends Model
      */
     public function latestDraftVersion(): HasOne
     {
-        return $this->hasOne(ContentVersion::class)
+        return $this
+            ->hasOne(ContentVersion::class)
             ->with(['tool'])
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
@@ -153,7 +165,8 @@ class Content extends Model
      */
     public function latestPublishedVersion(): HasOne
     {
-        return $this->hasOne(ContentVersion::class)
+        return $this
+            ->hasOne(ContentVersion::class)
             ->with(['tool'])
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
@@ -293,6 +306,18 @@ class Content extends Model
 
     public static function firstWithEdlib2UsageIdOrFail(string $usageId): self
     {
+        if (config('features.cache-edlib2-usage-lookups')) {
+            $cacheKey = "content_by_edlib2_usage_id_{$usageId}";
+
+            /** @var Content */
+            return Cache::remember($cacheKey, 3600, function () use ($usageId) {
+                return self::whereHas('edlib2Usages', function (Builder $query) use ($usageId): void {
+                    /** @var Builder<ContentEdlib2Usage> $query */
+                    $query->where('edlib2_usage_id', $usageId);
+                })->firstOrFail();
+            });
+        }
+
         /** @var Content */
         return self::whereHas('edlib2Usages', function (Builder $query) use ($usageId): void {
             /** @var Builder<ContentEdlib2Usage> $query */
@@ -358,7 +383,8 @@ class Content extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)
+        return $this
+            ->belongsToMany(User::class)
             ->withPivot('role')
             ->withTimestamps()
             ->using(ContentUser::class);
@@ -406,18 +432,18 @@ class Content extends Model
     public static function getAccumulatableViews(DateTimeImmutable $cutoff): array
     {
         $statement = DB::getPdo()->prepare(<<<'EOSQL'
-        SELECT
-            content_id,
-            source,
-            lti_platform_id,
-            (created_at AT TIME ZONE 'UTC')::DATE AS date,
-            EXTRACT(hour FROM created_at AT TIME ZONE 'UTC') AS hour,
-            COUNT(*) AS count
-        FROM content_views
-        WHERE created_at < :cutoff
-        GROUP BY content_id, source, lti_platform_id, date, hour
-        ORDER BY date, hour
-        EOSQL);
+            SELECT
+                content_id,
+                source,
+                lti_platform_id,
+                (created_at AT TIME ZONE 'UTC')::DATE AS date,
+                EXTRACT(hour FROM created_at AT TIME ZONE 'UTC') AS hour,
+                COUNT(*) AS count
+            FROM content_views
+            WHERE created_at < :cutoff
+            GROUP BY content_id, source, lti_platform_id, date, hour
+            ORDER BY date, hour
+            EOSQL);
         $statement->bindValue(':cutoff', $cutoff->format('c'));
         $statement->execute();
 
@@ -436,28 +462,28 @@ class Content extends Model
 
         // TODO: lti platforms as separate stats
         $statement = DB::getPdo()->prepare(<<<'EOSQL'
-        SELECT
-            source,
-            COUNT(*) AS view_count,
-            EXTRACT(YEAR FROM created_at AT TIME ZONE 'UTC') AS year,
-            EXTRACT(MONTH FROM created_at AT TIME ZONE 'UTC') AS month,
-            EXTRACT(DAY FROM created_at AT TIME ZONE 'UTC') AS day
-        FROM content_views
-        WHERE content_id = :content_id AND created_at >= :start_ts AND created_at <= :end_ts
-        GROUP BY source, year, month, day
-        UNION ALL
-        SELECT
-            source,
-            SUM(view_count) AS view_count,
-            EXTRACT(YEAR FROM date) AS year,
-            EXTRACT(MONTH FROM date) AS month,
-            EXTRACT(DAY FROM date) AS day
-        FROM content_views_accumulated
-        WHERE content_id = :content_id AND
-            (date > :start_date OR date = :start_date AND hour >= :start_hour) AND
-            (date < :end_date OR date = :end_date AND hour <= :end_hour)
-        GROUP BY source, year, month, day
-        EOSQL);
+            SELECT
+                source,
+                COUNT(*) AS view_count,
+                EXTRACT(YEAR FROM created_at AT TIME ZONE 'UTC') AS year,
+                EXTRACT(MONTH FROM created_at AT TIME ZONE 'UTC') AS month,
+                EXTRACT(DAY FROM created_at AT TIME ZONE 'UTC') AS day
+            FROM content_views
+            WHERE content_id = :content_id AND created_at >= :start_ts AND created_at <= :end_ts
+            GROUP BY source, year, month, day
+            UNION ALL
+            SELECT
+                source,
+                SUM(view_count) AS view_count,
+                EXTRACT(YEAR FROM date) AS year,
+                EXTRACT(MONTH FROM date) AS month,
+                EXTRACT(DAY FROM date) AS day
+            FROM content_views_accumulated
+            WHERE content_id = :content_id AND
+                (date > :start_date OR date = :start_date AND hour >= :start_hour) AND
+                (date < :end_date OR date = :end_date AND hour <= :end_hour)
+            GROUP BY source, year, month, day
+            EOSQL);
         $statement->bindValue(':content_id', $this->id);
         $statement->bindValue(':start_ts', $start->format('c'));
         $statement->bindValue(':start_date', $start->format('Y-m-d'));
@@ -526,8 +552,7 @@ class Content extends Model
         return Content::search($keywords)
             ->where('published', true)
             ->where('shared', true)
-            ->options(['facets' => ['views']])
-        ;
+            ->options(['facets' => ['views']]);
     }
 
     /**
@@ -537,8 +562,7 @@ class Content extends Model
     {
         return Content::search($keywords)
             ->where('user_ids', $user->id)
-            ->options(['facets' => ['views']])
-        ;
+            ->options(['facets' => ['views']]);
     }
 
     public static function generateSiteMap(): DOMDocument
@@ -563,5 +587,15 @@ class Content extends Model
         $document->appendChild($root);
 
         return $document;
+    }
+
+    /**
+     * Clear the cache for this content's Edlib2 usage IDs
+     */
+    private function clearEdlib2UsageCache(): void
+    {
+        $this->edlib2Usages->each(function (ContentEdlib2Usage $usage) {
+            Cache::forget("content_by_edlib2_usage_id_{$usage->edlib2_usage_id}");
+        });
     }
 }

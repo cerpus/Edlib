@@ -1,13 +1,12 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
 use Database\Factories\ContentEdlib2UsageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 /**
@@ -31,6 +30,27 @@ class ContentEdlib2Usage extends Model
         static::creating(function (self $usage) {
             $usage->attributes['edlib2_usage_id'] ??= (string) Str::uuid();
         });
+
+        // Clear cache when usage records are created, updated, or deleted (only if caching is enabled)
+        if (config('features.cache-edlib2-usage-lookups')) {
+            static::saved(function (self $usage) {
+                $usage->clearContentCache();
+            });
+
+            static::deleted(function (self $usage) {
+                $usage->clearContentCache();
+            });
+        }
+    }
+
+    /**
+     * Clear the cache for the content associated with this usage ID
+     */
+    private function clearContentCache(): void
+    {
+        if ($this->edlib2_usage_id) {
+            Cache::forget("content_by_edlib2_usage_id_{$this->edlib2_usage_id}");
+        }
     }
 
     /**
