@@ -5,16 +5,16 @@ on:
     branches:
       - master
     paths:
-      - '.github/workflows/hub.yaml'
-      - 'sourcecode/hub/**'
+      - ".github/workflows/hub.yaml"
+      - "sourcecode/hub/**"
   workflow_call:
     inputs:
       version:
-        description: 'A version to release'
+        description: "A version to release"
         required: true
         type: string
       deploy:
-        description: 'A version to release'
+        description: "A version to release"
         required: false
         type: boolean
         default: false
@@ -37,53 +37,6 @@ jobs:
 
       - name: Validate
         run: composer validate --no-check-publish
-
-  php-cs-fixer:
-    if: "!inputs.deploy"
-    needs: [composer-validate]
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.CERPUSBOT_SECRET }}
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-
-      - name: Manage php-cs-fixer cache
-        uses: actions/cache@v4
-        with:
-          path: sourcecode/hub/.php-cs-fixer.cache
-          key: hub-phpcsfixer-${{ github.sha }}
-          restore-keys: hub-phpcsfixer-
-
-      - name: Get Composer cache dir
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: hub-phpcsfixer-composer-${{ hashFiles('sourcecode/hub/tools/php-cs-fixer/composer.lock') }}
-          restore-keys: |
-            hub-phpcsfixer-composer-
-
-      - name: Install dependencies
-        run: composer install --working-dir=tools/php-cs-fixer --no-progress --prefer-dist
-
-      - name: Run php-cs-fixer
-        run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
-
-      - name: Commit fixed code
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: Run php-cs-fixer
 
   phpstan:
     if: "!inputs.deploy"
@@ -144,7 +97,7 @@ jobs:
       meilisearch:
         image: getmeili/meilisearch:v1.0
         env:
-          MEILI_NO_ANALYTICS: 'true'
+          MEILI_NO_ANALYTICS: "true"
           MEILI_MASTER_KEY: masterkey1234567
         options: >-
           --health-cmd "curl -f http://localhost:7700/health"
@@ -203,10 +156,9 @@ jobs:
           files: /tmp/coverage.xml
           context: sourcecode/hub
 
-
   build_publish:
     if: inputs.version && !inputs.deploy
-    needs: [test, php-cs-fixer, phpstan]
+    needs: [test, phpstan]
     runs-on: ubuntu-22.04
     steps:
       - name: Log in to GitHub Container Registry
