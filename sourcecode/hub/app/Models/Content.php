@@ -312,7 +312,7 @@ class Content extends Model
             $cacheKey = "content_by_edlib2_usage_id_{$usageId}";
 
             /** @var Content */
-            return Cache::remember($cacheKey, 3600, function () use ($usageId) {
+            return Cache::remember($cacheKey, 60*60*24*2, function () use ($usageId) {
                 return self::whereHas('edlib2Usages', function (Builder $query) use ($usageId): void {
                     /** @var Builder<ContentEdlib2Usage> $query */
                     $query->where('edlib2_usage_id', $usageId);
