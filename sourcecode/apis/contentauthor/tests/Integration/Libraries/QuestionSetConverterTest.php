@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Libraries;
 
-use App\Events\GameWasSaved;
 use App\Game;
 use App\Gametype;
 use App\Http\Libraries\License;
@@ -73,7 +72,6 @@ class QuestionSetConverterTest extends TestCase
         $this->assertSame($a1->correct, $convertedCard->answers[0]->isCorrect);
         $this->assertSame($a2->answer_text, $convertedCard->answers[1]->answer);
         $this->assertSame($a2->correct, $convertedCard->answers[1]->isCorrect);
-        Event::assertDispatched(GameWasSaved::class);
     }
 
     public function testCreateMillionaireGameFromArray(): void
@@ -142,6 +140,5 @@ class QuestionSetConverterTest extends TestCase
         $this->assertSame($inputCard['answers'][0]['isCorrect'], $convertedCard->answers[0]->isCorrect);
         $this->assertSame($inputCard['answers'][1]['answerText'], $convertedCard->answers[1]->answer);
         $this->assertSame($inputCard['answers'][1]['isCorrect'], $convertedCard->answers[1]->isCorrect);
-        Event::assertDispatched(GameWasSaved::class);
     }
 }

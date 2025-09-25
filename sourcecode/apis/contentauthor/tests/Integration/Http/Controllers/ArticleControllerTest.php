@@ -3,7 +3,6 @@
 namespace Tests\Integration\Http\Controllers;
 
 use App\Article;
-use App\Events\ArticleWasSaved;
 use App\Http\Libraries\License;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
@@ -75,7 +74,5 @@ class ArticleControllerTest extends TestCase
         $response->assertJson([
             'url' => route('article.edit', $article->id),
         ]);
-
-        Event::assertDispatched(ArticleWasSaved::class);
     }
 }

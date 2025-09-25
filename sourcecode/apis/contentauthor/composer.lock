@@ -9447,16 +9447,16 @@
         },
         {
             "name": "larastan/larastan",
-            "version": "v2.10.0",
+            "version": "v2.11.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/larastan/larastan.git",
-                "reference": "05519d721277604487a3ca71bdee87739d8d8716"
+                "reference": "1aae902a5851c03dc1a58cbd9010a0c3ef8def63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larastan/larastan/zipball/05519d721277604487a3ca71bdee87739d8d8716",
-                "reference": "05519d721277604487a3ca71bdee87739d8d8716",
+                "url": "https://api.github.com/repos/larastan/larastan/zipball/1aae902a5851c03dc1a58cbd9010a0c3ef8def63",
+                "reference": "1aae902a5851c03dc1a58cbd9010a0c3ef8def63",
                 "shasum": ""
             },
             "require": {
@@ -9473,7 +9473,7 @@
                 "phpstan/phpstan": "^1.12.17"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^12.0",
+                "doctrine/coding-standard": "^13",
                 "laravel/framework": "^9.52.20 || ^10.48.28 || ^11.41.3",
                 "mockery/mockery": "^1.5.1",
                 "nikic/php-parser": "^4.19.1",
@@ -9509,10 +9509,6 @@
                 {
                     "name": "Can Vural",
                     "email": "can9119@gmail.com"
-                },
-                {
-                    "name": "Nuno Maduro",
-                    "email": "enunomaduro@gmail.com"
                 }
             ],
             "description": "Larastan - Discover bugs in your code without running it. A phpstan/phpstan extension for Laravel",
@@ -9528,7 +9524,7 @@
             ],
             "support": {
                 "issues": "https://github.com/larastan/larastan/issues",
-                "source": "https://github.com/larastan/larastan/tree/v2.10.0"
+                "source": "https://github.com/larastan/larastan/tree/v2.11.2"
             },
             "funding": [
                 {
@@ -9536,7 +9532,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-14T21:52:58+00:00"
+            "time": "2025-06-10T22:06:33+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -9801,16 +9797,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.23",
+            "version": "1.12.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "29201e7a743a6ab36f91394eab51889a82631428"
+                "reference": "0835c625a38ac6484f050077116b6668bc3ab57d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/29201e7a743a6ab36f91394eab51889a82631428",
-                "reference": "29201e7a743a6ab36f91394eab51889a82631428",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/0835c625a38ac6484f050077116b6668bc3ab57d",
+                "reference": "0835c625a38ac6484f050077116b6668bc3ab57d",
                 "shasum": ""
             },
             "require": {
@@ -9855,7 +9851,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-23T14:57:32+00:00"
+            "time": "2025-09-16T08:46:57+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

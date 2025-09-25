@@ -2,20 +2,16 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
-use App\Content;
-use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
 use App\H5PLibrary;
+use App\Libraries\Versioning\VersionableObject;
 use App\User;
 use Exception;
-use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Helpers\MockH5PAdapterInterface;
 use Tests\Helpers\TestHelpers;
@@ -46,12 +42,9 @@ class CRUTest extends TestCase
         $this->assertFileDoesNotExist($dest, "File $dest still exist");
     }
 
-    #[DataProvider('provider_create_and_update_h5p_using_web_request')]
     #[Test]
-    public function create_and_update_h5p_using_web_request(bool $useLinearVersioning)
+    public function create_and_update_h5p_using_web_request()
     {
-        Config::set('feature.linear-versioning', $useLinearVersioning);
-
         $owner = User::factory()->make();
         $collaborator = User::factory()->make(['email' => 'a@b.com']);
         $copyist = User::factory()->make();
@@ -67,7 +60,6 @@ class CRUTest extends TestCase
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
         ])
             ->post(route('h5p.store'), [
                 '_token' => csrf_token(),
@@ -77,33 +69,26 @@ class CRUTest extends TestCase
                 'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Tittel","title":"Tittel"}}',
                 'frame' => "1",
                 'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
                 'isDraft' => 0,
                 'maxScore' => 3,
             ])
-            ->assertStatus(Response::HTTP_CREATED); // Redirects after save
+            ->assertCreated();
 
         $this->assertDatabaseCount('h5p_contents', 1);
-        $h5p = H5PContent::find(1);
-        $this->assertCount(1, $h5p->collaborators);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
-        $firstVersion = $h5p->version_id;
-        $this->assertDatabaseHas('content_versions', [
-            'id' => $firstVersion,
-            'content_id' => 1,
-            'content_type' => Content::TYPE_H5P,
-            'version_purpose' => ContentVersion::PURPOSE_CREATE,
+        $first = H5PContent::find(1);
+        $this->assertDatabaseHas('h5p_contents', [
+            'id' => 1,
+            'title' => 'Tittel',
+            'version_purpose' => VersionableObject::PURPOSE_CREATE,
         ]);
 
         $this->withSession([
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
         ])
-            ->put(route('h5p.update', 1), [
+            ->put(route('h5p.update', $first->id), [
                 '_token' => csrf_token(),
                 'title' => 'Tittel',
                 'action' => 'create',
@@ -111,33 +96,21 @@ class CRUTest extends TestCase
                 'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[{"name": "' . $owner->name . '","role":"Author"}],"changes":[],"extraTitle":"Tittel","title":"Tittel"}}',
                 'frame' => "1",
                 'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => 'a@b.com,d@e.com',
                 'license' => "PRIVATE",
                 'maxScore' => 2,
                 'isDraft' => 0,
             ]);
 
-        $h5p->refresh();
         $this->assertDatabaseCount('h5p_contents', 1);
-        $this->assertCount(2, $h5p->collaborators);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
-
-        $this->assertDatabaseCount('content_versions', 2);
-        $secondVersion = $h5p->version_id;
-        $this->assertDatabaseHas('content_versions', [
-            'id' => $secondVersion,
-            'parent_id' => $firstVersion,
-            'content_id' => 1,
-            'content_type' => Content::TYPE_H5P,
-            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
+        $this->assertDatabaseHas('h5p_contents', [
+            'id' => 1,
+            'title' => 'Tittel',
         ]);
 
         $this->withSession([
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
         ])
             ->put(route('h5p.update', 1), [
                 '_token' => csrf_token(),
@@ -147,34 +120,20 @@ class CRUTest extends TestCase
                 'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Tittel 2","title":"Tittel 2"}}',
                 'frame' => "1",
                 'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 'license' => "PRIVATE",
                 'isDraft' => 0,
             ]);
 
         $this->assertDatabaseCount('h5p_contents', 2);
-        $this->assertCount(2, H5PContent::find(1)->collaborators); // Original still has two collaborators
-        $this->assertCount(3, H5PContent::find(2)->collaborators); // New has three collaborators
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
         $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'Tittel 2']);
-
-        $this->assertDatabaseCount('content_versions', 3);
-        $thirdVersion = H5PContent::find(2)->version_id;
-        $this->assertDatabaseHas('content_versions', [
-            'id' => $thirdVersion,
-            'content_id' => 2,
-            'parent_id' => $secondVersion,
-            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
-        ]);
 
         $this->withSession([
             'authId' => $collaborator->auth_id,
             'email' => $collaborator->email,
             'name' => $collaborator->name,
-            'verifiedEmails' => [$collaborator->email],
         ])
-            ->put(route('h5p.update', $h5p->id), [
+            ->put(route('h5p.update', $first->id), [
                 '_token' => csrf_token(),
                 'title' => 'Tittel 3', // Will trigger a new version
                 'action' => 'create',
@@ -182,36 +141,23 @@ class CRUTest extends TestCase
                 'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Tittel 3","title":"Tittel 3"}}',
                 'frame' => "1",
                 'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 'license' => "PRIVATE",
                 'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseCount('h5p_contents', 3);
-        $this->assertCount(2, H5PContent::find(3)->collaborators); // Collaborators not updated
-        $this->assertDatabaseHas('h5p_contents', ['user_id' => $owner->auth_id, 'title' => 'Tittel 3']); // Owner has not changed, title updated
+        $this->assertDatabaseHas('h5p_contents', ['user_id' => $collaborator->auth_id, 'title' => 'Tittel 3']); // Owner has changed, title updated
 
-        $this->assertDatabaseCount('content_versions', 4);
-        $fourthVersion = H5PContent::find(3)->version_id;
-        $this->assertDatabaseHas('content_versions', [
-            'id' => $fourthVersion,
-            'content_id' => 3,
-            'parent_id' => $useLinearVersioning ? $thirdVersion : $secondVersion,
-            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
-        ]);
-
-        $h5p->license = 'BY';
-        $h5p->save();
+        $first->license = 'BY';
+        $first->save();
 
         $this->withSession([
             'authId' => $copyist->auth_id,
             'email' => $copyist->email,
             'name' => $copyist->name,
-            'verifiedEmails' => [$copyist->email],
         ])
-            ->put(route('h5p.update', $h5p->id), [
+            ->put(route('h5p.update', $first->id), [
                 '_token' => csrf_token(),
                 'title' => 'Tittel 4', // Will trigger a new version
                 'action' => 'create',
@@ -220,29 +166,15 @@ class CRUTest extends TestCase
                 'frame' => "1",
                 'copyright' => "1",
                 'isDraft' => 0,
-                //'col_email' => '',
-                //'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 //'license' => "PRIVATE",
             ])
             ->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseCount('h5p_contents', 4); // New H5P in db
-        $this->assertDatabaseHas('h5p_contents', ['user_id' => $copyist->auth_id, 'title' => 'Tittel 4']); // Owner and title updated
-        $this->assertCount(0, H5PContent::find(4)->collaborators); //No collaborators on new resource
-
-        $this->assertDatabaseCount('content_versions', 5);
-        $this->assertDatabaseHas('content_versions', [
-            'id' => H5PContent::find(4)->version_id,
-            'content_id' => 4,
-            'parent_id' => $useLinearVersioning ? $fourthVersion : $secondVersion,
-            'version_purpose' => ContentVersion::PURPOSE_COPY,
-        ]);
-    }
-
-    public static function provider_create_and_update_h5p_using_web_request(): Generator
-    {
-        yield 'linear_versioning' => [true];
-        yield 'non-linear_versioning' => [false];
+        $this->assertDatabaseHas('h5p_contents', [
+            'user_id' => $copyist->auth_id,
+            'title' => 'Tittel 4',
+        ]); // Owner and title updated
     }
 
     private function setUpH5PLibrary(): void
@@ -303,7 +235,6 @@ class CRUTest extends TestCase
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
         ])
             ->put(route('h5p.update', $content->id), [
                 '_token' => csrf_token(),
@@ -314,8 +245,6 @@ class CRUTest extends TestCase
                 'upgradeParams' => '{"params":{"simpleTest":"SimpleTest","original":true},"metadata":{}}',
                 'frame' => "1",
                 'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
                 'isDraft' => 0,
             ])
@@ -348,7 +277,6 @@ class CRUTest extends TestCase
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
         ])
             ->put(route('h5p.update', $content->id), [
                 '_token' => csrf_token(),
@@ -359,8 +287,6 @@ class CRUTest extends TestCase
                 'upgradeParams' => '{"params":{"simpleTest":"SimpleTest","original":false,"upgraded":"Yess"},"metadata":{}}',
                 'frame' => "1",
                 'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
                 'isDraft' => 0,
             ])

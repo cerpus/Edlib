@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Content;
-use App\ContentVersion;
 use App\Http\Controllers\Controller;
+use App\Libraries\Versioning\VersionableObject;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class VersioningController extends Controller
 {
@@ -17,60 +16,17 @@ class VersioningController extends Controller
         $contentId = $request->input('contentId');
         if ($contentId) {
             $content = Content::findContentById($contentId);
-            if (!empty($content->version_id)) {
-                $this->traverseVersion($content->getVersion(), $versionData);
-            } elseif (!empty($content)) {
+            if ($content instanceof VersionableObject) {
+                $versionData = Content::collectVersionData($content);
+            } else {
                 $isContentVersioned = false;
             }
         }
 
         return view('admin.support.versioning')->with([
             'contentId' => $contentId,
-            'versionData' => $versionData->isNotEmpty() ? $versionData->reverse() : null,
+            'versionData' => $versionData->toArray(),
             'isContentVersioned' => $isContentVersioned,
         ]);
-    }
-
-    /**
-     * @return Collection
-     */
-    private function traverseVersion(ContentVersion $versionData, Collection $stack, $getChildren = true)
-    {
-        $versionArray = [
-            'version' => $versionData->toArray(),
-        ];
-        $versionArray['version']['created_at'] = $versionData->created_at->format('Y-m-d H:i:s.u e');
-        $content = $versionData->getContent();
-        if (!empty($content)) {
-            $versionArray['content'] = [
-                'title' => $content->title,
-                'created' => $content->created_at->format('Y-m-d H:i:s e'),
-                'contentType' => $content->getContentType(),
-            ];
-            if ($versionArray['version']['content_type'] === Content::TYPE_H5P) {
-                if ($content->library_id) {
-                    $versionArray['content']['library'] = $content->library->getLibraryString(true);
-                } else {
-                    $versionArray['content']['library'] = '';
-                }
-            }
-        }
-        $versionArray['parent'] = $versionData->previousVersion?->content_id;
-
-        $children = $versionData->nextVersions;
-        $versionArray['children'] = [];
-        if ($children->isNotEmpty()) {
-            foreach ($children as $child) {
-                if ($getChildren) {
-                    $this->traverseVersion($child, $stack);
-                }
-                $versionArray['children'][] = $child->content_id;
-            }
-        }
-        if (!$stack->has($versionData->content_id)) {
-            $stack->put($versionData->content_id, $versionArray);
-        }
-
-        return $stack;
     }
 }
