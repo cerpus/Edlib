@@ -13,15 +13,13 @@ class QuestionsetWasSaved extends Event
     public $questionset;
     public $request;
     public $authId;
-    public $reason;
     public $theSession;
 
-    public function __construct(QuestionSet $questionset, Request $request, $authId, $reason, $theSession)
+    public function __construct(QuestionSet $questionset, Request $request, $authId, $theSession)
     {
         $this->questionset = $questionset;
         $this->request = $request;
         $this->authId = $authId;
-        $this->reason = $reason;
         $this->theSession = $theSession;
     }
 }
