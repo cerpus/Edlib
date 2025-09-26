@@ -7,5 +7,4 @@ return [
     'forgot-password' => (bool) env('FEATURE_RESET_PASSWORD_ENABLED', true),
     'noindex' => (bool) env('FEATURE_NOINDEX', false),
     'social-users-are-verified' => (bool) env('FEATURE_SOCIAL_USERS_ARE_VERIFIED', false),
-    'cache-edlib2-usage-lookups' => (bool) env('FEATURE_CACHE_EDLIB2_USAGE_LOOKUPS', true),
 ];

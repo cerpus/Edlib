@@ -73,7 +73,7 @@ class ContentController extends Controller
 
     public function details(Content $content, Request $request): View
     {
-        $version = $content->latestPublishedVersion()->firstOrFail();
+        $version = $content->getCachedLatestPublishedVersion() ?? throw new NotFoundHttpException();
         $this->authorize('view', [$content, $version]);
 
         $content->trackView($request, ContentViewSource::Detail);
@@ -99,10 +99,8 @@ class ContentController extends Controller
     {
         $content->trackView($request, ContentViewSource::Share);
 
-        $launch = $content
-            ->latestPublishedVersion()
-            ->firstOrFail()
-            ->toLtiLaunch();
+        $version = $content->getCachedLatestPublishedVersion() ?? throw new NotFoundHttpException();
+        $launch = $version->toLtiLaunch();
 
         return view('content.share', [
             'content' => $content,
@@ -123,7 +121,7 @@ class ContentController extends Controller
 
     public function embed(Content $content, ContentVersion|null $version = null): View
     {
-        $version ??= $content->latestPublishedVersion()->firstOrFail();
+        $version ??= $content->getCachedLatestPublishedVersion() ?? throw new NotFoundHttpException();
         $launch = $version->toLtiLaunch();
 
         return view('content.embed', [

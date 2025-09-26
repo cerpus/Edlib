@@ -34,7 +34,7 @@ class ContentEdlib2Usage extends Model
         });
 
         // Clear cache when usage records are created, updated, or deleted (only if caching is enabled)
-        if (config('features.cache-edlib2-usage-lookups')) {
+        if (config('cache.edlib2_usage_lookups.enabled')) {
             static::saved(function (self $usage) {
                 $usage->clearContentCache();
             });
@@ -50,9 +50,12 @@ class ContentEdlib2Usage extends Model
      */
     private function clearContentCache(): void
     {
-        if ($this->edlib2_usage_id) {
-            Cache::forget("content_by_edlib2_usage_id_{$this->edlib2_usage_id}");
+        if (!$this->edlib2_usage_id) {
+            return;
         }
+
+        $keyPrefix = config('cache.edlib2_usage_lookups.key_prefix');
+        Cache::forget($keyPrefix . $this->edlib2_usage_id);
     }
 
     /**

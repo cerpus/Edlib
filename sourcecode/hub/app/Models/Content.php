@@ -76,16 +76,23 @@ class Content extends Model
             $query->whereHas('versions');
         });
 
-        // Clear cache when content is updated or deleted (only if caching is enabled)
-        if (config('features.cache-edlib2-usage-lookups')) {
-            static::saved(function (self $content) {
+        static::saved(function (self $content) {
+            if (config('cache.edlib2_usage_lookups.enabled')) {
                 $content->clearEdlib2UsageCache();
-            });
+            }
+            if (config('cache.content_versions.enabled')) {
+                $content->clearVersionCache();
+            }
+        });
 
-            static::deleted(function (self $content) {
+        static::deleted(function (self $content) {
+            if (config('cache.edlib2_usage_lookups.enabled')) {
                 $content->clearEdlib2UsageCache();
-            });
-        }
+            }
+            if (config('cache.content_versions.enabled')) {
+                $content->clearVersionCache();
+            }
+        });
     }
 
     public function getTitle(): string
@@ -182,6 +189,62 @@ class Content extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(ContentVersion::class)->orderBy('id', 'DESC');
+    }
+
+    /**
+     * Get the latest version with caching
+     * 
+     * Cache can be configured in config/cache.php under 'content_versions':
+     * - enabled: Enable/disable caching (default: true)
+     * - duration: Cache duration in seconds (default: 3600 = 1 hour)
+     * - latest_version_key: Cache key prefix for latest version
+     */
+    public function getCachedLatestVersion(): ?ContentVersion
+    {
+        if (!config('cache.content_versions.enabled')) {
+            return $this->latestVersion()->first();
+        }
+
+        $cacheKey = config('cache.content_versions.latest_version_key') . $this->id;
+        $duration = config('cache.content_versions.duration');
+        
+        return Cache::remember($cacheKey, $duration, function () {
+            return $this->latestVersion()->first();
+        });
+    }
+
+    /**
+     * Get the latest draft version with caching
+     */
+    public function getCachedLatestDraftVersion(): ?ContentVersion
+    {
+        if (!config('cache.content_versions.enabled')) {
+            return $this->latestDraftVersion()->first();
+        }
+
+        $cacheKey = config('cache.content_versions.latest_draft_version_key') . $this->id;
+        $duration = config('cache.content_versions.duration');
+        
+        return Cache::remember($cacheKey, $duration, function () {
+            return $this->latestDraftVersion()->first();
+        });
+    }
+
+    /**
+     * Get the latest published version with caching
+     */
+    public function getCachedLatestPublishedVersion(): ?ContentVersion
+    {
+        if (!config('cache.content_versions.enabled')) {
+            return $this->latestPublishedVersion()->first();
+        }
+
+        $cacheKey = config('cache.content_versions.latest_published_version_key') . $this->id;
+        $duration = config('cache.content_versions.duration');
+        
+        return Cache::remember($cacheKey, $duration, function () {
+            return $this->latestPublishedVersion()->first();
+        });
     }
 
     public function createVersionFromLinkItem(
@@ -308,11 +371,12 @@ class Content extends Model
 
     public static function firstWithEdlib2UsageIdOrFail(string $usageId): self
     {
-        if (config('features.cache-edlib2-usage-lookups')) {
-            $cacheKey = "content_by_edlib2_usage_id_{$usageId}";
+        if (config('cache.edlib2_usage_lookups.enabled')) {
+            $cacheKey = config('cache.edlib2_usage_lookups.key_prefix') . $usageId;
+            $duration = config('cache.edlib2_usage_lookups.duration');
 
             /** @var Content */
-            return Cache::remember($cacheKey, 60*60*24*2, function () use ($usageId) {
+            return Cache::remember($cacheKey, $duration, function () use ($usageId) {
                 return self::whereHas('edlib2Usages', function (Builder $query) use ($usageId): void {
                     /** @var Builder<ContentEdlib2Usage> $query */
                     $query->where('edlib2_usage_id', $usageId);
@@ -596,8 +660,19 @@ class Content extends Model
      */
     private function clearEdlib2UsageCache(): void
     {
-        $this->edlib2Usages->each(function (ContentEdlib2Usage $usage) {
-            Cache::forget("content_by_edlib2_usage_id_{$usage->edlib2_usage_id}");
+        $keyPrefix = config('cache.edlib2_usage_lookups.key_prefix');
+        $this->edlib2Usages->each(function (ContentEdlib2Usage $usage) use ($keyPrefix) {
+            Cache::forget($keyPrefix . $usage->edlib2_usage_id);
         });
+    }
+
+    /**
+     * Clear all version-related caches for this content
+     */
+    public function clearVersionCache(): void
+    {
+        Cache::forget(config('cache.content_versions.latest_version_key') . $this->id);
+        Cache::forget(config('cache.content_versions.latest_draft_version_key') . $this->id);
+        Cache::forget(config('cache.content_versions.latest_published_version_key') . $this->id);
     }
 }

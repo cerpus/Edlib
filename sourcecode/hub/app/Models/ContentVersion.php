@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -82,6 +83,24 @@ class ContentVersion extends Model
         'deleting' => ContentVersionDeleting::class,
         'saving' => ContentVersionSaving::class,
     ];
+
+    public static function booted(): void
+    {
+        // Clear parent content's version cache when versions are created, updated, or deleted
+        if (config('cache.content_versions.enabled')) {
+            static::saved(function (self $version) {
+                if ($version->content_id) {
+                    $version->content?->clearVersionCache();
+                }
+            });
+
+            static::deleted(function (self $version) {
+                if ($version->content_id) {
+                    $version->content?->clearVersionCache();
+                }
+            });
+        }
+    }
 
     public function toLtiLinkItem(LtiPlatform $platform): EdlibLtiLinkItem
     {
