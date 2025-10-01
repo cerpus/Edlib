@@ -20,7 +20,6 @@ class GameFactory extends Factory
             'language_code' => $this->faker->languageCode,
             'owner' => $this->faker->uuid,
             'game_settings' => json_encode(['setting' => true]),
-            'version_id' => null,
             'license' => '',
         ];
     }

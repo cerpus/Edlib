@@ -4,11 +4,11 @@ namespace App;
 
 use App\Events\H5pContentDeleted;
 use App\Events\H5pContentUpdated;
-use App\Http\Libraries\H5PFileVersioner;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Libraries\Versioning\VersionableObject;
+use App\Traits\Versionable;
 use H5PCore;
 use H5PMetadata;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,7 +40,6 @@ use function route;
  * @property ?int $max_score
  * @property int $bulk_calculated
  *
- * @property Collection<Collaborator> $collaborators
  * @property H5PLibrary $library
  *
  * @see H5PContent::noMaxScoreScope()
@@ -49,17 +48,19 @@ use function route;
  * @method static self|Builder make(array $attributes = [])
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
+ *
+ * @template-implements VersionableObject<H5PContent>
  */
 class H5PContent extends Content implements VersionableObject
 {
     use HasFactory;
+    use Versionable;
 
     protected $table = 'h5p_contents';
     public string $editRouteName = 'h5p.edit';
 
     protected $guarded = [
         'user_id',
-        'version_id',
         'library_id',
     ];
 
@@ -72,14 +73,6 @@ class H5PContent extends Content implements VersionableObject
         'updated' => H5pContentUpdated::class,
         'deleted' => H5pContentDeleted::class,
     ];
-
-    /**
-     * @return HasMany<H5PCollaborator, $this>
-     */
-    public function collaborators(): HasMany
-    {
-        return $this->hasMany(H5PCollaborator::class, 'h5p_id');
-    }
 
     /**
      * @return BelongsTo<H5PLibrary, $this>
@@ -184,26 +177,6 @@ class H5PContent extends Content implements VersionableObject
         return Iso639p3::code3letters($this->language_iso_639_3 ?? $this->metadata->default_language ?? 'eng');
     }
 
-    public function makeCopy($owner = null): self
-    {
-        $newH5P = $this->replicate();
-        $newH5P->version_id = null;
-        //unset($newH5P->id);
-        if ($owner) {
-            $newH5P->user_id = $owner;
-        }
-        $newH5P->save();
-
-        $this->contentLibraries->each(function ($contentLibrary) use ($newH5P) {
-            $newH5P->contentLibraries()->create($contentLibrary->toArray());
-        });
-
-        $H5PFileVersioner = new H5PFileVersioner($this, $newH5P);
-        $H5PFileVersioner->copy();
-
-        return $newH5P;
-    }
-
     /**
      * @return HasMany<H5PContentsVideo, $this>
      */
@@ -283,17 +256,6 @@ class H5PContent extends Content implements VersionableObject
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function setParentVersionId(string $parentVersionId): bool
-    {
-        // Is not tracked
-        return false;
-    }
-
-    public function setVersionId(string $versionId): void
-    {
-        $this->version_id = $versionId;
     }
 
     public function getOwnerId(): string
