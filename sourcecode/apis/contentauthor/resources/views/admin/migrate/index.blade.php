@@ -47,6 +47,8 @@
                         @endif
                         <div class="panel-body">
                             <h4>Select content to migrate</h4>
+                            {{ $paginator->onEachSide(5)->links() }}
+                            Content {{ $paginator->firstItem() ?: 0 }} - {{$paginator->lastItem() ?: 0}} of {{$paginator->total()}}
                             <form method="post" enctype="multipart/form-data" id="h5p-library-migrate">
                                 <table class="table table-striped">
                                     <thead>
@@ -57,7 +59,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($contents as $content)
+                                        @foreach($paginator->getCollection() as $content)
                                             <tr>
                                                 <td><input type="checkbox" name="content[]" value="{{ $content->id }}"></td>
                                                 <td><a href="{{ route('admin.content-details', [$content->id]) }}">{{ $content->id }}</a></td>
@@ -73,6 +75,7 @@
                                     <input type="submit" name="submit" value="Migrate content" class="button button-primary button-large btn btn-primary"/>
                                 </div>
                             </form>
+                            {{ $paginator->onEachSide(5)->links() }}
                         </div>
                     @endif
                 </div>

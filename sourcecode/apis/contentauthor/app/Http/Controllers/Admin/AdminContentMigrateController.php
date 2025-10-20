@@ -26,6 +26,7 @@ use H5PCore;
 use H5PFrameworkInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -44,6 +45,11 @@ class AdminContentMigrateController extends Controller
 
     public function index(Request $request): View
     {
+        $pageSize = 25;
+        $page = (int) $request->get('page', 1);
+        $contents = [];
+        $count = 0;
+
         $fromLibrary = H5PLibrary::where('name', 'H5P.NDLAThreeImage')
             ->where('major_version', 0)
             ->where('minor_version', 4)
@@ -57,23 +63,24 @@ class AdminContentMigrateController extends Controller
             if ($request->method() === 'POST' && $request->has('content')) {
                 $migrated = $this->migrate($fromLibrary, $toLibrary, $request->input('content'));
             }
-
-            $contents = ContentVersion::leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+            $itemsQuery = ContentVersion::leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
                 ->where(function ($query) {
                     $query
                         ->whereNull('cv.content_id')
                         ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
                 })
                 ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
-                ->where('h5p_contents.library_id', $fromLibrary->id)
-                ->get();
-        }
+                ->where('h5p_contents.library_id', $fromLibrary->id);
 
+            $count = $itemsQuery->count();
+            $contents = $itemsQuery->limit($pageSize)->offset($pageSize * ($page - 1))->get();
+        }
         return view('admin.migrate.index', [
             'fromLibrary' => $fromLibrary,
             'toLibrary' => $toLibrary,
-            'contents' => $contents ?? [],
             'migrated' => $migrated ?? [],
+            'paginator' => (new LengthAwarePaginator($contents, $count, $pageSize))
+                ->withPath(route('admin.migrate.library-content')),
         ]);
     }
 
