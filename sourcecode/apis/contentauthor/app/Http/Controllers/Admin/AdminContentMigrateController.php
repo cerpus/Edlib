@@ -63,14 +63,16 @@ class AdminContentMigrateController extends Controller
             if ($request->method() === 'POST' && $request->has('content')) {
                 $migrated = $this->migrate($fromLibrary, $toLibrary, $request->input('content'));
             }
-            $itemsQuery = ContentVersion::leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+            $itemsQuery = H5PContent::select(['h5p_contents.id', 'h5p_contents.title'])
+                ->leftJoin('content_versions', 'content_versions.id', '=', 'h5p_contents.version_id')
+                ->leftJoin('content_versions as cv', 'cv.parent_id', '=', 'content_versions.id')
+                ->where('h5p_contents.library_id', $fromLibrary->id)
                 ->where(function ($query) {
                     $query
-                        ->whereNull('cv.content_id')
+                        ->whereNull('cv.id')
                         ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
                 })
-                ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
-                ->where('h5p_contents.library_id', $fromLibrary->id);
+                ->orderBy('h5p_contents.id');
 
             $count = $itemsQuery->count();
             $contents = $itemsQuery->limit($pageSize)->offset($pageSize * ($page - 1))->get();
