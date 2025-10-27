@@ -19,7 +19,7 @@
         "bootstrap-icons": "^1.11.3",
         "choices.js": "^11.0.2",
         "date-fns": "^4.1.0",
-        "htmx.org": "^2.0.3",
+        "htmx.org": "^2.0.8",
         "swagger-ui": "^5.18.2"
     },
     "engines": {
