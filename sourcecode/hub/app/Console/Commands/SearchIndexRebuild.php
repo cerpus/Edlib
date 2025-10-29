@@ -13,12 +13,17 @@ class SearchIndexRebuild extends Command
 
     public function handle(Dispatcher $dispatcher): void
     {
-        if ($this->option('queue')) {
-            $dispatcher->dispatch(new RebuildContentIndex());
-            $this->info('The Meilisearch rebuild has been queued');
+        if ($this->confirm('While rebuilding the index, listings and search will not display any content! Continue?', false)) {
+            if ($this->option('queue')) {
+                $dispatcher->dispatch(new RebuildContentIndex());
+                $this->info('The Meilisearch rebuild has been queued');
+            } else {
+                $this->info('Rebuilding Meilisearch index...');
+                $dispatcher->dispatchSync(new RebuildContentIndex());
+                $this->info('Done');
+            }
         } else {
-            $this->info('Rebuilding Meilisearch index...');
-            $dispatcher->dispatchSync(new RebuildContentIndex());
+            $this->info('Cancelled');
         }
     }
 }
