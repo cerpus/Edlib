@@ -54,6 +54,8 @@ final readonly class ReturnToCoreController
             ->withPublished($content->published)
             ->withShared($content->shared)
             ->withTags($content->tags)
+            ->withContentType($content->machineName)
+            ->withContentTypeName($content->machineDisplayName)
         ;
 
         $returnRequest = new Oauth1Request('POST', $ltiRequest->getReturnUrl(), [

@@ -280,7 +280,7 @@ class ContentVersion extends Model
     public function handleSerializedTags(array $tags): void
     {
         foreach ($tags as $tag) {
-            // TODO: dedicated LTI-DL field for this
+            // Could be used by REST API, not used by CA
             if (str_starts_with($tag, 'h5p:')) {
                 $this->displayed_content_type = substr($tag, 4);
             }

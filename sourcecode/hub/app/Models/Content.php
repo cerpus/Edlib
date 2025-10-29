@@ -193,7 +193,7 @@ class Content extends Model
 
     /**
      * Get the latest version with caching
-     * 
+     *
      * Cache can be configured in config/cache.php under 'content_versions':
      * - enabled: Enable/disable caching (default: true)
      * - duration: Cache duration in seconds (default: 3600 = 1 hour)
@@ -207,7 +207,7 @@ class Content extends Model
 
         $cacheKey = config('cache.content_versions.latest_version_key') . $this->id;
         $duration = config('cache.content_versions.duration');
-        
+
         return Cache::remember($cacheKey, $duration, function () {
             return $this->latestVersion()->first();
         });
@@ -224,7 +224,7 @@ class Content extends Model
 
         $cacheKey = config('cache.content_versions.latest_draft_version_key') . $this->id;
         $duration = config('cache.content_versions.duration');
-        
+
         return Cache::remember($cacheKey, $duration, function () {
             return $this->latestDraftVersion()->first();
         });
@@ -241,7 +241,7 @@ class Content extends Model
 
         $cacheKey = config('cache.content_versions.latest_published_version_key') . $this->id;
         $duration = config('cache.content_versions.duration');
-        
+
         return Cache::remember($cacheKey, $duration, function () {
             return $this->latestPublishedVersion()->first();
         });
@@ -266,13 +266,42 @@ class Content extends Model
         $version->editedBy()->associate($user);
 
         if ($item instanceof EdlibLtiLinkItem) {
+            $displayField = config('features.ca-content-type-display');
+            $contentType = $item->getContentType(); // Content type machine name
+            $contentTypeName = $item->getContentTypeName(); // Content type title
+            $displayValue = ($displayField === 'h5p_title' ? $contentTypeName : $contentType);
             $version->published = $item->isPublished() ?? true;
             $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
             $version->license = $item->getLicense();
             $version->max_score = $item->getLineItem()?->getScoreConstraints()?->getTotalMaximum() ?? 0;
+            $version->displayed_content_type = $displayValue ?? $contentType ?? null;
+
+            $version->saveQuietly();
+            // Add content type info as tags
+            if ($contentType) {
+                $version->tags()
+                    ->attach(
+                        Tag::firstOrCreate([
+                            'prefix' => 'h5p',
+                            'name' => strtolower($contentType),
+                        ]), [
+                            'verbatim_name' => strtolower($contentType),
+                        ]
+                    );
+            }
+            if ($contentTypeName) {
+                $version->tags()
+                    ->attach(
+                        Tag::firstOrCreate([
+                            'prefix' => 'h5p_title',
+                            'name' => $contentTypeName,
+                        ]), [
+                            'verbatim_name' => $contentTypeName,
+                        ]
+                    );
+            }
 
             if (count($item->getTags()) > 0) {
-                $version->saveQuietly();
                 $version->handleSerializedTags($item->getTags());
             }
         }
