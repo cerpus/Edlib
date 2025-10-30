@@ -22,16 +22,35 @@ class H5PAttachContentTypeTitle extends Command
 
     public function handle(): void
     {
-        $selectedTool = $this->choice(
-            'Select the LTI tool to fetch the missing H5P content type data from, only content connected to the selected tool are updated',
-            LtiTool::select(['id', 'name'])->pluck('name', 'id')->toArray(),
-            attempts: 1,
-            multiple: false
-        );
+        $this->info('Select the LTI tool to fetch the missing H5P content type data from, only content connected to the selected tool are updated');
+        $tools = LtiTool::select(['id', 'name'])->pluck('name', 'id')->toArray();
+        if (count($tools) === 0) {
+            $this->info('No LTI Tools found');
+            return;
+        }else if (count($tools) > 1) {
+            $selectedTool = $this->choice(
+                'Available LTI Tools',
+                $tools,
+                attempts: 1,
+                multiple: false
+            );
+        } else {
+            $selectedTool = array_key_first($tools);
+            if (!$this->confirm("Found one LTI Tool named '{$tools[$selectedTool]}', proceed with this?", false)) {;
+                return;
+            }
+        }
+
+        $tool = LtiTool::findorFail($selectedTool);
+        $urlParts = parse_url($tool->creator_launch_url);
+        if (!is_array($urlParts) or !array_key_exists('scheme', $urlParts) or !array_key_exists('host', $urlParts)) {
+            $this->error("Failed to extract scheme and host from LTI Tool launch url: '{$tool->creator_launch_url}'");
+            return;
+        }
 
         $resourceCount = ContentVersion::where('lti_tool_id', $selectedTool)->count();
         if ($resourceCount === 0) {
-            $this->info('Selected tools do not have any content versions.');
+            $this->info('Selected LTI Tool do not have any content versions.');
             return;
         }
 
@@ -50,8 +69,6 @@ class H5PAttachContentTypeTitle extends Command
         $this->info('Unique machine names found: <comment>' . count($tags) . '</comment>');
 
         // 2. Fetch the title for the machine names and create as tag
-        $tool = LtiTool::findorFail($selectedTool);
-        $urlParts = parse_url($tool->creator_launch_url);
         $url = "{$urlParts['scheme']}://{$urlParts['host']}/v1/h5p/library/title";
         $this->info("Querying <comment>{$urlParts['host']}</comment> for content type titles");
 

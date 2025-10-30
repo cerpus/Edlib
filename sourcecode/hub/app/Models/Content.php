@@ -274,7 +274,10 @@ class Content extends Model
             $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
             $version->license = $item->getLicense();
             $version->max_score = $item->getLineItem()?->getScoreConstraints()?->getTotalMaximum() ?? 0;
-            $version->displayed_content_type = $displayValue ?? $contentType ?? null;
+            $displayedType = $displayValue ?? $contentType ?? null;
+            if ($displayedType) {
+                $version->displayed_content_type = $displayedType;
+            }
 
             $version->saveQuietly();
             // Add content type info as tags
