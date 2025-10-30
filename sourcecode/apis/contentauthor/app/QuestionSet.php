@@ -85,11 +85,4 @@ class QuestionSet extends Content
     {
         return 'QuestionSet';
     }
-
-    protected function getTags(): array
-    {
-        return [
-            'h5p:' . $this->getMachineName(),
-        ];
-    }
 }

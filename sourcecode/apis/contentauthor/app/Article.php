@@ -301,11 +301,4 @@ class Article extends Content implements VersionableObject
             libxml_use_internal_errors($previous);
         }
     }
-
-    protected function getTags(): array
-    {
-        return [
-            'h5p:' . $this->getMachineName(),
-        ];
-    }
 }

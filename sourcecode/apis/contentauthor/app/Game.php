@@ -140,13 +140,6 @@ class Game extends Content implements VersionableObject
         return 'Game';
     }
 
-    protected function getTags(): array
-    {
-        return [
-            'h5p:' . $this->getMachineName(),
-        ];
-    }
-
     public function getMaxScore(): int|null
     {
         try {

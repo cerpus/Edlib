@@ -88,6 +88,11 @@ abstract class Content extends Model
 
     abstract public function getMachineName(): string;
 
+    public function getMachineDisplayName(): string
+    {
+        return $this->getMachineName();
+    }
+
     public function getTitleCleanAttribute(): string|null
     {
         if ($this->title === null) {
@@ -368,6 +373,7 @@ abstract class Content extends Model
             url: $this->getUrl(),
             title: $this->title_clean,
             machineName: $this->getMachineName(),
+            machineDisplayName: $this->getMachineDisplayName(),
             hasScore: ($this->getMaxScore() ?? 0) > 0,
             editUrl: $this->getEditUrl(),
             titleHtml: $this->title,
