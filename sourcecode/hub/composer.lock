@@ -292,12 +292,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit.git",
-                "reference": "46948ce41206d701fd1de8cfcae380dfcb41ccf1"
+                "reference": "7b56ee4f87d460e97b5a971f872555702e45bbdd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/46948ce41206d701fd1de8cfcae380dfcb41ccf1",
-                "reference": "46948ce41206d701fd1de8cfcae380dfcb41ccf1",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/7b56ee4f87d460e97b5a971f872555702e45bbdd",
+                "reference": "7b56ee4f87d460e97b5a971f872555702e45bbdd",
                 "shasum": ""
             },
             "require": {
@@ -344,7 +344,7 @@
                 "issues": "https://github.com/cerpus/Edlib/issues",
                 "source": "https://github.com/cerpus/php-edlib-resource-kit/tree/master"
             },
-            "time": "2025-02-13T09:11:06+00:00"
+            "time": "2025-10-30T11:21:19+00:00"
         },
         {
             "name": "cerpus/edlib-resource-kit-laravel",
