@@ -8,13 +8,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// Verify that a pre-shared key in request header field $headerField matches key in environment variable $pskEnvName
+// Verify that a pre-shared key in request header field $headerField matches value in config $pskConfigName
 class AuthPsk
 {
-    public function handle(Request $request, Closure $next, $headerField, $pskEnvName)
+    public function handle(Request $request, Closure $next, $headerField, $pskConfigName)
     {
         $reqKey = $request->header($headerField);
-        $preKey = env($pskEnvName);
+        $preKey = config($pskConfigName);
 
         if ($reqKey && $preKey && $reqKey === $preKey) {
             return $next($request);
