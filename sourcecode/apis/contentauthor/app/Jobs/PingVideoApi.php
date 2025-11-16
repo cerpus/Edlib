@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\ContentVersion;
 use App\Events\VideoSourceChanged;
 use App\Exceptions\NoFilesException;
 use App\Exceptions\UnknownH5PPackageException;
@@ -13,7 +12,6 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Event;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -43,19 +41,13 @@ class PingVideoApi implements ShouldQueue
         $this->contentVideo = $contentVideo;
     }
 
-    private function handleChildren($children)
+    private function handleChildren(H5PContent $parent): void
     {
-        if (!empty($children)) {
-            /** @var Collection<ContentVersion> $children */
-            foreach ($children as $child) {
-                $content = H5PContent::find($child->content_id);
-                if (!is_null($content)) {
-                    if ($content->contentVideos()->first() === null) {
-                        $this->updateContent($content);
-                        $this->processedChildren++;
-                        $this->handleChildren($child->nextVersions);
-                    }
-                }
+        foreach ($parent->children as $child) {
+            if ($child->contentVideos()->first() === null) {
+                $this->updateContent($child);
+                $this->processedChildren++;
+                $this->handleChildren($child);
             }
         }
     }
@@ -101,10 +93,7 @@ class PingVideoApi implements ShouldQueue
             $this->adapter = $adapter;
             try {
                 $this->updateContent($h5pcontent);
-                if (!empty($h5pcontent->version_id)) {
-                    $version = ContentVersion::find($h5pcontent->version_id);
-                    $this->handleChildren($version->nextVersions);
-                }
+                $this->handleChildren($h5pcontent);
                 return true;
             } catch (NoFilesException $exception) {
                 Log::error(sprintf("No files found for content id '%s'.", $h5pcontent->id), [$exception]);

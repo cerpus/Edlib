@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Jobs;
 
-use App\ContentVersion;
 use App\H5PContent;
 use App\H5PContentsVideo;
 use App\Jobs\PingVideoApi;
@@ -81,7 +80,6 @@ class PingVideoApiTest extends TestCase
         $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-            'version_id' => $this->faker->unique()->uuid,
         ])->each(function (H5PContent $h5pContent) use ($videoSource) {
             $this->setupContentDirectories($h5pContent->id);
             $this->createVideo($h5pContent->id, $videoSource);
@@ -102,10 +100,6 @@ class PingVideoApiTest extends TestCase
         $h5pContent = $h5pContents->random();
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
-        ContentVersion::factory()->create([
-            'id' => $h5pContent->version_id,
-            'content_id' => $h5pContent->id,
-        ]);
 
         config(['h5p.video.enable' => true]);
 
@@ -155,7 +149,6 @@ class PingVideoApiTest extends TestCase
         $h5pContentParent = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-            'version_id' => $this->faker->unique()->uuid,
         ]);
         $this->setupContentDirectories($h5pContentParent->id);
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
@@ -178,20 +171,10 @@ class PingVideoApiTest extends TestCase
         $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
-            'version_id' => $this->faker->unique()->uuid,
+            'parent_id' => $h5pContentParent->id,
         ]);
         $this->setupContentDirectories($h5pContentChild->id);
         $this->createVideo($h5pContentChild->id, $videoSource);
-
-        ContentVersion::factory()->create([
-            'id' => $h5pContentParent->version_id,
-            'content_id' => $h5pContentParent->id,
-        ]);
-        ContentVersion::factory()->create([
-            'id' => $h5pContentChild->version_id,
-            'content_id' => $h5pContentChild->id,
-            'parent_id' => $h5pContentParent->version_id,
-        ]);
 
         $packageStructureChild->interactiveVideo->video->files[0]->path = $streamUrl;
         $packageStructureChild->interactiveVideo->video->files[0]->mime = $mimeType;
@@ -253,7 +236,6 @@ class PingVideoApiTest extends TestCase
         $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-            'version_id' => $this->faker->unique()->uuid,
         ]);
 
         $this->createVideoData($h5pContents->first(), 'videos/files-dummy.mp4');
@@ -265,7 +247,7 @@ class PingVideoApiTest extends TestCase
         $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
-            'version_id' => $this->faker->unique()->uuid,
+            'parent_id' => $h5pContentParent->id,
         ]);
         $this->setupContentDirectories($h5pContentChild->id);
         $this->createVideo($h5pContentChild->id, $videoSource);
@@ -276,25 +258,10 @@ class PingVideoApiTest extends TestCase
         $h5pContentGrandchild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureGrandchild),
-            'version_id' => $this->faker->unique()->uuid,
+            'parent_id' => $h5pContentChild->id,
         ]);
         $this->setupContentDirectories($h5pContentGrandchild->id);
         $this->createVideo($h5pContentGrandchild->id, $videoSource);
-
-        ContentVersion::factory()->create([
-            'id' => $h5pContentParent->version_id,
-            'content_id' => $h5pContentParent->id,
-        ]);
-        ContentVersion::factory()->create([
-            'id' => $h5pContentChild->version_id,
-            'content_id' => $h5pContentChild->id,
-            'parent_id' => $h5pContentParent->version_id,
-        ]);
-        ContentVersion::factory()->create([
-            'id' => $h5pContentGrandchild->version_id,
-            'content_id' => $h5pContentGrandchild->id,
-            'parent_id' => $h5pContentChild->version_id,
-        ]);
 
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();
@@ -351,7 +318,6 @@ class PingVideoApiTest extends TestCase
         $h5pContentParent = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-            'version_id' => $this->faker->unique()->uuid,
         ]);
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
         $this->setupContentDirectories($h5pContentParent->id);
@@ -371,7 +337,7 @@ class PingVideoApiTest extends TestCase
         $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
-            'version_id' => $this->faker->unique()->uuid,
+            'parent_id' => $h5pContentParent->id,
         ]);
         $this->setupContentDirectories($h5pContentChild->id);
         $this->createVideo($h5pContentChild->id, $videoSource);
@@ -384,7 +350,7 @@ class PingVideoApiTest extends TestCase
         $h5pContentGrandchild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureGrandchild),
-            'version_id' => $this->faker->unique()->uuid,
+            'parent_id' => $h5pContentChild->id,
         ]);
         $this->setupContentDirectories($h5pContentGrandchild->id);
         $this->createVideo($h5pContentGrandchild->id, $newFileId);
@@ -396,21 +362,6 @@ class PingVideoApiTest extends TestCase
                         'source_file' => $newFileId,
                     ]),
             );
-
-        ContentVersion::factory()->create([
-            'id' => $h5pContentParent->version_id,
-            'content_id' => $h5pContentParent->id,
-        ]);
-        ContentVersion::factory()->create([
-            'id' => $h5pContentChild->version_id,
-            'content_id' => $h5pContentChild->id,
-            'parent_id' => $h5pContentParent->version_id,
-        ]);
-        ContentVersion::factory()->create([
-            'id' => $h5pContentGrandchild->version_id,
-            'content_id' => $h5pContentGrandchild->id,
-            'parent_id' => $h5pContentChild->version_id,
-        ]);
 
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();

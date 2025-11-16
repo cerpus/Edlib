@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Article;
-use App\ContentVersion;
-use App\Events\ArticleWasSaved;
-use App\Exceptions\UnhandledVersionReasonException;
 use App\Http\Libraries\License;
 use App\Http\Requests\ArticleRequest;
 use App\Libraries\DataObjects\ArticleStateDataObject;
@@ -19,7 +16,6 @@ use App\Traits\ReturnToCore;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -46,7 +42,6 @@ class ArticleController extends Controller
         $ltiRequest = $this->lti->getRequest($request);
 
         $license = License::getDefaultLicense($ltiRequest);
-        $emails = '';
 
         $config = json_encode([
             'editor' => [
@@ -72,7 +67,7 @@ class ArticleController extends Controller
         ])->toJson();
 
         return view('article.create')->with(compact([
-            'emails', 'config', 'editorSetup', 'state',
+            'config', 'editorSetup', 'state',
         ]));
     }
 
@@ -100,14 +95,6 @@ class ArticleController extends Controller
         $article->save();
 
         $this->moveTempFiles($article);
-
-        $emailCollaborators = collect();
-        if ($request->filled('col-emails')) {
-            $emailCollaborators = collect(explode(",", $request->get('col-emails')));
-        }
-
-        // Handles collaborators, and registering a new version
-        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
         $url = $this->getRedirectToCoreUrl($article->toLtiContent(
             published: $request->validated('isPublished'),
@@ -153,8 +140,6 @@ class ArticleController extends Controller
         $origin = $article->getAttribution()->getOrigin();
         $originators = $article->getAttribution()->getOriginators();
 
-        $emails = $this->getCollaboratorsEmails($article);
-
         $config = json_encode([
             'editor' => [
                 'extraAllowedContent' => implode(" ", CerpusH5PAdapter::getCoreExtraTags()),
@@ -193,12 +178,7 @@ class ArticleController extends Controller
         ])->toJson();
 
         return view('article.edit')
-            ->with(compact('article', 'emails', 'id', 'config', 'origin', 'originators', 'state', 'editorSetup'));
-    }
-
-    private function getCollaboratorsEmails(Article $article)
-    {
-        return implode(',', $article->collaborators->pluck('email')->toArray());
+            ->with(compact('article', 'id', 'config', 'origin', 'originators', 'state', 'editorSetup'));
     }
 
     public function update(ArticleRequest $request, Article $article)
@@ -206,29 +186,12 @@ class ArticleController extends Controller
         $oldArticle = clone $article;
 
         $oldLicense = $oldArticle->getContentLicense();
-        $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;
 
-        if ($reason === ContentVersion::PURPOSE_COPY && !$request->input("license", false)) {
+        if (!$oldArticle->isOwner(Session::get('authId', false)) || !$request->input("license", false)) {
             $request->merge(["license" => $oldLicense]);
         }
 
-        // If you are a collaborator, use the old license
-        if ($oldArticle->isCollaborator()) {
-            $request->merge(["license" => $oldLicense]);
-        }
-
-        if ($oldArticle->requestShouldBecomeNewVersion($request)) {
-            switch ($reason) {
-                case ContentVersion::PURPOSE_UPDATE:
-                    $article = $oldArticle->makeCopy();
-                    break;
-                case ContentVersion::PURPOSE_COPY:
-                    $article = $oldArticle->makeCopy(Session::get('authId'));
-                    break;
-                default:
-                    throw new UnhandledVersionReasonException("Unhandled Version Reason: $reason");
-            }
-        }
+        $article = $oldArticle->makeCopy(Session::get('authId'));
 
         $article->title = $request->get("title");
         $content = $request->get("content");
@@ -242,14 +205,10 @@ class ArticleController extends Controller
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));
         $article->save();
 
-        $collaborators = $this->handleCollaborators($request, $oldArticle, $article, $reason);
-
         // Do some final checking
         if (!$request->filled('license')) {
             $request->request->add(['license' => $oldLicense]);
         }
-
-        event(new ArticleWasSaved($article, $request, $collaborators, Session::get('authId'), $reason, Session::all()));
 
         $url = $this->getRedirectToCoreUrl(
             $article->toLtiContent(
@@ -297,25 +256,5 @@ class ArticleController extends Controller
         });
 
         Session::forget(Article::TMP_UPLOAD_SESSION_KEY);
-    }
-
-    protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason): Collection
-    {
-        switch ($reason) {
-            case ContentVersion::PURPOSE_UPDATE:
-                $collaborators = "";
-                if (!$newArticle->isOwner(Session::get('authId'))) { // Collaborators cannot update collaborators
-                    $collaborators = $this->getCollaboratorsEmails($oldArticle);
-                } else {
-                    if ($request->filled('col-emails')) {
-                        $collaborators = $request->get('col-emails');
-                    }
-                }
-                return collect(explode(",", $collaborators));
-
-            case ContentVersion::PURPOSE_COPY:
-            default:
-                return collect();
-        }
     }
 }
