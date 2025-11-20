@@ -45,6 +45,9 @@
                             <li>
                                 <a href="{{ route('admin.support.versioning') }}">Versioning</a>
                             </li>
+                            <li>
+                                <a href="{{ route('admin.log.audit') }}">Audit log</a>
+                            </li>
                         </ul>
                     </li>
                     @if( config('h5p.isHubEnabled') !== true )

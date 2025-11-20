@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AuditLog;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
@@ -152,6 +153,19 @@ class LibraryUpgradeController extends Controller
         assert($file instanceof UploadedFile);
 
         $errors = [];
+
+        AuditLog::log(
+            'Upload content type from admin',
+            json_encode([
+                'file' => [
+                    'name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'target' => $file->getPathname(),
+                ],
+                'h5p_upgrade_only' => !empty($data['h5p_upgrade_only']),
+                'h5p_disable_file_check' => !empty($data['h5p_disable_file_check']),
+            ])
+        );
 
         try {
             $this->h5pLibraryAdmin->handleUpload(

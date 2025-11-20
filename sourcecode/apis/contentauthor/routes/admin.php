@@ -26,7 +26,7 @@ Route::post('/lti/admin', LtiAdminAccess::class)
 Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
     function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin');
-
+        Route::get('/log/audit', [AdminController::class, 'auditLog'])->name('admin.log.audit');
         Route::post('/clear-cache')
             ->uses([AdminController::class, 'clearCache'])
             ->name('admin.clear-cache');
