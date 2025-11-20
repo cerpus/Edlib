@@ -35,14 +35,22 @@ class NdlaSingleChoiceSet extends Command
      */
     public function handle()
     {
+        $this->progress = $this->output->createProgressBar();
+        $this->progress->setBarCharacter('<info>-</info>');
+        $this->progress->setEmptyBarCharacter(' ');
+        $this->progress->setProgressCharacter('<comment>></comment>');
         $this->runId = Uuid::uuid4()->toString();
 
         pcntl_async_signals(true);
         pcntl_signal(SIGINT, function () {
-            $this->progress->setMessage('Cancelling...');
-            $this->progress->setMessage("", 'cid');
-            $this->progress->display();
-            $this->cancelRequested = true;
+            if ($this->progress->getMaxSteps() > 0) {
+                $this->progress->setMessage('Cancelling...');
+                $this->progress->setMessage("", 'cid');
+                $this->progress->display();
+                $this->cancelRequested = true;
+            } else {
+                exit(1);
+            }
         });
 
         $resumeId = $this->option('resume') ?: 0;
@@ -71,20 +79,16 @@ class NdlaSingleChoiceSet extends Command
             ->whereNull('cv2.parent_id');
 
         $contentCount = $content->count();
+        $this->newLine();
         $this->info("Total number of content <comment>{$contentCount}</comment>");
 
         if ($this->confirm("Continue") !== true) {
             return;
         }
-
-        $this->newLine();
-        $this->progress = $this->output->createProgressBar($contentCount);
+        $this->progress->setMaxSteps($contentCount);
         $this->progress->setMessage('', 'cid');
         $this->progress->setMessage('Processing Content id');
         $this->progress->setFormat("<info>%message%</info> <comment>%cid%</comment>\n%current%/%max% [%bar%] %percent:3s%%  Remaining time: %remaining:6s%");
-        $this->progress->setBarCharacter('<info>-</info>');
-        $this->progress->setEmptyBarCharacter(' ');
-        $this->progress->setProgressCharacter('<comment>></comment>');
 
         $content->chunkById(50, function ($contentsIds) {
             $this->batchUpdated = [];
