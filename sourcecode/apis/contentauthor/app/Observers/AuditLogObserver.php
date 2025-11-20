@@ -13,7 +13,9 @@ class AuditLogObserver
         if ($logEntry->user_name === '' or $logEntry->user_name === null) {
             $logEntry->user_name = 'Unknown';
 
-            if (app()->runningInConsole()) {
+            if (app()->runningUnitTests()) {
+                $logEntry->user_name = 'Unit Test';
+            } elseif (app()->runningInConsole()) {
                 $logEntry->user_name = 'Console';
             } elseif (\Session::isStarted()) {
                 $logEntry->user_name = \Session::get('name', 'Unknown');
