@@ -73,7 +73,7 @@ class LibraryUpgradeController extends Controller
                     'hubUpgrade' => null,
                     'isLast' => $library->id === $lastVersion->id,
                     'libraryId' => $library->id,
-                    'canDelete' => H5PLibrary::canBeDeleted($library->id, $usage['libraries']),
+                    'canDelete' => H5PLibrary::canBeDeleted($library->id, $usage['libraries'] + $usage['content']),
                     'hubUpgradeIsPatch' => null,
                     'hubUpgradeError' => '',
                     'hubUpgradeMessage' => '',
