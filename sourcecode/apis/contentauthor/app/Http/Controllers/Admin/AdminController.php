@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AuditLog;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
@@ -89,5 +90,12 @@ class AdminController extends Controller
         $cache->flush();
 
         return redirect()->back()->with('message', trans('admin.cache-cleared'));
+    }
+
+    public function auditLog()
+    {
+        return view('admin.auditlog', [
+            'entries' => AuditLog::orderBy('id', 'desc')->paginate(50),
+        ]);
     }
 }
