@@ -49,6 +49,7 @@ class NdlaSingleChoiceSet extends Command
                 $this->progress->display();
                 $this->cancelRequested = true;
             } else {
+                // @phpstan-ignore-next-line
                 exit(1);
             }
         });
