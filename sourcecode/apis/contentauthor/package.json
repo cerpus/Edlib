@@ -70,7 +70,7 @@
     "@babel/preset-react": "^7.18.6",
     "laravel-mix": "^6.0.49",
     "resolve-url-loader": "^4.0.0",
-    "sass": "^1.43.4",
+    "sass": "^1.94.2",
     "sass-loader": "^12.3.0",
     "styled-components": "^5.3.9"
   }
