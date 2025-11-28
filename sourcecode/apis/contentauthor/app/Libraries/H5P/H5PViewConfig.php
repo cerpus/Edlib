@@ -33,6 +33,7 @@ class H5PViewConfig extends H5PConfigAbstract
         parent::__construct($adapter, $h5pCore);
 
         $this->config['documentUrl'] = '';
+        $this->config['libraryDirecories'] = [];
         $this->contentConfig = [
             'library' => '',
             'jsonContent' => '',
@@ -152,9 +153,9 @@ class H5PViewConfig extends H5PConfigAbstract
     private function setDependentFiles(): void
     {
         $this->filterParams = $this->h5pCore->filterParameters($this->content);
-        $assets = $this->h5pCore->getDependenciesFiles(
-            $this->h5pCore->loadContentDependencies($this->content['id'], "preloaded"),
-        );
+        $dependencies = $this->h5pCore->loadContentDependencies($this->content['id'], "preloaded");
+        $assets = $this->h5pCore->getDependenciesFiles($dependencies);
+        $this->addLibraryDirectories($dependencies);
         $this->assets['scripts'] = $assets['scripts'] ?? [];
         $this->assets['styles'] = $assets['styles'] ?? [];
 
@@ -206,5 +207,20 @@ class H5PViewConfig extends H5PConfigAbstract
         }
 
         return $parameters;
+    }
+
+    /**
+     * Adds a mapping for libraries that uses patch version in the foldername. When H5P libraries requests a
+     * resource from other libraries, they only give machineName, majorVersion and minorVersions for the library.
+     * Key format is "machineName-majorVersion.minorVersion", value format is "machineName-majorVersion.minorVersion.patchVersion"
+     * Used by H5P.getLibraryPath() in 'h5p-core/js/h5p.js'.
+     */
+    private function addLibraryDirectories($dependencies): void
+    {
+        foreach ($dependencies as $dependency) {
+            if ($dependency['patchVersionInFolderName'] ?? false) {
+                $this->config['libraryDirectories']["{$dependency['machineName']}-{$dependency['majorVersion']}.{$dependency['minorVersion']}"] = "{$dependency['machineName']}-{$dependency['majorVersion']}.{$dependency['minorVersion']}.{$dependency['patchVersion']}";
+            }
+        }
     }
 }
