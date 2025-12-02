@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\AuditLog;
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
 use Illuminate\Console\Command;
@@ -77,7 +78,12 @@ class NdlaSingleChoiceSet extends Command
             ->leftJoin('content_versions as cv2', 'cv2.parent_id', '=', 'cv1.id')
             ->whereIn('hc.library_id', $libraries->pluck('id'))
             ->where('hc.id', '>=', $resumeId)
-            ->whereNull('cv2.parent_id');
+            ->where(function ($query) {
+                $query
+                    ->whereNull('cv2.id')
+                    ->orWhereNotIn('cv2.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
+            })
+        ;
 
         $contentCount = $content->count();
         $this->newLine();
