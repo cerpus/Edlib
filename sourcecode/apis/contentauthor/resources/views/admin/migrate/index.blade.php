@@ -7,13 +7,13 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            Migrate the contents of library <code>H5P.NDLAThreeImage 0.4.x</code> to <code>H5P.EscapeRoom 0.6.x</code>
+                            Migrate the contents of library <code>H5P.NDLAThreeImage 0.5.x</code> to <code>H5P.EscapeRoom 0.7.x</code>
                         </h3>
                     </div>
                     <div class="panel-body">
-                        H5P.NDLAThreeImage 0.4.x: @if($fromLibrary) <a href="{{ route('admin.check-library', [$fromLibrary['id']]) }}" target="_blank">{{ $fromLibrary->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
+                        H5P.NDLAThreeImage 0.5.x: @if($fromLibrary) <a href="{{ route('admin.check-library', [$fromLibrary['id']]) }}" target="_blank">{{ $fromLibrary->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
                         <p>
-                        H5PEscapeRoom 0.6.x: @if($toLibrary) <a href="{{ route('admin.check-library', [$toLibrary['id']]) }}" target="_blank">{{ $toLibrary->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
+                        H5P.EscapeRoom 0.7.x: @if($toLibrary) <a href="{{ route('admin.check-library', [$toLibrary['id']]) }}" target="_blank">{{ $toLibrary->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
                     </div>
                     @if ($toLibrary && $fromLibrary)
                         @if (count($migrated) > 0)
