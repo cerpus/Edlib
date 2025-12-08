@@ -22,7 +22,7 @@
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "@ndla/audio-search": "^4.0.17",
+    "@ndla/audio-search": "^6.0.12",
     "@ndla/core": "^4.1.5",
     "@ndla/image-search": "^6.0.61",
     "@ndla/licenses": "^7.1.3",
