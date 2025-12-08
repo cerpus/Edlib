@@ -120,10 +120,12 @@ class ContentController extends Controller
         ]);
     }
 
-    public function embed(Content $content, ContentVersion|null $version = null): View
+    public function embed(Request $request, Content $content, ContentVersion|null $version = null): View
     {
         $version ??= $content->getCachedLatestPublishedVersion() ?? throw new NotFoundHttpException();
         $launch = $version->toLtiLaunch();
+
+        $content->trackView($request, ContentViewSource::Embed);
 
         return view('content.embed', [
             'content' => $content,
@@ -467,18 +469,19 @@ class ContentController extends Controller
             $request->getStartDate(),
             $request->getEndDate(),
         );
+        $resolution = $graph->inferResolution();
 
         if ($request->ajax()) {
             return response()->json([
-                'values' => $graph->getData(),
-                'formats' => $request->getDateFormatsForResolution(),
+                'values' => $graph->getData($resolution),
+                'formats' => $request->getDateFormatsForResolution($resolution),
             ]);
         }
 
         return view('content.statistics', [
             'content' => $content,
             'graph' => [
-                'values' => $graph->getData(),
+                'values' => $graph->getData($resolution),
                 'groups' => $request->dataGroups(),
                 'defaultHiddenGroups' => $request->dataGroups()->flip()->except(['total'])->keys(),
                 'texts' => [
@@ -493,7 +496,7 @@ class ContentController extends Controller
                     'loading' => trans('messages.loading'),
                     'loadingFailed' => trans('messages.chart-load-error'),
                 ],
-                'formats' => $request->getDateFormatsForResolution($graph->inferResolution()),
+                'formats' => $request->getDateFormatsForResolution($resolution),
             ],
         ]);
     }

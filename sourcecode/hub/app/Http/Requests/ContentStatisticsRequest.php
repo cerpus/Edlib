@@ -62,7 +62,6 @@ class ContentStatisticsRequest extends FormRequest
                     'month' => 'long',
                     'day' => 'numeric',
                     'weekday' => 'long',
-                    'timeZone' => 'UTC',
                 ],
             ],
             DateRangeResolution::Month => [
@@ -75,7 +74,6 @@ class ContentStatisticsRequest extends FormRequest
                 'tooltipFormat' => [
                     'year' => 'numeric',
                     'month' => 'long',
-                    'timeZone' => 'UTC',
                 ],
             ],
             default => [
@@ -86,7 +84,6 @@ class ContentStatisticsRequest extends FormRequest
                 ],
                 'tooltipFormat' => [
                     'year' => 'numeric',
-                    'timeZone' => 'UTC',
                 ],
             ],
         };

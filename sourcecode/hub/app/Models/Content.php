@@ -591,7 +591,7 @@ class Content extends Model
         $statement->bindValue(':end_hour', $end->format('G'));
         $statement->execute();
 
-        $stats = new ContentStats();
+        $stats = new ContentStats($start, $end);
 
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $stats->addStat(
