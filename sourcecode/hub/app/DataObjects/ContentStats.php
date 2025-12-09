@@ -7,8 +7,10 @@ namespace App\DataObjects;
 use App\Enums\ContentViewSource;
 use App\Enums\DateRangeResolution;
 
+use Carbon\CarbonImmutable;
+use DateTimeImmutable;
+
 use function array_map;
-use function count;
 use function sprintf;
 
 class ContentStats
@@ -22,7 +24,13 @@ class ContentStats
     /** @var array<string, array<value-of<ContentViewSource>, int>> */
     private array $viewsByDayAndSource = [];
 
-    public function __construct() {}
+    private CarbonImmutable $start;
+    private CarbonImmutable $end;
+
+    public function __construct(DateTimeImmutable|CarbonImmutable $start, DateTimeImmutable|CarbonImmutable $end) {
+        $this->start = CarbonImmutable::instance($start);
+        $this->end = CarbonImmutable::instance($end);
+    }
 
     public function addStat(ContentViewSource $source, int $views, int $year, int $month, int $day): void
     {
@@ -69,16 +77,11 @@ class ContentStats
         }, $views, array_keys($views));
     }
 
-    /**
-     * Use the view data to infer an appropriate resolution.
-     */
     public function inferResolution(): DateRangeResolution
     {
-        if (count($this->viewsByMonthAndSource) < 3) {
+        if ($this->start->diffInUTCMonths($this->end) < 3) {
             return DateRangeResolution::Day;
-        }
-
-        if (count($this->viewsByYearAndSource) < 3) {
+        } elseif ($this->start->diffInUTCYears($this->end) < 3) {
             return DateRangeResolution::Month;
         }
 
