@@ -20,7 +20,7 @@
         "league/flysystem-path-prefixing": "^3.28.0",
         "league/fractal": "^0.20.1",
         "meilisearch/meilisearch-php": "^1.11.0",
-        "predis/predis": "^2.3.0",
+        "predis/predis": "^3.3.0",
         "psr/clock": "^1.0",
         "socialiteproviders/auth0": "^4.2",
         "socialiteproviders/manager": "^4.7.0",
