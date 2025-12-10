@@ -15,6 +15,7 @@ use App\Http\Controllers\QuestionSetController;
 use App\Http\Controllers\ReturnToCoreController;
 use App\Http\Controllers\SingleLogoutController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Nightwatch\Http\Middleware\Sample;
 
 Route::get('/lti-return', ReturnToCoreController::class)
     ->middleware('signed')
@@ -89,7 +90,7 @@ Route::match(['GET', 'POST'], '/ajax', [H5PController::class, 'ajaxLoading'])->m
 
 Route::get('article/{article}/copyright', [ArticleCopyrightController::class, 'copyright'])->name('article.copyright');
 
-Route::get('/health', [HealthController::class, 'index']);
+Route::get('/health', [HealthController::class, 'index'])->middleware(Sample::never());
 
 // New code should not generate URLs to this, but this endpoint needs to exist
 // for backward compatibility.
