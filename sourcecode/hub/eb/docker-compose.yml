@@ -7,7 +7,7 @@ services:
       - .env
     environment:
       - HTTPS=1
-      - NIGHTWATCH_INGEST_URI=nightwatch-agent:8080
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
     healthcheck:
       test: [CMD, nc, -z, localhost, "9000"]
     platform: linux/amd64
@@ -20,7 +20,7 @@ services:
     env_file:
       - .env
     environment:
-      - NIGHTWATCH_INGEST_URI=nightwatch-agent:8080
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
     platform: linux/amd64
 
   hub-startup:
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     environment:
-      - NIGHTWATCH_INGEST_URI=nightwatch-agent:8080
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
     platform: linux/amd64
 
   hub-web:
@@ -53,7 +53,7 @@ services:
     depends_on:
       hub-startup: { condition: service_completed_successfully }
     environment:
-      - NIGHTWATCH_INGEST_URI=nightwatch-agent:8080
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
     env_file:
       - .env
     platform: linux/amd64
