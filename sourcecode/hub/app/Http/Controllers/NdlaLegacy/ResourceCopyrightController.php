@@ -26,7 +26,8 @@ final readonly class ResourceCopyrightController
 
     public function __invoke(Content $content): JsonResponse
     {
-        $launchUrl = $content->latestVersion?->lti_launch_url;
+        $version = $content->getCachedLatestVersion();
+        $launchUrl = $version?->lti_launch_url;
         assert($launchUrl !== null);
 
         $caId = $this->config->extractH5pIdFromUrl($launchUrl);

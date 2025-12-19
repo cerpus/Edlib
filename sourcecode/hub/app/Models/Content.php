@@ -97,8 +97,8 @@ class Content extends Model
 
     public function getTitle(): string
     {
-        $version = $this->latestPublishedVersion
-            ?? $this->latestDraftVersion
+        $version = $this->getCachedLatestPublishedVersion()
+            ?? $this->getCachedLatestDraftVersion()
             ?? throw new DomainException('The content has no versions');
 
         return $version->getTitle();
