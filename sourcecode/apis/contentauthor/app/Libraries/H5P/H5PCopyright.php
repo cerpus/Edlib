@@ -190,7 +190,7 @@ class H5PCopyright
             $copyright[$field] = $metadata[$field];
         }
 
-        if (!empty($values['params']) && !empty($values['params']['file']) && $values['params']['contentName'] === 'Image') {
+        if (!empty($values['params']) && !empty($values['params']['file']) && isset($values['params']['contentName']) && $values['params']['contentName'] === 'Image') {
             $copyright['thumbnail'] = $this->storage->getContentPath($this->h5pContent->id, $values['params']['file']['path']);
         }
         $copyrightDataObject = H5PCopyrightDataObject::create($copyright);
