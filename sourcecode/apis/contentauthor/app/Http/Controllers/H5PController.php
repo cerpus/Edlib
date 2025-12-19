@@ -88,7 +88,7 @@ class H5PController extends Controller
             ->setUserUsername(Session::get('userName', false))
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
-            ->setPreview($ltiRequest?->isPreview())
+            ->setPreview($ltiRequest?->isPreview() ?? false)
             ->setContext($ltiRequest?->generateContextKey() ?? '')
             ->setEmbedCode($ltiRequest?->getEmbedCode() ?? '')
             ->setEmbedResizeCode($ltiRequest?->getEmbedResizeCode() ?? '')
@@ -108,7 +108,7 @@ class H5PController extends Controller
             'jsScripts' => $h5pView->getScripts(),
             'styles' => $styles,
             'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
-            'preview' => $ltiRequest?->isPreview(),
+            'preview' => $ltiRequest?->isPreview() ?? false,
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
         ]);
     }
