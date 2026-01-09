@@ -122,7 +122,7 @@ return [
 
     'content_versions' => [
         'enabled' => env('CACHE_CONTENT_VERSIONS_ENABLED', true),
-        'duration' => env('CACHE_CONTENT_VERSIONS_DURATION', 86400*2), // 2 days in seconds
+        'duration' => env('CACHE_CONTENT_VERSIONS_DURATION', 86400*8), // 2 days in seconds
         'latest_version_key' => 'content_latest_version_',
         'latest_draft_version_key' => 'content_latest_draft_version_',
         'latest_published_version_key' => 'content_latest_published_version_',
@@ -130,7 +130,7 @@ return [
 
     'edlib2_usage_lookups' => [
         'enabled' => env('CACHE_EDLIB2_USAGE_LOOKUPS_ENABLED', true),
-        'duration' => env('CACHE_EDLIB2_USAGE_LOOKUPS_DURATION', 86400*2), // 2 days in seconds
+        'duration' => env('CACHE_EDLIB2_USAGE_LOOKUPS_DURATION', 86400*8), // 2 days in seconds
         'key_prefix' => 'content_by_edlib2_usage_id_',
     ],
 ];
