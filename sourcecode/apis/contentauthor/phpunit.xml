@@ -20,6 +20,11 @@
             <directory>./tests/Unit</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <exclude>
+            <group>live_integration</group>
+        </exclude>
+    </groups>
     <php>
         <ini name="memory_limit" value="256M" />
         <server name="APP_ENV" value="testing" force="true"/>
