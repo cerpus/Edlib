@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Libraries\H5P\TranslationServices;
+namespace Tests\Integration\Libraries\H5P\TranslationServices;
 
 use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
