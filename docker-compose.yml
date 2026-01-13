@@ -164,7 +164,8 @@ services:
           - hub-vite-hmr.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
-          - nynorobot.${EDLIB_ROOT_DOMAIN:-edlib.test}
+#          - nynorobot.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - nynorskroboten.${EDLIB_ROOT_DOMAIN:-edlib.test}
           # legacy domains, needed for browser tests
           - core.cerpus-course.com
           - api.edlib.com
@@ -224,10 +225,17 @@ services:
     ports:
       - "3306:3306"
 
-  nynorobot:
+#  Nynorobot has been replaced by Nynorskroboten
+#
+#  nynorobot:
+#    image: php:8.3-fpm-alpine
+#    volumes:
+#      - ./sourcecode/mock/nynorobot:/srv/www/nynorobot:ro
+
+  nynorskroboten:
     image: php:8.3-fpm-alpine
     volumes:
-      - ./sourcecode/mock/nynorobot:/srv/www/nynorobot:ro
+      - ./sourcecode/mock/nynorskroboten:/srv/www/nynorskroboten:ro
 
   postgres:
     image: postgres:16-alpine

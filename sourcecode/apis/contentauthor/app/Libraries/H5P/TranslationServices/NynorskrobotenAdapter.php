@@ -38,6 +38,7 @@ final readonly class NynorskrobotenAdapter implements TranslationServiceInterfac
             'guid' => $data->getId() ?? '',
             'fileType' => 'htmlp',
             'document' => $data->getFields(),
+            'prefs' => $this->getPrefs(),
         ];
     }
 
@@ -45,6 +46,46 @@ final readonly class NynorskrobotenAdapter implements TranslationServiceInterfac
     {
         return [
             'nob' => ['nno'],
+        ];
+    }
+
+    private function getPrefs(): array
+    {
+        return [
+            "language" => "nob-nno",
+            "tenkje-leggje.kons-kj2k_gj2g" => true,
+            "infa_infe" => true,
+            "me_vi" => true,
+            "vart-vorte_blei-blitt.vb-bli2verte" => true,
+            "blæs_blåser.vb" => true,
+            "symje_svømme.stav" => true,
+            "augne_auge.stav" => true,
+            "stove_stue.vok-u2o" => true,
+            "voks_vaks.vok-o2a" => true,
+            "samd_einig.syn" => true,
+            "førebels_foreløpig.syn" => true,
+            "etterspurnad_etterspørsel.syn" => true,
+            "tryggleik_sikkerheit.syn" => true,
+            "mengd_mengde.vok-2e" => true,
+            "banen_bana.n-m2f" => [
+                "bygning",
+                "frysning",
+                "kledning",
+                "krusning",
+                "ladning",
+                "ledning",
+                "munning",
+                "spenning",
+                "strekning",
+                "demning",
+                "festning",
+            ],
+            "håpa_håpte.vb-e2a" => [
+                "peike",
+            ],
+            "medan_mens.syn" => true,
+            "enkje_enke.kons-kj2k_gj2g" => true,
+            "fremje_fremme.kons-mj2mm" => true,
         ];
     }
 }
