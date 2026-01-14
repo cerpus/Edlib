@@ -298,17 +298,30 @@ const H5PEditorContainer = ({ intl }) => {
                         dispatch({ type: FormActions.setLanguage, payload: { language } });
                     }}
                     onGetFields={async () => {
-                        const fields = await getTextFields(getParams(), parameters.library, getLibraryCache());
+                        const params = getParams();
+                        const fields = await getTextFields(params, parameters.library, getLibraryCache());
 
-                        return fields.map(field => ({
-                            path: flattenPath(field.path),
+                        const translationFields = fields.map(field => ({
+                            path: 'params.' + flattenPath(field.path),
                             value: field.originalValue,
                         }));
+                        // Also translate the title
+                        translationFields.push(
+                            {
+                                path: "metadata.title",
+                                value: params.metadata.title,
+                            },
+                            {
+                                path: "metadata.extraTitle",
+                                value: params.metadata.extraTitle,
+                            }
+                        );
+                        return translationFields;
                     }}
                     onSetFields={(fields) => {
                         const newParameters = deepCopy(getParams());
                         for (const i in fields) {
-                            set(newParameters.params, i, fields[i]);
+                            set(newParameters, i, fields[i]);
                         }
                         onParamsChange(newParameters);
 
