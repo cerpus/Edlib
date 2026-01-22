@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P;
 
+use App\AuditLog;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PContent;
 use App\H5PContentsMetadata;
@@ -78,13 +79,14 @@ class H5PLibraryAdmin
         $out->token = csrf_token();
 
         $params = $request->post('params');
+        $updated = [];
         if ($params !== null) {
             if (!$request->filled('libraryId')) {
                 throw new BadRequestHttpException("Missing library to update to");
             }
 
             collect(json_decode($params))
-                ->each(function ($param, $id) use ($request) {
+                ->each(function ($param, $id) use ($request, &$updated) {
                     $params = json_decode($param);
                     if (isset($params->params)) {
                         $param = json_encode($params->params);
@@ -96,7 +98,7 @@ class H5PLibraryAdmin
                     if ($content->save() !== true) {
                         throw new \Exception("Update failed");
                     }
-
+                    $updated[] = $id;
                     if (isset($params->metadata)) {
                         $metadata = \H5PMetadata::toDBArray((array) $params->metadata);
                         unset($metadata['title']);
@@ -108,6 +110,24 @@ class H5PLibraryAdmin
                         $H5PContentMetadata->save();
                     }
                 });
+        }
+
+        if (count($updated) > 0) {
+            $toLib = H5PLibrary::find($request->get('libraryId'));
+            AuditLog::log(
+                'Bulk update of content library version',
+                json_encode([
+                    'fromLibrary' => [
+                        'id' => $library->id,
+                        'name' => $library->getLibraryString(true),
+                    ],
+                    'toLibrary' => [
+                        'id' => $toLib->id,
+                        'name' => $toLib->getLibraryString(true),
+                    ],
+                    'contentIds' => $updated,
+                ])
+            );
         }
 
         $out->left = $library->contents()->count() - count($out->skipped);

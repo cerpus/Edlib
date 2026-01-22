@@ -41,5 +41,5 @@
         </tbody>
     </table>
 
-    {{ $versions->links() }}
+    {{ $versions->withQueryString()->links() }}
 </x-layout>

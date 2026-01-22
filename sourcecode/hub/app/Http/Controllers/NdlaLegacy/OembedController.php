@@ -25,20 +25,17 @@ final readonly class OembedController
 
     public function content(OembedRequest $request): Response
     {
-        $id = $request->getResourceId($this->config);
-
-        $content = Content::ofTag(['prefix' => 'edlib2_usage_id', 'name' => $id])
-            ->limit(1)
-            ->firstOrFail();
+        $edlib2UsageId = $request->getResourceId($this->config);
+        $content = Content::firstWithEdlib2UsageIdOrFail($edlib2UsageId);
 
         $format = OembedFormat::from($request->validated('format', 'json'));
 
         // TODO: preview
         $data = $this->serializer->serialize(new RichContentResponse(
             html: view('ndla-legacy.oembed', [
-                'id' => $id,
+                'id' => $edlib2UsageId,
                 'src' => route('ndla-legacy.resource', [
-                    $id,
+                    $edlib2UsageId,
                     'locale' => $request->getUrlLocale(),
                 ]),
                 'title' => $content->getTitle(),

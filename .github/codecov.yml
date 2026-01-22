@@ -1,9 +1,11 @@
 component_management:
   individual_components:
     - component_id: contentauthor
+      name: Content Author
       paths:
         - "sourcecode/apis/contentauthor/**"
     - component_id: hub
+      name: Hub
       paths:
         - "sourcecode/hub/**"
 

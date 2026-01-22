@@ -88,7 +88,7 @@ return [
 
     'locale' => 'en',
 
-    'allowed_locales' => ['en', 'nb', 'nn'],
+    'allowed_locales' => ['en', 'nb', 'nl', 'nn', 'zh-hans'],
 
     /*
     |--------------------------------------------------------------------------

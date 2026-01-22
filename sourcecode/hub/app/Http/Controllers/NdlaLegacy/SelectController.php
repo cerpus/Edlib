@@ -9,7 +9,6 @@ use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Http\Requests\NdlaLegacy\SelectRequest;
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Models\Tag;
 use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
@@ -60,10 +59,7 @@ final readonly class SelectController
             abort(404, 'No Edlib 2 ID');
         }
 
-        $contentId = Content::ofTag([
-            'prefix' => 'edlib2_usage_id',
-            'name' => $resourceId,
-        ])->limit(1)->firstOrFail()->id;
+        $contentId = Content::firstWithEdlib2UsageIdOrFail($resourceId)->id;
 
         $url = url()->temporarySignedRoute('ndla-legacy.select-iframe', 30, [
             'user' => $encrypter->encrypt([
@@ -154,22 +150,13 @@ final readonly class SelectController
             },
         )->firstOrFail();
 
-        // TODO: should we create a new usage every time?
-        $tag = $content->tags()
-            ->where('prefix', 'edlib2_usage_id')
-            ->firstOr(function () use ($content) {
-                $tag = Tag::findOrCreateFromString('edlib2_usage_id:' . Str::uuid());
-                $content->tags()->attach($tag);
-
-                return $tag;
-            });
-        assert($tag instanceof Tag);
+        $usage = $content->edlib2Usages()->firstOrCreate();
 
         return response()->view('ndla-legacy.return', [
             'type' => 'h5p',
-            'embed_id' => $tag->name,
+            'embed_id' => $usage->edlib2_usage_id,
             'oembed_url' => route('ndla-legacy.oembed', [
-                'url' => route('ndla-legacy.resource', [$tag->name]),
+                'url' => route('ndla-legacy.resource', [$usage->edlib2_usage_id]),
             ]),
         ]);
     }

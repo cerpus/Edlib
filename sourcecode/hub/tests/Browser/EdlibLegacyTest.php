@@ -29,7 +29,7 @@ final class EdlibLegacyTest extends DuskTestCase
                     ->tool(LtiTool::factory()->withCredentials($internalPlatform->getOauth1Credentials()))
                     ->published(),
             )
-            ->tag('edlib2_usage_id:eda9e9c4-d64a-4cb5-9f4a-c50d0f0e5f17')
+            ->edlib2UsageId('eda9e9c4-d64a-4cb5-9f4a-c50d0f0e5f17')
             ->create();
 
         $user = User::factory()->admin()->create();

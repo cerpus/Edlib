@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AuthPsk;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\AdapterMode;
 use App\Http\Middleware\APIAuth;
@@ -52,10 +53,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        'internal-api' => [
-            'auth.internalApi',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
     ];
 
     /**
@@ -64,7 +61,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.internalApi' => \App\Http\Middleware\InternalAuth::class,
+        'auth.psk' => AuthPsk::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
@@ -77,7 +74,6 @@ class Kernel extends HttpKernel
         'core.return' => \App\Http\Middleware\StoreLtiRequestInSession::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
-        'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
         'lti.add-to-session' => \App\Http\Middleware\LtiAddToSession::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.redirect-to-editor' => \App\Http\Middleware\LtiRedirectToEditor::class,

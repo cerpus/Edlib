@@ -338,6 +338,11 @@ class H5PContent extends Content implements VersionableObject
         return $this->library()->firstOrFail()->name;
     }
 
+    public function getMachineDisplayName(): string
+    {
+        return $this->library()->first()->title ?? $this->getMachineName();
+    }
+
     public function getCopyrightCacheKey(): string
     {
         return 'h5p-copyright-' . $this->id;
@@ -351,12 +356,5 @@ class H5PContent extends Content implements VersionableObject
     protected function getIconUrl(): string
     {
         return $this->library()->firstOrFail()->getIconUrl();
-    }
-
-    protected function getTags(): array
-    {
-        return [
-            'h5p:' . $this->getMachineName(),
-        ];
     }
 }

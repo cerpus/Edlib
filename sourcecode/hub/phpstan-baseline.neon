@@ -25,6 +25,12 @@ parameters:
 			path: app/Listeners/AddAuthToLtiLaunch.php
 
 		-
+			message: '#^PHPDoc tag @var with type Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\ContentEdlib2Usage\> is not subtype of native type Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: varTag.nativeType
+			count: 2
+			path: app/Models/Content.php
+
+		-
 			message: '#^PHPDoc tag @var with type Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Tag\> is not subtype of native type Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
 			identifier: varTag.nativeType
 			count: 1

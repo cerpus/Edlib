@@ -127,7 +127,6 @@ class H5PViewConfigTest extends TestCase
         $data = app(H5PViewConfig::class)
             ->setUserId($this->faker->uuid)
             ->setContext($context)
-            ->setEmbedId('my-embed-id')
             ->loadContent($content->id)
             ->getConfig();
 
@@ -140,14 +139,12 @@ class H5PViewConfigTest extends TestCase
             "/api/progress?action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId&context=$context",
             $data->ajax['contentUserData'],
         );
-        $this->assertSame("https://www.edlib.test/s/resources/my-embed-id", $data->documentUrl);
 
         $contentData = $data->contents->{'cid-' . $content->id};
 
         $this->assertSame('H5P.Foobar 1.2', $contentData->library);
         $this->assertSame(1, $contentData->fullScreen);
         $this->assertStringEndsWith("/h5p/$content->id/download", $contentData->exportUrl);
-        $this->assertStringContainsString("/s/resources/my-embed-id", $contentData->embedCode);
         $this->assertNotEmpty($data->url);
         $this->assertSame($content->title, $contentData->title);
         $this->assertSame(config('h5p.saveFrequency'), $data->saveFreq);

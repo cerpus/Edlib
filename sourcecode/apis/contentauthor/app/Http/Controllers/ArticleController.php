@@ -10,7 +10,6 @@ use App\Http\Libraries\License;
 use App\Http\Requests\ArticleRequest;
 use App\Libraries\DataObjects\ArticleStateDataObject;
 use App\Libraries\DataObjects\EditorConfigObject;
-use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
@@ -168,7 +167,6 @@ class ArticleController extends Controller
             [
                 'canList' => $article->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-                'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
             ],
         );
 
@@ -178,20 +176,6 @@ class ArticleController extends Controller
             'maxScore' => $article->max_score,
             'ownerName' => null,
         ]));
-
-        if (!$article->shouldCreateFork(Session::get('authId', false))) {
-            if (($locked = $article->hasLock())) {
-                $editUrl = $article->getEditUrl();
-                $pollUrl = route('lock.status', $id);
-                $editorSetup->setLockedProperties(LockedDataObject::create([
-                    'pollUrl' => $pollUrl,
-                    'editor' => $locked->getEditor(),
-                    'editUrl' => $editUrl,
-                ]));
-            } else {
-                $article->lock();
-            }
-        }
 
         $editorSetup = $editorSetup->toJson();
 
@@ -257,7 +241,6 @@ class ArticleController extends Controller
 
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));
         $article->save();
-        $oldArticle->unlock();
 
         $collaborators = $this->handleCollaborators($request, $oldArticle, $article, $reason);
 

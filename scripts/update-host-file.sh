@@ -14,6 +14,7 @@ hub-test-ndla-legacy
 mailpit
 moodle
 nynorobot
+nynorskroboten
 "
 
 hosts="$(cat /etc/hosts)"

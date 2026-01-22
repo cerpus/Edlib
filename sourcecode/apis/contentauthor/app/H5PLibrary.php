@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Observers\H5PLibraryObserver;
 use H5PFrameworkInterface;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -52,6 +54,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string $add_to
  * @property bool $patch_version_in_folder_name
  */
+#[ObservedBy([H5PLibraryObserver::class])]
 class H5PLibrary extends Model
 {
     use HasFactory;

@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Enums\ContentRole;
+use App\Enums\ContentViewSource;
+use App\Exceptions\ContentLockedException;
 use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\ContentView;
+use App\Models\ContentViewsAccumulated;
 use App\Models\LtiPlatform;
 use App\Models\User;
 use Carbon\Carbon;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\Signer;
+use DateTimeImmutable;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -68,7 +73,7 @@ final class ContentTest extends TestCase
 
         $content = Content::factory()
             ->withPublishedVersion()
-            ->tag('edlib2_usage_id:a4e99aa5-a68c-4d26-9118-451fc05812b5')
+            ->edlib2UsageId('a4e99aa5-a68c-4d26-9118-451fc05812b5')
             ->create();
 
         $parameters = $this->app->make(Signer::class)
@@ -210,5 +215,142 @@ final class ContentTest extends TestCase
 
         $this->assertFalse($content->hasUser($user));
         $this->assertFalse($content->hasUserWithMinimumRole($user, $roleToCheck));
+    }
+
+    public function testsCountsViewsIncludingIndividualAndAccumulated(): void
+    {
+        $content = Content::factory()
+            ->withView(ContentView::factory())
+            ->withView(ContentView::factory())
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(3))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(4))
+            ->create();
+
+        $this->assertSame(9, $content->countTotalViews());
+    }
+
+    public function testBuildsStatsGraph(): void
+    {
+        $content = Content::factory()
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-01 00:00:00 UTC'))->source(ContentViewSource::Detail))
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-02 00:00:00 UTC'))->source(ContentViewSource::Detail))
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-02 00:00:00 UTC'))->source(ContentViewSource::Detail))
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-02 00:00:00 UTC'))->source(ContentViewSource::Embed))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->dateAndHour('2025-01-01', 0)->source(ContentViewSource::Detail)->viewCount(3))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->dateAndHour('2025-01-02', 0)->source(ContentViewSource::Detail)->viewCount(5))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->dateAndHour('2025-01-02', 0)->source(ContentViewSource::Embed)->viewCount(2))
+            ->create();
+
+        $this->assertEquals([
+            [
+                'detail' => 4,
+                'embed' => 0,
+                'lti_platform' => 0,
+                'standalone' => 0,
+                'point' => '2025-01-01',
+                'total' => 4,
+            ],
+            [
+                'detail' => 7,
+                'embed' => 3,
+                'standalone' => 0,
+                'lti_platform' => 0,
+                'point' => '2025-01-02',
+                'total' => 10,
+            ],
+        ], $content->buildStatsGraph(
+            start: new DateTimeImmutable('2025-01-01 00:00:00 UTC'),
+            end: new DateTimeImmutable('2025-02-01 00:00:00 UTC'),
+        )->getData());
+    }
+
+    public function testAcquiresLock(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+
+        $this->assertFalse($content->isLocked());
+
+        $content->acquireLock($user);
+
+        $this->assertTrue($content->isLocked());
+    }
+
+    public function testCannotAcquireHeldLock(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+        $content->acquireLock($user);
+
+        $this->expectException(ContentLockedException::class);
+
+        $content->acquireLock($user);
+    }
+
+    public function testExpiredLockDoesNotCountAsLockHeld(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+
+        Carbon::setTestNow('2024-01-01T00:00:00Z');
+        $content->acquireLock($user);
+        $this->assertTrue($content->isLocked());
+
+        Carbon::setTestNow('2025-01-01T00:00:00Z');
+        $this->assertFalse($content->isLocked());
+    }
+
+    public function testCanAcquireLockWhenExpiredLockExists(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+
+        Carbon::setTestNow('2024-01-01T00:00:00Z');
+        $content->acquireLock($user);
+
+        Carbon::setTestNow('2025-01-01T00:00:00Z');
+        $content->acquireLock($user);
+
+        $this->assertTrue($content->isLocked());
+    }
+
+    public function testReleasesLock(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+        $content->acquireLock($user);
+
+        $content->releaseLock($user);
+
+        $this->assertFalse($content->isLocked());
+    }
+
+    public function testDoesNotReleaseLockHeldByAnotherUser(): void
+    {
+        $holder = User::factory()->create();
+        $releaser = User::factory()->create();
+        $content = Content::factory()->create();
+        $content->acquireLock($holder);
+
+        $content->releaseLock($releaser);
+
+        $this->assertTrue($content->isLocked());
+    }
+
+    public function testRefreshesLock(): void
+    {
+        $content = Content::factory()->create();
+        $user = User::factory()->create();
+
+        Carbon::setTestNow('2025-01-01T00:00:00Z');
+        $content->acquireLock($user);
+
+        Carbon::setTestNow('2025-01-01T00:00:30Z');
+        $content->refreshLock($user);
+
+        $lock = $content->getActiveLock();
+        $this->assertNotNull($lock);
+        $this->assertSame('2025-01-01T00:00:00Z', $lock->created_at?->toIso8601ZuluString());
+        $this->assertSame('2025-01-01T00:00:30Z', $lock->updated_at?->toIso8601ZuluString());
     }
 }

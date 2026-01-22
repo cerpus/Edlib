@@ -37,7 +37,6 @@
                                     <th>CA Language</th>
                                     <th>H5P Language</th>
                                     <th>License</th>
-                                    <th>Has lock</th>
                                     <th>Latest</th>
                                 </tr>
                                 @foreach($paginator->getCollection() as $content)
@@ -50,7 +49,6 @@
                                             <td>{{ $content['item']->language_iso_639_3 }}</td>
                                             <td>{{ $content['item']->metadata?->default_language }}</td>
                                             <td>{{ $content['item']->license }}</td>
-                                            <td>{{ $content['item']->hasLock() ? 'Y' : 'N' }}</td>
                                             <td>{{ $content['isLatest'] !== null ? ($content['isLatest'] ? 'Yes' : 'No') : '' }}</td>
                                         </tr>
                                     @endif

@@ -69,8 +69,12 @@
                         <td>{{ \App\Models\Content::onlyTrashed()->count() }}</td>
                     </tr>
                     <tr>
-                        <th>Users</th>
+                        <th scope="row">Users</th>
                         <td>{{ \App\Models\User::count() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ trans('messages.active-content-locks') }}</th>
+                        <td>{{ \App\Models\ContentLock::active()->count() }}</td>
                     </tr>
                 </tbody>
             </table>

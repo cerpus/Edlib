@@ -42,7 +42,7 @@ class ContentFilter extends FormRequest
         return [
             'q' => ['sometimes', 'string', 'max:300'],
             'language' => ['sometimes', 'string', 'max:100'],
-            'sort' => ['sometimes', Rule::in('created', 'updated')],
+            'sort' => ['sometimes', Rule::in('created', 'updated', 'views')],
             'type' => ['sometimes', 'array'],
         ];
     }
@@ -125,7 +125,7 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @return "updated"|"created"
+     * @return "updated"|"created"|"views"
      */
     public function getSortBy(): string
     {
@@ -140,6 +140,7 @@ class ContentFilter extends FormRequest
         return [
             'updated' => trans('messages.edited'),
             'created' => trans('messages.created'),
+            'views' => trans('messages.views'),
         ];
     }
 
@@ -224,6 +225,7 @@ class ContentFilter extends FormRequest
         return $query->orderBy(match ($this->getSortBy()) {
             'created' => 'created_at',
             'updated' => $this->isForUser() ? 'updated_at' : 'published_at',
+            'views' => 'views',
         }, 'desc');
     }
 
@@ -273,7 +275,7 @@ class ContentFilter extends FormRequest
 
     /**
      * @param Builder<Content> $builder
-     * @return LengthAwarePaginator<ContentDisplayItem>
+     * @return LengthAwarePaginator<int, ContentDisplayItem>
      */
     public function paginateWithModel(Builder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
     {
@@ -299,7 +301,7 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @param array<int, array{id: string, content_type: string|null}> $hits
+     * @param array<int, array{id: string, content_type: string|null, views: int|null}> $hits
      * @return Collection<int, ContentDisplayItem>
      */
     private function attachModel(array $hits, bool $forUser, bool $showDrafts): Collection
@@ -344,8 +346,8 @@ class ContentFilter extends FormRequest
                     title: $version->title,
                     createdAt: $version->created_at?->toImmutable(),
                     isPublished: $version->published,
-                    viewsCount: $content->views_count,
-                    contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
+                    viewsCount: $item['views'] ?? 0,
+                    contentType: $item['content_type'] ?? $version->displayed_content_type,
                     languageIso639_3: strtoupper($version->language_iso_639_3),
                     languageDisplayName: $languageName,
                     users: $content->users->map(fn($user) => $user->name)->join(', '),

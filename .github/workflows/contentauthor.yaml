@@ -5,16 +5,16 @@ on:
     branches:
       - master
     paths:
-      - '.github/workflows/contentauthor.yaml'
-      - 'sourcecode/apis/contentauthor/**'
+      - ".github/workflows/contentauthor.yaml"
+      - "sourcecode/apis/contentauthor/**"
   workflow_call:
     inputs:
       version:
-        description: 'A version to release'
+        description: "A version to release"
         required: true
         type: string
       deploy:
-        description: 'A version to release'
+        description: "A version to release"
         required: false
         type: boolean
         default: false
@@ -37,53 +37,6 @@ jobs:
 
       - name: Validate
         run: composer validate
-
-  php-cs-fixer:
-    if: "!inputs.deploy"
-    needs: [composer-validate]
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.CERPUSBOT_SECRET }}
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-
-      - name: Manage php-cs-fixer cache
-        uses: actions/cache@v4
-        with:
-          path: sourcecode/apis/contentauthor/.php-cs-fixer.cache
-          key: ca-phpcsfixer-cache-${{ github.sha }}
-          restore-keys: ca-phpcsfixer-cache-
-
-      - name: Get Composer cache dir
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ca-phpcsfixer-composer-${{ hashFiles('sourcecode/apis/contentauthor/tools/php-cs-fixer/composer.lock') }}
-          restore-keys: |
-            ca-phpcsfixer-composer-
-
-      - name: Install dependencies
-        run: composer install --working-dir=tools/php-cs-fixer --no-progress --prefer-dist
-
-      - name: Run php-cs-fixer
-        run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
-
-      - name: Commit fixed code
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: Run php-cs-fixer
 
   phpstan:
     if: "!inputs.deploy"
@@ -168,17 +121,15 @@ jobs:
             vendor/bin/phpunit --coverage-clover /reports/coverage.xml
 
       - name: Upload coverage to Codecov
-        if: github.event_name == 'push' && github.ref != 'refs/heads/master'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: contentauthor
           files: /tmp/coverage.xml
           context: sourcecode/apis/contentauthor
 
   build_publish:
     if: inputs.version && !inputs.deploy
-    needs: [test, php-cs-fixer, phpstan]
+    needs: [test, phpstan]
     runs-on: ubuntu-22.04
     steps:
       - name: Log in to GitHub Container Registry

@@ -397,7 +397,7 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function mayUpdateLibraries()
     {
-        return \Session::get("isAdmin", false) || Request::is('admin/*') || Request::is("api/v1/h5p/import");
+        return \Session::get("isAdmin", false) || Request::is('admin/*');
     }
 
     /**

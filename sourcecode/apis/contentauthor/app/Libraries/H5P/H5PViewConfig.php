@@ -15,10 +15,7 @@ use H5PCore;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-use function htmlspecialchars;
 use function request;
-use function sprintf;
-use function url;
 
 class H5PViewConfig extends H5PConfigAbstract
 {
@@ -28,16 +25,15 @@ class H5PViewConfig extends H5PConfigAbstract
     private ?string $context = null;
     private ?H5PAlterParametersSettingsDataObject $alterParametersSettings = null;
     private ?string $filterParams = null;
-    private ?string $embedId = null;
     private string $embedCode = '';
     private string $embedResizeCode = '';
-    private ?string $resourceLinkTitle = null;
 
     public function __construct(H5PAdapterInterface $adapter, H5PCore $h5pCore)
     {
         parent::__construct($adapter, $h5pCore);
 
         $this->config['documentUrl'] = '';
+        $this->config['libraryDirecories'] = [];
         $this->contentConfig = [
             'library' => '',
             'jsonContent' => '',
@@ -85,23 +81,11 @@ class H5PViewConfig extends H5PConfigAbstract
         $this->contentConfig['title'] = $this->content['title'];
         $this->contentConfig['metadata'] = $this->content['metadata'];
 
-        $embedPathTemplate = config('edlib.embedPath');
         if ($this->embedCode) {
             $this->contentConfig['embedCode'] = $this->embedCode;
             if ($this->embedResizeCode) {
                 $this->contentConfig['resizeCode'] = $this->embedResizeCode;
             }
-        } elseif ($embedPathTemplate && $this->embedId !== null) {
-            $this->config['documentUrl'] = str_replace('<resourceId>', $this->embedId, $embedPathTemplate);
-            $this->contentConfig['embedCode'] = sprintf(
-                self::EMBED_TEMPLATE,
-                htmlspecialchars($this->config['documentUrl'], ENT_QUOTES),
-                htmlspecialchars($this->resourceLinkTitle ?? $this->content['title'] ?? '', ENT_QUOTES),
-            );
-            $this->contentConfig['resizeCode'] = sprintf(
-                '<script src="%s"></script>',
-                htmlspecialchars(url('/h5p-php-library/js/h5p-resizer.js')),
-            );
         }
 
         $this->config['saveFreq'] = $this->getSaveFrequency();
@@ -116,12 +100,6 @@ class H5PViewConfig extends H5PConfigAbstract
         return $this;
     }
 
-    public function setEmbedId(string|null $embedId): static
-    {
-        $this->embedId = $embedId;
-        return $this;
-    }
-
     public function setEmbedCode(string $embedCode): static
     {
         $this->embedCode = $embedCode;
@@ -131,12 +109,6 @@ class H5PViewConfig extends H5PConfigAbstract
     public function setEmbedResizeCode(string $embedResizeCode): static
     {
         $this->embedResizeCode = $embedResizeCode;
-        return $this;
-    }
-
-    public function setResourceLinkTitle(string|null $resourceLinkTitle): static
-    {
-        $this->resourceLinkTitle = $resourceLinkTitle;
         return $this;
     }
 
@@ -181,9 +153,9 @@ class H5PViewConfig extends H5PConfigAbstract
     private function setDependentFiles(): void
     {
         $this->filterParams = $this->h5pCore->filterParameters($this->content);
-        $assets = $this->h5pCore->getDependenciesFiles(
-            $this->h5pCore->loadContentDependencies($this->content['id'], "preloaded"),
-        );
+        $dependencies = $this->h5pCore->loadContentDependencies($this->content['id'], "preloaded");
+        $assets = $this->h5pCore->getDependenciesFiles($dependencies);
+        $this->addLibraryDirectories($dependencies);
         $this->assets['scripts'] = $assets['scripts'] ?? [];
         $this->assets['styles'] = $assets['styles'] ?? [];
 
@@ -235,5 +207,20 @@ class H5PViewConfig extends H5PConfigAbstract
         }
 
         return $parameters;
+    }
+
+    /**
+     * Adds a mapping for libraries that uses patch version in the foldername. When H5P libraries requests a
+     * resource from other libraries, they only give machineName, majorVersion and minorVersions for the library.
+     * Key format is "machineName-majorVersion.minorVersion", value format is "machineName-majorVersion.minorVersion.patchVersion"
+     * Used by H5P.getLibraryPath() in 'h5p-core/js/h5p.js'.
+     */
+    private function addLibraryDirectories($dependencies): void
+    {
+        foreach ($dependencies as $dependency) {
+            if ($dependency['patchVersionInFolderName'] ?? false) {
+                $this->config['libraryDirectories']["{$dependency['machineName']}-{$dependency['majorVersion']}.{$dependency['minorVersion']}"] = "{$dependency['machineName']}-{$dependency['majorVersion']}.{$dependency['minorVersion']}.{$dependency['patchVersion']}";
+            }
+        }
     }
 }

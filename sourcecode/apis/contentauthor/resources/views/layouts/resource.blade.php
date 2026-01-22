@@ -14,7 +14,7 @@
     <script src="{{ asset('js/jsrequestintercept.js') }}"></script>
     @stack("css")
 </head>
-<body id="theBody" onunload="unlock();">
+<body id="theBody">
 <div id="mainContainer">
     <div class="mainContent" id="mainContent"></div>
 </div>
@@ -24,8 +24,5 @@
 </script>
 @stack('configJs')
 @stack('js')
-<script>
-  window.unlock = window.unlock || function () {};
-</script>
 </body>
 </html>

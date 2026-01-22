@@ -14,16 +14,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/resource/{edlib2UsageContent}')
     ->uses(ViewResourceController::class)
-    ->name('ndla-legacy.resource');
+    ->name('ndla-legacy.resource')
+    ->whereUuid('edlib2UsageContent');
 
 Route::get('/v1/resource/{edlib2UsageContent}/copyright')
-    ->uses(ResourceCopyrightController::class);
+    ->uses(ResourceCopyrightController::class)
+    ->whereUuid('edlib2UsageContent');
 
 Route::get('/v2/resource/{edlib2UsageContent}/copyright')
-    ->uses(ResourceCopyrightController::class);
+    ->uses(ResourceCopyrightController::class)
+    ->whereUuid('edlib2UsageContent');
 
 Route::get('/v1/resource/{edlib2UsageContent}/info')
-    ->uses(ResourceInformationController::class);
+    ->uses(ResourceInformationController::class)
+    ->whereUuid('edlib2UsageContent');
 
 Route::put('/v1/resource/{id}/publish')
     ->middleware(['auth:ndla-legacy'])

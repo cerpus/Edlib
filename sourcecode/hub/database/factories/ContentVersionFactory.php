@@ -28,6 +28,8 @@ final class ContentVersionFactory extends Factory
             'lti_launch_url' => 'https://hub-test.edlib.test/lti/samples/presentation',
             'language_iso_639_3' => $this->faker->randomElement(['eng', 'nob']),
             'license' => $this->faker->randomElement(['CC0-1.0', 'CC-BY-2.5', null]),
+            'displayed_content_type' => 'H5P.CoursePresentation',
+            'displayed_content_type_normalized' => 'h5p.coursepresentation',
         ];
     }
 
@@ -54,6 +56,16 @@ final class ContentVersionFactory extends Factory
     public function unpublished(bool $unpublished = true): self
     {
         return $this->state(['published' => !$unpublished]);
+    }
+
+    public function displayedContentType(string|null $displayedContentType): self
+    {
+        return $this->state([
+            'displayed_content_type' => $displayedContentType,
+            'displayed_content_type_normalized' => $displayedContentType !== null
+                ? mb_strtolower($displayedContentType, 'UTF-8')
+                : null,
+        ]);
     }
 
     public function withTag(TagFactory|Tag|string $tag, string|null $verbatimName = null): self
