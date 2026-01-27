@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AuditLog;
+use App\ContentBulkExclude;
 use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
@@ -12,10 +14,12 @@ use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\H5P\AdminConfig;
 use Exception;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 
 class AdminH5PTranslation
 {
@@ -77,11 +81,6 @@ class AdminH5PTranslation
         $adminConfig->getConfig();
         $adminConfig->addContentLanguageScripts();
 
-        $contentCount = $this->getRefreshQuery($library->id, $locale)
-            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
-            ->first()
-            ->total;
-
         $jsConfig = [
             'ajaxPath' => $adminConfig->config->ajaxPath,
             'endpoint' => route('admin.library-transation-content-update', [$library, $locale]),
@@ -92,7 +91,7 @@ class AdminH5PTranslation
 
         return view('admin.content-translation-update', [
             'libraryName' => $library->getLibraryString(true),
-            'contentCount' => $contentCount,
+            'contentCount' => $this->getContentCount($library->id, $locale),
             'jsConfig' => $jsConfig,
             'scripts' => $adminConfig->getScriptAssets(),
             'styles' => $adminConfig->getStyleAssets(),
@@ -104,29 +103,37 @@ class AdminH5PTranslation
      */
     public function contentUpdate(AdminTranslationContentRequest $request): JsonResponse
     {
-        $failed = 0;
-        $unchanged = 0;
-        $updated = 0;
+        $failed = [];
+        $unchanged = [];
+        $updated = [];
         $messages = [];
 
         $libraryId = $request->validated('libraryId');
         $locale = $request->validated('locale');
         $params = collect($request->validated('processed'));
 
-        try {
-            $params->each(function ($item, $id) use (&$failed, &$unchanged, &$updated, &$messages, $request) {
+        $runId = $request->session()->get('translation_update_run_id');
+        if ($runId === null) {
+            $runId = Uuid::uuid4()->toString();
+            Session::put('translation_update_run_id', $runId);
+        }
+
+        $library = H5PLibrary::find($libraryId);
+
+        $params->each(function ($item, $id) use (&$failed, &$unchanged, &$updated, &$messages, $request) {
+            try {
                 $decoded = json_decode($item, flags: JSON_THROW_ON_ERROR);
 
                 if (empty($decoded)) {
                     // Failed on client side, error message is already be displayed
-                    $failed++;
+                    $failed[] = $id;
                 } else {
                     /** @var H5PContent $original */
                     $original = H5PContent::findOrFail($id);
                     $version = ContentVersion::latestLeaf($original->version_id);
 
                     if ($original->version_id !== $version->id) {
-                        $unchanged++;
+                        $unchanged[] = $id;
                         $messages[] = 'Content ' . $id . ' is not latest version, leaving unchanged';
                     } else {
                         // JSON stored in database has escaped unicode and slashes, the JS encoded content in $item
@@ -134,7 +141,7 @@ class AdminH5PTranslation
                         $parameters = json_encode($decoded, flags: JSON_THROW_ON_ERROR);
                         if ($parameters === $original->parameters) {
                             $messages[] = 'Content ' . $id . ' not changed';
-                            $unchanged++;
+                            $unchanged[] = $id;
                         } else {
                             $original->parameters = $parameters;
                             $original->filtered = '';
@@ -144,18 +151,28 @@ class AdminH5PTranslation
                             // Trigger creation of new version log entry
                             event(new H5PWasSaved($original, $request, ContentVersion::PURPOSE_UPDATE, $original));
                             $messages[] = 'Content ' . $id . ' updated';
-                            $updated++;
+                            $updated[] = $id;
                         }
                     }
                 }
-            });
-        } catch (Exception $e) {
-            $failed++;
-            $messages[] = $e->getMessage();
-        }
+            } catch (Exception $e) {
+                $failed[] = $id;
+                $messages[] = $e->getMessage();
+            }
+        });
 
-        if ($unchanged > 0 || $updated > 0 || $failed > 0) {
-            $messages[] = sprintf('Content updated/unchanged/failed: %d / %d / %d', $updated, $unchanged, $failed);
+        if (count($unchanged) > 0 || count($updated) > 0 || count($failed) > 0) {
+            AuditLog::log('Content type translation update', json_encode([
+                'runId' => $runId,
+                'libraryId' => $libraryId,
+                'libraryName' => $library->getLibraryString(true),
+                'locale' => $locale,
+                'unchanged' => $unchanged,
+                'updated' => $updated,
+                'failed' => $failed,
+                'excluded' => $this->getExcludedContent($libraryId, $locale)->get()->pluck('content_id')->toArray(),
+            ]));
+            $messages[] = sprintf('Content updated/unchanged/failed: %d / %d / %d', count($updated), count($unchanged), count($failed));
         }
         $response = (object) [
             'params' => [],
@@ -163,14 +180,14 @@ class AdminH5PTranslation
             'messages' => $messages,
         ];
 
-        $contentQuery = $this->getRefreshQuery($libraryId, $locale)
+        $contentQuery = $this->getContentQuery($libraryId, $locale)
             ->where('content_versions.content_id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
             ->orderBy('h5p_contents.id');
 
         $response->left = $contentQuery->select(DB::raw('count(distinct(h5p_contents.id)) as total'))->first()->total;
         if ($response->left > 0) {
             $contents = $contentQuery
-                ->select(DB::raw('distinct(h5p_contents.id) as id, h5p_contents.parameters'))
+                ->select([DB::raw('distinct(h5p_contents.id) as id'), 'h5p_contents.parameters'])
                 ->limit(25)
                 ->get();
             $response->params = $contents->map(function ($content) {
@@ -179,6 +196,8 @@ class AdminH5PTranslation
                     'params' => $content->parameters,
                 ];
             });
+        } else {
+            Session::forget('translation_update_run_id');
         }
 
         return response()->json($response);
@@ -190,15 +209,6 @@ class AdminH5PTranslation
             ->where('language_code', $locale)
             ->first();
 
-        $updatableCount = $this->getRefreshQuery($library->id, $locale)
-            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'));
-
-        $totalCount = DB::table('h5p_contents')
-            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
-            ->where('h5p_contents.library_id', $library->id)
-            ->where('h5p_contents_metadata.default_language', $locale)
-            ->count();
-
         $filename = sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale);
         if (Storage::exists($filename)) {
             $fileTranslation = Storage::disk()->get($filename);
@@ -209,23 +219,45 @@ class AdminH5PTranslation
             'languageCode' => $locale,
             'translationDb' => $libLang,
             'translationFile' => $fileTranslation ?? null,
-            'totalCount' => $totalCount,
-            'updatableCount' => $updatableCount->first()->total,
+            'updatableCount' => $this->getContentCount($library->id, $locale),
+            'excludedCount' => $this->getExcludedContent($library->id, $locale)->count(),
         ];
     }
 
-    private function getRefreshQuery(int $libraryId, string $locale): Builder
+    private function getContentQuery(int $libraryId, string $locale): Builder
     {
-        return DB::table('content_versions')
-            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+        return H5PContent::leftJoin('content_versions', 'content_versions.id', '=', 'h5p_contents.version_id')
+            ->leftJoin('content_versions as cv', 'cv.parent_id', '=', 'content_versions.id')
+            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
+            ->leftJoin('content_bulk_excludes', function ($query) {
+                $query->on('content_bulk_excludes.content_id', '=', 'h5p_contents.id')
+                ->where('content_bulk_excludes.exclude_from', '=', ContentBulkExclude::BULKACTION_LIBRARY_TRANSLATION);
+            })
+            ->whereNull('content_bulk_excludes.id')
+            ->where('h5p_contents.library_id', $libraryId)
+            ->where('h5p_contents_metadata.default_language', $locale)
             ->where(function ($query) {
                 $query
                     ->whereNull('cv.content_id')
                     ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
-            })
-            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
+            });
+    }
+
+    private function getContentCount(int $libraryId, string $locale): int
+    {
+        return $this->getContentQuery($libraryId, $locale)
+            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
+            ->first()
+            ->total;
+    }
+
+    private function getExcludedContent(int $libraryId, string $locale): Builder
+    {
+        return ContentBulkExclude::select(['content_bulk_excludes.content_id'])
+            ->leftJoin('h5p_contents', 'h5p_contents.id', '=', 'content_bulk_excludes.content_id')
+            ->join('h5p_contents_metadata', 'h5p_contents_metadata.content_id', '=', 'content_bulk_excludes.content_id')
+            ->where('exclude_from', ContentBulkExclude::BULKACTION_LIBRARY_TRANSLATION)
             ->where('h5p_contents.library_id', $libraryId)
-            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
             ->where('h5p_contents_metadata.default_language', $locale);
     }
 }

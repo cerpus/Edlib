@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminContentMigrateController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Http\Controllers\Admin\CapabilityController;
+use App\Http\Controllers\Admin\ContentBulkExcludeController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
 use App\Http\Controllers\Admin\AdminH5PTranslation;
@@ -105,5 +106,10 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
 
         // More general Admin Backend routes
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
+
+        Route::get('bulkexclude/content', [ContentBulkExcludeController::class, 'index'])->name('admin.bulkexclude.content.index');
+        Route::get('bulkexclude/find', [ContentBulkExcludeController::class, 'find'])->name('admin.bulkexclude.content.find');
+        Route::post('bulkexclude/content', [ContentBulkExcludeController::class, 'add'])->name('admin.bulkexclude.content.add');
+        Route::delete('bulkexclude/content', [ContentBulkExcludeController::class, 'delete'])->name('admin.bulkexclude.content.delete');
     },
 );

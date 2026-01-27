@@ -125,8 +125,6 @@ ContentTranslationRefresh.prototype.loadQueuedLibraries = async function () {
  * @return {Promise<Object>}
  */
 ContentTranslationRefresh.prototype.loadLibrary = async function (library) {
-    const self = this;
-
     return new Promise((resolve, reject) => {
         // Library is queued by H5P, this will be the case if the library has previously failed to load
         if (ns.libraryCache[library] === 0) {

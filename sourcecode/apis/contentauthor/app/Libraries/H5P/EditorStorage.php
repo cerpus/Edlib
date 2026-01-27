@@ -33,7 +33,7 @@ class EditorStorage implements \H5peditorStorage
             ->select('translation')
             ->first();
 
-        return !is_null($library) ? $library->translation : false;
+        return !is_null($library) ? html_entity_decode($library->translation) : false;
     }
 
     public function keepFile($fileId)

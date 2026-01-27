@@ -17,11 +17,11 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            Refresh translations in content for <code>{{ $libraryName }}</code> and <code>{{$jsConfig['locale']}}</code> language
+                            Refresh library texts for content with <code>{{ $libraryName }}</code> as primary content type and <code>{{$jsConfig['locale']}}</code> language
                         </h3>
                     </div>
                     <div id="bulk-container">
-                        <div class="panel-body row">
+                        <div class="panel-body">
                             <p>
                                 This goes through the content and updates existing translations in the common fields
                                 stored in the content.
@@ -30,7 +30,7 @@
                                 "Text overrides and translations" section in the editor. If any of these texts was
                                 changed when the content was created/modified, these changes will be lost.
                             </p>
-                            <p>
+                            <p class="alert alert-warning">
                                 Translations from other content types or libraries used in the content will also be updated.
                             </p>
                             <p>
@@ -42,7 +42,7 @@
                                 Timestamps and versions in the Hub are not changed.
                             </p>
                         </div>
-                        <div class="panel-body row">
+                        <div class="panel-body">
                             <p>
                                 Content that will be processed: {{$contentCount}}
                             </p>

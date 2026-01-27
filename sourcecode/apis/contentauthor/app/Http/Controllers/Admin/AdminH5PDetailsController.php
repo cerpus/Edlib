@@ -196,7 +196,7 @@ class AdminH5PDetailsController extends Controller
                     'content_id' => $child->content_id,
                     'versionDate' => $child->created_at,
                     'version_purpose' => $child->version_purpose,
-                    'content' => $this->getContentInfo($versionData),
+                    'content' => $this->getContentInfo($child),
                 ];
             }
         }
@@ -212,13 +212,14 @@ class AdminH5PDetailsController extends Controller
         $content = $version->getContent();
 
         if (!empty($content)) {
+            /** @var ?H5PLibrary $library */
             $library = $content->library;
             return [
                 'title' => $content->title,
                 'license' => $content->license,
                 'language' => $content->language_iso_639_3,
-                'library_id' => $library->id,
-                'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
+                'library_id' => $library->id ?? null,
+                'library' => $library?->getLibraryString(true) ?? null,
             ];
         }
 
