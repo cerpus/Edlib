@@ -184,7 +184,7 @@ class AdminH5PTranslation
             ->where('content_versions.content_id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
             ->orderBy('h5p_contents.id');
 
-        $response->left = $contentQuery->select(DB::raw('count(distinct(h5p_contents.id)) as total'))->first()->total;
+        $response->left = $contentQuery->select(DB::raw('count(distinct(h5p_contents.id)) as total'))->first()->getAttribute('total');
         if ($response->left > 0) {
             $contents = $contentQuery
                 ->select([DB::raw('distinct(h5p_contents.id) as id'), 'h5p_contents.parameters'])
@@ -192,8 +192,8 @@ class AdminH5PTranslation
                 ->get();
             $response->params = $contents->map(function ($content) {
                 return [
-                    'id' => $content->id,
-                    'params' => $content->parameters,
+                    'id' => $content->getAttribute('id'),
+                    'params' => $content->getAttribute('parameters'),
                 ];
             });
         } else {
@@ -248,7 +248,7 @@ class AdminH5PTranslation
         return $this->getContentQuery($libraryId, $locale)
             ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
             ->first()
-            ->total;
+            ->getAttribute('total');
     }
 
     private function getExcludedContent(int $libraryId, string $locale): Builder
