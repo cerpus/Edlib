@@ -14,35 +14,82 @@ use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ContentAuthorController extends Controller
 {
     public function info(ContentInfoRequest $request, LtiTool $tool): JsonResponse
     {
-        $versions = $tool->contentVersions()
-            ->where('lti_launch_url', $request->validated('lti_launch_url'))
-            ->get();
+        $data = $request->validated();
+        $response = [];
+        if (array_key_exists('lti_launch_url', $data)) {
+            $versions = $tool->contentVersions()
+                ->where('lti_launch_url', $request->validated('lti_launch_url'))
+                ->get();
 
-        if ($versions->count() === 0) {
-            throw new NotFoundHttpException();
-        } elseif ($versions->count() > 1) {
-            throw new RuntimeException('Multiple versions found for content');
+            if ($versions->count() === 0) {
+                throw new NotFoundHttpException();
+            } elseif ($versions->count() > 1) {
+                throw new RuntimeException('Multiple versions found for content');
+            }
+
+            $version = $versions->firstOrFail();
+            $response = [
+                'id' => $version->content_id,
+                'version_id' => $version->id,
+                'update_url' => route('author.content.update', [
+                    $version->lti_tool_id,
+                    $version->content_id,
+                    $version->id,
+                ]),
+            ];
+
+        } elseif (array_key_exists('content_url', $data)) {
+            $route = Route::getRoutes()->match(request()->create($data['content_url']));
+            if ($route && in_array($route->getName(), ['content.details', 'content.version-details', 'content.embed', 'content.share'])) {
+                $contentId = $route->parameter('content');
+                $inputVersion = $tool->contentVersions()
+                    ->where('content_id', $contentId)
+                    ->first();
+                if (!$inputVersion) {
+                    throw new NotFoundHttpException('No content found for url');
+                }
+                $latest = $inputVersion->content?->getCachedLatestVersion();
+                if (!$latest) {
+                    throw new NotFoundHttpException('Could not find lastest version');
+                }
+                $response = [
+                    'id' => $latest->content_id,
+                    'version_id' => $latest->id,
+                    'lti_launch_url' => $latest->lti_launch_url,
+                ];
+            } else {
+                throw new BadRequestHttpException('Not an allowed url');
+            }
+        } elseif (array_key_exists('content_or_version_id', $data)) {
+            $inputVersion = $tool->contentVersions()
+                ->where('content_id', $data['content_or_version_id'])
+                ->orwhere('id', $data['content_or_version_id'])
+                ->first();
+            if (!$inputVersion) {
+                throw new NotFoundHttpException('No content found for id');
+            }
+            $latest = $inputVersion->content?->getCachedLatestVersion();
+            if (!$latest) {
+                throw new NotFoundHttpException('Could not find lastest version');
+            }
+            $response = [
+                'id' => $latest->content_id,
+                'version_id' => $latest->id,
+                'lti_launch_url' => $latest->lti_launch_url,
+            ];
         }
 
-        $version = $versions->firstOrFail();
-
-        return response()->json([
-            'id' => $version->content_id,
-            'version_id' => $version->id,
-            'update_url' => route('author.content.update', [
-                $version->lti_tool_id,
-                $version->content_id,
-                $version->id,
-            ]),
-        ]);
+        return response()->json($response);
     }
 
     public function update(

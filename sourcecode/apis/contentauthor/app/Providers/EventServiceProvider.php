@@ -37,6 +37,7 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\H5PWasSaved::class => [
             \App\Listeners\H5P\HandleVersioning::class,
             HandleExport::class,
+            \App\Listeners\H5P\BulkExcludeUpdateListener::class
         ],
 
         \App\Events\VideoSourceChanged::class => [
