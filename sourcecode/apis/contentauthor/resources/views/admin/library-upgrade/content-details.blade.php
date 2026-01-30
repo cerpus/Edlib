@@ -31,18 +31,6 @@
                                 <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
-                                <th>Latest version id</th>
-                                <td>
-                                    @if($requestedVersion && $requestedVersion->id !== $content->version_id)
-                                        <a href="{{ route('admin.content-details', [$content->id]) }}">
-                                            {{ $content->version_id }}
-                                        </a>
-                                    @else
-                                        {{ $content->version_id }}
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr>
                                 <th>Language</th>
                                 <td>
                                     @isset($content->language_iso_639_3)
@@ -78,9 +66,8 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Version id</th>
                                         <th>Content id</th>
-                                        <th>Version created</th>
+                                        <th>Created</th>
                                         <th>Title</th>
                                         <th>License</th>
                                         <th>Language</th>
@@ -90,23 +77,13 @@
                                 </thead>
                                 <tbody>
                                     @foreach($history as $historyItem)
-                                        @php($versionId = $requestedVersion ? $requestedVersion->id : $content->version_id)
                                         <tr>
-                                            @if ($historyItem['id'] !== $versionId)
-                                                <td>
-                                                    <a href="{{ route('admin.content-details', [$historyItem['content_id'], $historyItem['id']]) }}">
-                                                        {{ $historyItem['id'] }}
-                                                    </a>
-                                                </td>
-                                            @else
-                                                <td>{{ $historyItem['id'] }}</td>
-                                            @endif
                                             <td>
-                                                <a href="{{ route('admin.content-details', [$historyItem['content_id']]) }}">
-                                                    {{ $historyItem['content_id'] }}
+                                                <a href="{{ route('admin.content-details', [$historyItem['content']['id']]) }}">
+                                                    {{ $historyItem['content']['id'] }}
                                                 </a>
                                             </td>
-                                            <td>{{ $historyItem['versionDate']->format('Y-m-d H:i:s.u e') }}</td>
+                                            <td>{{ $historyItem['content']['created_at']->format('Y-m-d H:i:s e') }}</td>
                                             <td>{{ $historyItem['content']['title'] ?? '' }}</td>
                                             <td>{{ $historyItem['content']['license'] ?? '' }}</td>
                                             <td>{{ $historyItem['content']['language'] ?? '' }}</td>
@@ -121,7 +98,7 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                        @break($historyItem['id'] === $versionId)
+                                        @break($historyItem['content']['id'] === $content['id'])
                                     @endforeach
                                 </tbody>
                             </table>
@@ -135,9 +112,8 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Version id</th>
                                         <th>Content id</th>
-                                        <th>Version created</th>
+                                        <th>Created</th>
                                         <th>Title</th>
                                         <th>License</th>
                                         <th>Language</th>
@@ -146,41 +122,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php($versionId = $requestedVersion ? $requestedVersion->id : $content->version_id)
-                                    @if(!empty($history[$versionId]) && !empty($history[$versionId]['children']))
-                                        @foreach($history[$versionId]['children'] as $child)
-                                            <tr>
-                                                <td>
-                                                    <a href="{{ route('admin.content-details', [$child['content_id'], $child['id']]) }}">
-                                                        {{ $child['id'] }}
+                                    @foreach($history[$content->id]['children'] as $childId)
+                                        @php ($child = $history[$childId])
+                                        <tr>
+                                            <td><a href="{{ route('admin.content-details', $childId) }}">{{ $childId }}</a>
+                                            <td>{{ $child['content']['created_at']->format('Y-m-d H:i:s e') }}</td>
+                                            <td>{{ $child['content']['title'] ?? '' }}</td>
+                                            <td>{{ $child['content']['license'] ?? '' }}</td>
+                                            <td>{{ $child['content']['language'] ?? '' }}</td>
+                                            <td>{{ $child['version_purpose'] }}</td>
+                                            <td>
+                                                @isset($child['content']['library_id'])
+                                                    <a href="{{ route('admin.check-library', [$child['content']['library_id']]) }}">
+                                                        {{ $child['content']['library'] }}
                                                     </a>
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('admin.content-details', [$child['content_id']]) }}">
-                                                        {{ $child['content_id'] }}
-                                                    </a>
-                                                </td>
-                                                @isset($child['content'])
-                                                    <td>{{ $child['versionDate']->format('Y-m-d H:i:s.u e') }}</td>
-                                                    <td>{{ $child['content']['title'] ?? '' }}</td>
-                                                    <td>{{ $child['content']['license'] ?? '' }}</td>
-                                                    <td>{{ $child['content']['language'] ?? '' }}</td>
-                                                    <td>{{ $child['version_purpose'] }}</td>
-                                                    <td>
-                                                        @isset($child['content']['library_id'])
-                                                            <a href="{{ route('admin.check-library', [$child['content']['library_id']]) }}">
-                                                                {{ $child['content']['library'] }}
-                                                            </a>
-                                                        @else
-                                                            {{ $child['content']['library'] ?? '' }}
-                                                        @endif
-                                                    </td>
                                                 @else
-                                                    <td colspan="6"></td>
-                                                @endisset
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                                    {{ $child['content']['library'] ?? '' }}
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
