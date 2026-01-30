@@ -359,7 +359,7 @@ class ContentFilter extends FormRequest
                     shareDialogUrl: $canView ? route('content.share-dialog', [$content]) : null,
                     copyUrl: $canCopy ? route('content.copy', [$content]) : null,
                     deleteUrl: $canDelete ? route('content.delete', [$content]) : null,
-                    lockedByUserName: $content->getActiveLock()?->user->name,
+                    lockedByUserName: $content->getActiveLock()?->user?->name,
                 );
             });
     }
