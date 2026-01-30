@@ -106,6 +106,10 @@ readonly class ContentPolicy
             return false;
         }
 
+        if ($content->isLocked()) {
+            return false;
+        }
+
         if ($user->admin) {
             return true;
         }

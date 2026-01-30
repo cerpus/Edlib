@@ -3,7 +3,11 @@
 @if ($content->useUrl)
     <x-content.action-buttons.use :url="$content->useUrl" />
     @if($content->editUrl)
-        <x-content.action-buttons.edit :url="$content->editUrl" />
+        <x-content.action-buttons.edit
+            :url="$content->editUrl"
+            :lockedByUserName="$content->lockedByUserName"
+            :withIcon="false"
+        />
     @else
         <x-content.action-buttons.copy :url="$content->copyUrl" />
     @endif
@@ -13,11 +17,16 @@
         :detailsUrl="$content->detailsUrl"
         :copyUrl="$content->editUrl ? $content->copyUrl : null"
         :deleteUrl="$content->deleteUrl"
+        :lockedByUserName="$content->lockedByUserName"
     />
 @elseauth
     <x-content.action-buttons.details :url="$content->detailsUrl" />
     @if($content->editUrl)
-        <x-content.action-buttons.edit :url="$content->editUrl" />
+        <x-content.action-buttons.edit
+            :url="$content->editUrl"
+            :lockedByUserName="$content->lockedByUserName"
+            :withIcon="false"
+        />
     @else
         <x-content.action-buttons.copy :url="$content->copyUrl" />
     @endif
@@ -26,6 +35,7 @@
         :shareDialogUrl="$content->shareDialogUrl"
         :copyUrl="$content->editUrl ? $content->copyUrl : null"
         :deleteUrl="$content->deleteUrl"
+        :lockedByUserName="$content->lockedByUserName"
     />
 @else
     <x-content.action-buttons.share :$content />

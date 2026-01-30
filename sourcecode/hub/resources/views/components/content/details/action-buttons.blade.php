@@ -1,10 +1,13 @@
-@php use App\Support\SessionScope; @endphp
+@php
+    use App\Support\SessionScope;
+    $lockedByUserName = $content->getActiveLock()?->user->name;
+@endphp
 @props(['content', 'version', 'explicitVersion'])
 
 @can('use', [$content, $version])
     <x-form action="{{ $version->getUseUrl() }}">
         <button class="btn btn-primary d-flex gap-2 text-nowrap">
-            <x-icon name="check-lg" />
+            <x-icon name="check-lg"/>
             <span class="flex-grow-1">{{ trans('messages.use-content')}}</span>
         </button>
     </x-form>
@@ -12,10 +15,13 @@
 
 @can('edit', $content)
     <a
-        class="btn btn-secondary d-flex gap-2 text-nowrap"
+        class="btn btn-secondary d-flex gap-2 text-nowrap {{ $lockedByUserName ? 'disabled' : '' }}"
         href="{{ route('content.edit', [$content, $version]) }}"
+        @if($lockedByUserName)
+            disabled="disabled"
+        @endif
     >
-        <x-icon name="pencil" />
+        <x-icon name="{{ $lockedByUserName ? 'lock' : 'pencil' }}"/>
         <span class="flex-grow-1">{{ trans('messages.edit')}}</span>
     </a>
 @endcan
@@ -26,7 +32,7 @@
             class="btn btn-secondary d-flex gap-2 text-nowrap"
             type="submit"
         >
-            <x-icon name="copy" />
+            <x-icon name="copy"/>
             <span class="flex-grow-1">{{ trans('messages.copy') }}</span>
         </button>
     </x-form>
@@ -42,7 +48,7 @@
         hx-swap="beforeend"
         data-modal="true"
     >
-        <x-icon name="share" />
+        <x-icon name="share"/>
         <span class="flex-grow-1">{{ trans('messages.share') }}</span>
     </a>
 @endif
@@ -56,7 +62,13 @@
         data-confirm-ok="{{ trans('messages.delete-content') }}"
         title="{{ trans('messages.delete') }}"
     >
-        <x-icon name="trash" />
+        <x-icon name="trash"/>
         <span class="visually-hidden">{{ trans('messages.delete') }}</span>
     </button>
 @endcan
+
+@cannot('delete', $content)
+    @if($content->isLocked())
+        {{ trans('messages.the-lock-is-held-by-since', ['name' => $content->getActiveLock()?->user->name ?? 'unknown', 'datetime' => $content->getActiveLock()?->created_at ?? '?' ]) }}
+    @endif
+@endcannot
