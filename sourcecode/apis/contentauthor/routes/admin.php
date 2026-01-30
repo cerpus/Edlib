@@ -9,8 +9,10 @@ use App\Http\Controllers\Admin\AdminContentMigrateController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Http\Controllers\Admin\CapabilityController;
+use App\Http\Controllers\Admin\ContentBulkExcludeController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
+use App\Http\Controllers\Admin\AdminH5PTranslation;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LtiAdminAccess;
 use App\Http\Controllers\Admin\PresaveController;
@@ -53,9 +55,13 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
             ->name('admin.content-library');
         Route::get('content/{content}/details/{version?}', [AdminH5PDetailsController::class, 'contentHistory'])
             ->name('admin.content-details');
-        Route::get('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslation'])
+        Route::get('libraries/{library}/translation/{locale}', [AdminH5PTranslation::class, 'edit'])
             ->name('admin.library-translation');
-        Route::post('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslationUpdate']);
+        Route::post('libraries/{library}/translation/{locale}', [AdminH5PTranslation::class, 'update']);
+        Route::get('libraries/{library}/translation/{locale}/content', [AdminH5PTranslation::class, 'contentRefresh'])
+            ->name('admin.library-transation-content');
+        Route::post('libraries/{library}/translation/{locale}/content/update', [AdminH5PTranslation::class, 'contentUpdate'])
+            ->name('admin.library-transation-content-update');
 
         Route::get('libraries/{library}', [ContentUpgradeController::class, 'upgrade'])->name('admin.library');
 
@@ -100,5 +106,10 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
 
         // More general Admin Backend routes
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
+
+        Route::get('bulkexclude/content', [ContentBulkExcludeController::class, 'index'])->name('admin.bulkexclude.content.index');
+        Route::get('bulkexclude/find', [ContentBulkExcludeController::class, 'find'])->name('admin.bulkexclude.content.find');
+        Route::post('bulkexclude/content', [ContentBulkExcludeController::class, 'add'])->name('admin.bulkexclude.content.add');
+        Route::delete('bulkexclude/content', [ContentBulkExcludeController::class, 'delete'])->name('admin.bulkexclude.content.delete');
     },
 );

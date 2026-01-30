@@ -113,6 +113,16 @@ class H5PContent extends Content implements VersionableObject
         return $this->hasOne(H5PContentsMetadata::class, 'content_id');
     }
 
+    public function exclutions(): HasMany
+    {
+        return $this->hasMany(ContentBulkExclude::class, 'content_id');
+    }
+
+    public function versions(): HasMany
+    {
+        return $this->hasMany(ContentVersion::class, 'content_id')->where('content_type', '=',  'h5p');
+    }
+
     public function getMetadataStructure(): array
     {
         /** @var H5PContentsMetadata $h5pmetadata */
