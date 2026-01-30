@@ -7,7 +7,7 @@
 @can('use', [$content, $version])
     <x-form action="{{ $version->getUseUrl() }}">
         <button class="btn btn-primary d-flex gap-2 text-nowrap">
-            <x-icon name="check-lg"/>
+            <x-icon name="check-lg" />
             <span class="flex-grow-1">{{ trans('messages.use-content')}}</span>
         </button>
     </x-form>
@@ -21,7 +21,7 @@
             disabled="disabled"
         @endif
     >
-        <x-icon name="{{ $activeLock ? 'lock' : 'pencil' }}"/>
+        <x-icon name="{{ $activeLock ? 'lock' : 'pencil' }}" />
         <span class="flex-grow-1">{{ trans('messages.edit')}}</span>
     </a>
 @endcan
@@ -32,7 +32,7 @@
             class="btn btn-secondary d-flex gap-2 text-nowrap"
             type="submit"
         >
-            <x-icon name="copy"/>
+            <x-icon name="copy" />
             <span class="flex-grow-1">{{ trans('messages.copy') }}</span>
         </button>
     </x-form>
@@ -48,7 +48,7 @@
         hx-swap="beforeend"
         data-modal="true"
     >
-        <x-icon name="share"/>
+        <x-icon name="share" />
         <span class="flex-grow-1">{{ trans('messages.share') }}</span>
     </a>
 @endif
@@ -62,7 +62,7 @@
         data-confirm-ok="{{ trans('messages.delete-content') }}"
         title="{{ trans('messages.delete') }}"
     >
-        <x-icon name="trash"/>
+        <x-icon name="trash" />
         <span class="visually-hidden">{{ trans('messages.delete') }}</span>
     </button>
 @endcan
