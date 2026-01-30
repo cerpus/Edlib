@@ -6,7 +6,6 @@
         <x-content.action-buttons.edit
             :url="$content->editUrl"
             :lockedByUserName="$content->lockedByUserName"
-            :withIcon="false"
         />
     @else
         <x-content.action-buttons.copy :url="$content->copyUrl" />
@@ -25,7 +24,6 @@
         <x-content.action-buttons.edit
             :url="$content->editUrl"
             :lockedByUserName="$content->lockedByUserName"
-            :withIcon="false"
         />
     @else
         <x-content.action-buttons.copy :url="$content->copyUrl" />

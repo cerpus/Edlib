@@ -1,6 +1,6 @@
 @php
     use App\Support\SessionScope;
-    $lockedByUserName = $content->getActiveLock()?->user->name;
+    $activeLock = $content->getActiveLock();
 @endphp
 @props(['content', 'version', 'explicitVersion'])
 
@@ -15,13 +15,13 @@
 
 @can('edit', $content)
     <a
-        class="btn btn-secondary d-flex gap-2 text-nowrap {{ $lockedByUserName ? 'disabled' : '' }}"
+        class="btn btn-secondary d-flex gap-2 text-nowrap {{ $activeLock ? 'disabled' : '' }}"
         href="{{ route('content.edit', [$content, $version]) }}"
-        @if($lockedByUserName)
+        @if($activeLock)
             disabled="disabled"
         @endif
     >
-        <x-icon name="{{ $lockedByUserName ? 'lock' : 'pencil' }}"/>
+        <x-icon name="{{ $activeLock ? 'lock' : 'pencil' }}"/>
         <span class="flex-grow-1">{{ trans('messages.edit')}}</span>
     </a>
 @endcan
@@ -68,7 +68,7 @@
 @endcan
 
 @cannot('delete', $content)
-    @if($content->isLocked())
-        {{ trans('messages.the-lock-is-held-by-since', ['name' => $content->getActiveLock()?->user->name ?? 'unknown', 'datetime' => $content->getActiveLock()?->created_at ?? '?' ]) }}
+    @if($activeLock)
+        {{ trans('messages.the-lock-is-held-by-since', ['name' => $activeLock?->user->name ?? 'unknown', 'datetime' => $activeLock?->created_at ?? '?' ]) }}
     @endif
 @endcannot
