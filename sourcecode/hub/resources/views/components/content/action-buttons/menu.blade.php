@@ -59,5 +59,13 @@
                 </button>
             </li>
         @endisset
+
+        @if($lockedByUserName)
+                <li>
+                    <span class="dropdown-item-text small text-muted">
+                        {{ trans('messages.the-lock-is-held-by', ['name' => $lockedByUserName]) }}
+                    </span>
+                </li>
+        @endif
     </ul>
 </div>

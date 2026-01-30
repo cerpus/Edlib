@@ -1,4 +1,7 @@
-@php use App\Support\SessionScope; @endphp
+@php
+    use App\Support\SessionScope;
+    $activeLock = $content->getActiveLock();
+@endphp
 @props(['content', 'version', 'explicitVersion'])
 
 @can('use', [$content, $version])
@@ -12,10 +15,14 @@
 
 @can('edit', $content)
     <a
-        class="btn btn-secondary d-flex gap-2 text-nowrap"
         href="{{ route('content.edit', [$content, $version]) }}"
+        @class([
+            'btn btn-secondary d-flex gap-2 text-nowrap',
+            'disabled' => $activeLock,
+        ])
+        @disabled($activeLock)
     >
-        <x-icon name="pencil" />
+        <x-icon name="{{ $activeLock ? 'lock' : 'pencil' }}" />
         <span class="flex-grow-1">{{ trans('messages.edit')}}</span>
     </a>
 @endcan
@@ -60,3 +67,9 @@
         <span class="visually-hidden">{{ trans('messages.delete') }}</span>
     </button>
 @endcan
+
+@cannot('delete', $content)
+    @if($activeLock)
+        {{ trans('messages.the-lock-is-held-by-since', ['name' => $activeLock?->user->name ?? 'unknown', 'datetime' => $activeLock?->created_at ?? '?' ]) }}
+    @endif
+@endcannot

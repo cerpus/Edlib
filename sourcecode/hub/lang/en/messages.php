@@ -254,4 +254,5 @@ return [
     'the-content-is-locked-for-editing' => 'The content is locked for editing.',
     'the-lock-is-held-by' => 'The lock is held by: :name.',
     'active-content-locks' => 'Active content locks',
+    'the-lock-is-held-by-since' => 'The lock is held by: :name since :datetime',
 ];
