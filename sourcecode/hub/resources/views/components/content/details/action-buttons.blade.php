@@ -15,11 +15,12 @@
 
 @can('edit', $content)
     <a
-        class="btn btn-secondary d-flex gap-2 text-nowrap {{ $activeLock ? 'disabled' : '' }}"
         href="{{ route('content.edit', [$content, $version]) }}"
-        @if($activeLock)
-            disabled="disabled"
-        @endif
+        @class([
+            'btn btn-secondary d-flex gap-2 text-nowrap',
+            'disabled' => $activeLock,
+        ])
+        @disabled($activeLock)
     >
         <x-icon name="{{ $activeLock ? 'lock' : 'pencil' }}" />
         <span class="flex-grow-1">{{ trans('messages.edit')}}</span>
