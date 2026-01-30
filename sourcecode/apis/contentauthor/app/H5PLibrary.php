@@ -353,7 +353,7 @@ class H5PLibrary extends Model
 
     public function includeImageWidth(): bool
     {
-        return !in_array($this->name, ['H5P.ThreeImage', 'H5P.NDLAThreeImage']);
+        return !in_array($this->name, ['H5P.ThreeImage', 'H5P.NDLAThreeImage', 'H5P.EscapeRoom']);
     }
 
     public function getIconUrl(): string
