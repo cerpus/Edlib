@@ -44,6 +44,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -51,7 +52,6 @@ use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 use function app;
 use function config;
 use function request;
@@ -63,10 +63,11 @@ class H5PController extends Controller
     private string $viewDataCacheName = 'viewData-';
 
     public function __construct(
-        private Lti $lti,
-        private h5p $h5p,
+        private Lti             $lti,
+        private h5p             $h5p,
         private H5PLibraryAdmin $h5pLibraryAdmin,
-    ) {
+    )
+    {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
@@ -82,6 +83,8 @@ class H5PController extends Controller
             Session::flash(SessionKeys::EXT_CSS_URL, $style);
         }
         $h5pContent = H5PContent::findOrFail($id);
+
+        $styles = $this->getContentCustomStyle($h5pContent, $styles);
 
         $viewConfig = (app(H5PViewConfig::class))
             ->setUserId(Session::get('authId', false))
@@ -170,15 +173,15 @@ class H5PController extends Controller
         ]);
 
         $state = H5PStateDataObject::create($displayOptions + [
-            'library' => $contenttype,
-            'license' => License::getDefaultLicense(),
-            'isPublished' => $ltiRequest?->getPublished() ?? false,
-            'isShared' => $ltiRequest?->getShared() ?? false,
-            'language_iso_639_3' => $language,
-            'redirectToken' => $request->get('redirectToken'),
-            'route' => route('h5p.store'),
-            '_method' => "POST",
-        ])->toJson();
+                'library' => $contenttype,
+                'license' => License::getDefaultLicense(),
+                'isPublished' => $ltiRequest?->getPublished() ?? false,
+                'isShared' => $ltiRequest?->getShared() ?? false,
+                'language_iso_639_3' => $language,
+                'redirectToken' => $request->get('redirectToken'),
+                'route' => route('h5p.store'),
+                '_method' => "POST",
+            ])->toJson();
 
         return view(
             'h5p.create',
@@ -278,7 +281,7 @@ class H5PController extends Controller
         $displayOptions['download'] = $displayOptions['export'];
 
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
-            'id' => (string) $content['id'],
+            'id' => (string)$content['id'],
             'createdAt' => $h5pContent->created_at->toIso8601String(),
             'type' => $library->getTitleAndVersionString(),
             'maxScore' => $library->supportsMaxScore() ? $h5pContent->max_score : null,
@@ -286,21 +289,21 @@ class H5PController extends Controller
         ]));
 
         $state = H5PStateDataObject::create($displayOptions + [
-            'id' => $h5pContent->id,
-            'library' => $library->getLibraryString(false),
-            'libraryid' => $h5pContent->library_id,
-            'parameters' => $params,
-            'language_iso_639_3' => $contentLanguage,
-            'title' => $h5pContent->title,
-            'license' => $h5pContent->license ?: License::getDefaultLicense(),
-            'isPublished' => $ltiRequest?->getPublished() ?? false,
-            'isDraft' => $h5pContent->isDraft(),
-            'isShared' => $ltiRequest?->getShared() ?? false,
-            'redirectToken' => $request->get('redirectToken'),
-            'route' => route('h5p.update', ['h5p' => $id]),
-            'max_score' => $h5pContent->max_score,
-            '_method' => "PUT",
-        ])->toJson();
+                'id' => $h5pContent->id,
+                'library' => $library->getLibraryString(false),
+                'libraryid' => $h5pContent->library_id,
+                'parameters' => $params,
+                'language_iso_639_3' => $contentLanguage,
+                'title' => $h5pContent->title,
+                'license' => $h5pContent->license ?: License::getDefaultLicense(),
+                'isPublished' => $ltiRequest?->getPublished() ?? false,
+                'isDraft' => $h5pContent->isDraft(),
+                'isShared' => $ltiRequest?->getShared() ?? false,
+                'redirectToken' => $request->get('redirectToken'),
+                'route' => route('h5p.update', ['h5p' => $id]),
+                'max_score' => $h5pContent->max_score,
+                '_method' => "PUT",
+            ])->toJson();
 
         return view(
             'h5p.edit',
@@ -668,5 +671,28 @@ class H5PController extends Controller
         $information = $cache->rememberForever($h5p->getInfoCacheKey(), fn() => $h5pInfo->getInformation($h5p));
 
         return response()->json($information);
+    }
+
+    /**
+     * @param H5PContent $h5pContent
+     * @param array $styles
+     * @return array
+     */
+    public function getContentCustomStyle(H5PContent $h5pContent, array $styles): array
+    {
+        $h5pContentLibraryName = $h5pContent?->library?->name;
+        if ($h5pContentLibraryName) {
+            $includeName = "/css/$h5pContentLibraryName.css";
+            $cacheKey = "h5p_custom_css_exists:$h5pContentLibraryName";
+
+            $exists = Cache::remember($cacheKey, 3600, function () use ($includeName) {
+                return File::exists(public_path($includeName));
+            });
+
+            if ($exists) {
+                $styles[] = $includeName;
+            }
+        }
+        return $styles;
     }
 }
