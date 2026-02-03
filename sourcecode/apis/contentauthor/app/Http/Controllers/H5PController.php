@@ -44,7 +44,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -52,6 +51,7 @@ use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 use function app;
 use function config;
 use function request;
@@ -82,8 +82,6 @@ class H5PController extends Controller
             Session::flash(SessionKeys::EXT_CSS_URL, $style);
         }
         $h5pContent = H5PContent::findOrFail($id);
-
-        $styles = $this->getContentCustomStyle($h5pContent, $styles);
 
         $viewConfig = (app(H5PViewConfig::class))
             ->setUserId(Session::get('authId', false))
@@ -670,30 +668,5 @@ class H5PController extends Controller
         $information = $cache->rememberForever($h5p->getInfoCacheKey(), fn() => $h5pInfo->getInformation($h5p));
 
         return response()->json($information);
-    }
-
-    /**
-     * @param H5PContent $h5pContent
-     * @param array $styles
-     * @return array
-     */
-    public function getContentCustomStyle(H5PContent $h5pContent, array $styles): array
-    {
-        $h5pContentLibraryName = $h5pContent->library->name;
-
-        if ($h5pContentLibraryName) {
-            $includeName = "/css/$h5pContentLibraryName.css";
-            $cacheKey = "h5p_custom_css_exists:$h5pContentLibraryName";
-
-            $exists = Cache::remember($cacheKey, 3600, function () use ($includeName) {
-                return File::exists(public_path($includeName));
-            });
-
-            if ($exists) {
-                $styles[] = $includeName;
-            }
-        }
-
-        return $styles;
     }
 }
