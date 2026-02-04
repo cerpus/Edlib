@@ -149,13 +149,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Translations in database ({{$languages->count()}})</th>
+                                <th>Translations ({{$languages->count()}})</th>
                                 <td colspan="2">
                                     @foreach($languages as $lang)
                                         <a
                                             href="{{ route('admin.library-translation', [$library->id, $lang]) }}"
                                             class="btn btn-default"
-                                            title="{{Iso639p3::englishName($lang)}}"
+                                            title="{{locale_get_display_language($lang)}}"
                                         >
                                             {{ $lang }}
                                         </a>
@@ -163,14 +163,16 @@
                                 </td>
                                 <td></td>
                             </tr>
-                            <tr>
-                                <th>Number of contents</th>
-                                <td colspan="2">
-                                    <a href="{{ route('admin.content-library', [$library->id]) }}">
-                                        {{ $library->contents()->count() }}
-                                    </a>
-                                </td>
-                            </tr>
+                            @if($library->runnable)
+                                <tr>
+                                    <th>Number of contents</th>
+                                    <td colspan="2">
+                                        <a href="{{ route('admin.content-library', [$library->id]) }}">
+                                            {{ $library->contents()->count() }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endif
                         </table>
                     </div>
                 </div>

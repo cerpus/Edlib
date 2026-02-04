@@ -44,6 +44,7 @@ mix
     .js('resources/assets/entrypoints/react-article.js', 'build/js/react-article.js')
     .js('resources/assets/entrypoints/react-h5p.js', 'build/js/react-h5p.js')
     .js('resources/assets/entrypoints/react-questionset.js', 'build/js/react-questionset.js')
+    .js('resources/assets/entrypoints/content-language-update.js', 'build/js/content-language-update.js')
     .webpackConfig({
         resolve: {
             fallback: {
