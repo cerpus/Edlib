@@ -180,7 +180,6 @@ class Millionaire extends GameBase
         ])->toJson();
 
         return view('games.create', [
-            'emails' => '',
             'editorSetup' => $editorSetup,
             'state' => $state,
         ]);
@@ -226,7 +225,6 @@ class Millionaire extends GameBase
             'game' => $game,
             'editorSetup' => $editorSetup->toJson(),
             'state' => $state->toJson(),
-            'emails' => $game->getCollaboratorEmails(),
         ]);
     }
 

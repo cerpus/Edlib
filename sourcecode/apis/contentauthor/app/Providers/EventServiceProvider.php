@@ -21,21 +21,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\H5P\InfoCacheListener::class . '@handleDeleted',
         ],
 
-        \App\Events\ArticleWasSaved::class => [
-            \App\Listeners\Article\HandleVersioning::class,
-            \App\Listeners\Article\HandleCollaborators::class,
-        ],
-
-        \App\Events\ArticleWasCopied::class => [
-            \App\Listeners\Article\HandleVersioning::class,
-        ],
-
-        \App\Events\H5PWasCopied::class => [
-            \App\Listeners\H5P\Copy\HandleVersioning::class,
-        ],
-
         \App\Events\H5PWasSaved::class => [
-            \App\Listeners\H5P\HandleVersioning::class,
             HandleExport::class,
         ],
 
@@ -45,11 +31,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\QuestionsetWasSaved::class => [
             \App\Listeners\Questionset\HandleQuestionbank::class,
-        ],
-
-        \App\Events\GameWasSaved::class => [
-            \App\Listeners\Game\HandleVersioning::class,
-            //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
         ],
     ];
 

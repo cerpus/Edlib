@@ -2,13 +2,11 @@
 
 namespace App\Providers;
 
-use App\ContentVersion;
 use App\H5POption;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\TrimStrings;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
-use App\Observers\ContentVersionsObserver;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
@@ -31,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapThree();
 
         H5POption::observe(H5POptionObserver::class);
-        ContentVersion::observe(ContentVersionsObserver::class);
 
         TrimStrings::skipWhen(fn(Request $request) => $request->has('lti_message_type'));
     }

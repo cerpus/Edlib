@@ -21,21 +21,6 @@ parameters:
 			path: app/Content.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 2
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$article\\.$#"
-			count: 1
-			path: app/Events/ArticleWasCopied.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$reason\\.$#"
-			count: 1
-			path: app/Events/ArticleWasCopied.php
-
-		-
 			message: "#^Method App\\\\Exceptions\\\\Handler\\:\\:render\\(\\) should return Illuminate\\\\Http\\\\Response but returns Symfony\\\\Component\\\\HttpFoundation\\\\Response\\.$#"
 			count: 1
 			path: app/Exceptions/Handler.php
@@ -54,16 +39,6 @@ parameters:
 			message: "#^Result of method Illuminate\\\\Foundation\\\\Exceptions\\\\Handler\\:\\:report\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: app/Exceptions/Handler.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^Method App\\\\H5PCollaborator\\:\\:setUpdatedAt\\(\\) should return \\$this\\(App\\\\H5PCollaborator\\) but return statement is missing\\.$#"
-			count: 1
-			path: app/H5PCollaborator.php
 
 		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
@@ -121,17 +96,7 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:getContentLicense\\(\\) should return Illuminate\\\\Http\\\\Response but returns int\\|string\\|false\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
 			message: "#^Parameter \\#2 \\$current of method H5PCore\\:\\:getStorableDisplayOptions\\(\\) expects int, null given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Variable \\$emails in isset\\(\\) always exists and is not nullable\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
@@ -501,11 +466,6 @@ parameters:
 			path: app/Providers/AuthServiceProvider.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 1
-			path: app/QuestionSet.php
-
-		-
 			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<int, string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
 			count: 1
 			path: app/User.php
@@ -564,8 +524,3 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/MultiChoiceTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 2
-			path: tests/Integration/Models/ContentVersionTest.php
