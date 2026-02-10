@@ -85,6 +85,16 @@ export default (onParameterChange) => {
             h5pEditor.selector.form.metadataForm.setMetadata({authors: [{name, role}]});
         }
     };
+    const getAuthors = () => {
+        const params = getParams();
+        return params?.metadata?.authors || [];
+    };
+
+    const setAuthors = (authors) => {
+        if (h5pEditor?.selector?.form?.metadataForm && authors?.length > 0) {
+            h5pEditor.selector.form.metadataForm.setMetadata({ authors });
+        }
+    };
 
     const onBeforeUpgrade = params => {
         if (!params !== undefined && params !== false) {
@@ -160,5 +170,7 @@ export default (onParameterChange) => {
         },
         h5pEditor,
         iframeLoading,
+        getAuthors,
+        setAuthors,
     };
 };
