@@ -26,10 +26,14 @@ jobs:
           - contentauthor
     steps:
       - name: Send Slack notification - Deployment starting
-        if: inputs.environment == 'ndla_prod' && env.EXTRA_SLACK_HOOK_URL != ''
+        if: inputs.environment == 'ndla_prod'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.EXTRA_SLACK_HOOK_URL }}
         run: |
+          if [[ -z "$SLACK_WEBHOOK_URL" ]]; then
+            echo "SLACK_WEBHOOK_URL is not set, skipping notification"
+            exit 0
+          fi
           curl -X POST "$SLACK_WEBHOOK_URL" \
             -H 'Content-Type: application/json' \
             -d "{\"text\":\"🚀 Starting deployment of *${{ matrix.api }}* to *ndla_prod* (version \`${{ inputs.version }}\`)\"}"
@@ -109,10 +113,15 @@ jobs:
 #            --environment-name ${{ steps.get_variables.outputs.beanstalkEnvironment }}
 
       - name: Send Slack notification - Deployment completed
-        if: always() && inputs.environment == 'ndla_prod' && env.EXTRA_SLACK_HOOK_URL != ''
+        if: always() && inputs.environment == 'ndla_prod'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.EXTRA_SLACK_HOOK_URL }}
         run: |
+          if [[ -z "$SLACK_WEBHOOK_URL" ]]; then
+            echo "SLACK_WEBHOOK_URL is not set, skipping notification"
+            exit 0
+          fi
+
           if [ "${{ job.status }}" == "success" ]; then
             curl -X POST "$SLACK_WEBHOOK_URL" \
               -H 'Content-Type: application/json' \
