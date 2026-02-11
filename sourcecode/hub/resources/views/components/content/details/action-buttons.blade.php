@@ -61,6 +61,7 @@
         hx-confirm="{{ trans('messages.delete-content-confirm-text') }}"
         data-confirm-title="{{ trans('messages.delete-content') }}"
         data-confirm-ok="{{ trans('messages.delete-content') }}"
+        data-confirm-ok-class="btn-danger"
         title="{{ trans('messages.delete') }}"
     >
         <x-icon name="trash" />

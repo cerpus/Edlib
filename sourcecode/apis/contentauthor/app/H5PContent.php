@@ -357,4 +357,9 @@ class H5PContent extends Content implements VersionableObject
     {
         return $this->library()->firstOrFail()->getIconUrl();
     }
+
+    public function getExportFilename(): string
+    {
+        return sprintf("%s-%d.h5p", $this->slug, $this->id);
+    }
 }

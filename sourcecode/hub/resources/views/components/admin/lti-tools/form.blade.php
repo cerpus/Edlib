@@ -103,6 +103,13 @@
             :checked="$tool?->default_shared"
             :label="trans('messages.default-shared-flag')"
         />
+
+        <x-form.field
+            name="supports_destroy"
+            type="checkbox"
+            :checked="$tool?->supports_destroy"
+            :label="trans('messages.supports-destroy')"
+        />
     </fieldset>
 
     {{ $button }}

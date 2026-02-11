@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Http\Controllers;
 
+use App\ContentVersion;
 use App\H5PContent;
 use App\H5PContentLibrary;
 use App\H5PContentsMetadata;
@@ -22,6 +23,7 @@ use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -381,5 +383,172 @@ class H5PControllerTest extends TestCase
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];
+    }
+
+    // Test handling destroy request that only contain parts of a tree/branch
+    public function testDestroy_multipleContentOnSameBranch(): void
+    {
+        $firstContent = H5PContent::factory()->create([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'version_id' => ContentVersion::factory()->create([
+                'created_at' => Carbon::now(),
+                'content_type' => 'h5p',
+            ]),
+        ]);
+        $firstVersion = $firstContent->getVersion();
+        $firstVersion->content_id = $firstContent->id;
+        $firstVersion->saveQuietly();
+
+        $secondContent = H5PContent::factory()->create([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'version_id' => ContentVersion::factory()->create([
+                'created_at' => Carbon::now(),
+                'content_type' => 'h5p',
+                'parent_id' => $firstVersion->id,
+            ]),
+        ]);
+        $secondVersion = $secondContent->getVersion();
+        $secondVersion->content_id = $secondContent->id;
+        $secondVersion->saveQuietly();
+
+        $thirdContent = H5PContent::factory()->create([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'version_id' => ContentVersion::factory()->create([
+                'created_at' => Carbon::now(),
+                'content_type' => 'h5p',
+                'parent_id' => $secondVersion->id,
+            ]),
+        ]);
+        $thirdVersion = $thirdContent->getVersion();
+        $thirdVersion->content_id = $thirdContent->id;
+        $thirdVersion->saveQuietly();
+
+        $fourthContent = H5PContent::factory()->create([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'version_id' => ContentVersion::factory()->create([
+                'created_at' => Carbon::now(),
+                'content_type' => 'h5p',
+                'parent_id' => $thirdVersion->id,
+            ]),
+        ]);
+        $fourthVersion = $fourthContent->getVersion();
+        $fourthVersion->content_id = $fourthContent->id;
+        $fourthVersion->saveQuietly();
+
+        // Destory second and third content
+        $secondContentUrl = route('h5p.ltishow', $secondContent);
+        $thirdContentUrl = route('h5p.ltishow', $thirdContent);
+
+        $controller = app(H5PController::class);
+        $response = $controller->destroy(
+            new Request(content: json_encode([
+                'resources' => [
+                    'delete' => [
+                        $secondContentUrl,
+                        $thirdContentUrl,
+                    ],
+                    'shared' => [],
+                ],
+            ])),
+        );
+
+        $result = json_decode($response->getContent(), true);
+        $this->assertContains($secondContentUrl, $result['deleted']);
+        $this->assertContains($thirdContentUrl, $result['deleted']);
+        $this->assertEmpty($result['kept']);
+
+        $this->assertDatabaseCount('h5p_contents', 2);
+        $this->assertDatabaseCount('content_versions', 2);
+
+        // Second and third content and versions are gone
+        $this->assertDatabaseMissing('h5p_contents', ['id' => $secondContent->id]);
+        $this->assertDatabaseMissing('content_versions', ['id' => $secondVersion->id]);
+        $this->assertDatabaseMissing('h5p_contents', ['id' => $thirdContent->id]);
+        $this->assertDatabaseMissing('content_versions', ['id' => $thirdVersion->id]);
+
+        // First and fourth content and versions should remain
+        $this->assertDatabaseHas('h5p_contents', ['id' => $firstContent->id, 'version_id' => $firstVersion->id]);
+        $this->assertDatabaseHas('content_versions', ['id' => $firstVersion->id, 'content_id' => $firstContent->id]);
+        $this->assertDatabaseHas('h5p_contents', ['id' => $fourthContent->id, 'version_id' => $fourthVersion->id]);
+        $this->assertDatabaseHas('content_versions', ['id' => $fourthVersion->id, 'content_id' => $fourthContent->id]);
+
+        // And fourth version should now have first version as parent
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $fourthVersion->id,
+            'parent_id' => $firstVersion->id,
+        ]);
+    }
+
+    // Test handling CA content id with multiple versions
+    public function testDestroy_multipleVersionsForSameContent(): void
+    {
+        // First version of the content
+        $firstContent = H5PContent::factory()->create([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'version_id' => ContentVersion::factory()->create([
+                'created_at' => Carbon::now(),
+                'content_type' => 'h5p',
+            ]),
+        ]);
+        $firstContentFirstVersion = $firstContent->getVersion();
+        $firstContentFirstVersion->content_id = $firstContent->id;
+        $firstContentFirstVersion->saveQuietly();
+
+        // New content that branches out from the first version
+        $secondContent = H5PContent::factory()->create([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'version_id' => ContentVersion::factory()->create([
+                'created_at' => Carbon::now(),
+                'parent_id' => $firstContentFirstVersion->id,
+                'content_type' => 'h5p',
+            ]),
+        ]);
+        $secondContentFirstVersion = $secondContent->getVersion();
+        $secondContentFirstVersion->content_id = $secondContent->id;
+        $secondContentFirstVersion->saveQuietly();
+
+        // New version of the first content, content id is not changed, just a new version
+        $firstContentSecondVersion = ContentVersion::factory()->create([
+            'created_at' => Carbon::now(),
+            'parent_id' => $firstContentFirstVersion->id,
+            'content_id' => $firstContent->id,
+            'content_type' => 'h5p',
+        ]);
+        $firstContent->version_id = $firstContentSecondVersion->id;
+        $firstContent->saveQuietly();
+
+        // Request destruction of $firstContent and $secondContent
+        // Only $secondContent will be deleted
+        $firstContentUrl = route('h5p.ltishow', $firstContent);
+        $secondContentUrl = route('h5p.ltishow', $secondContent);
+
+        $controller = app(H5PController::class);
+        $response = $controller->destroy(
+            new Request(content: json_encode([
+                'resources' => [
+                    'delete' => [
+                        $firstContentUrl,
+                        $secondContentUrl,
+                    ],
+                    'shared' => [],
+                ],
+            ])),
+        );
+
+        $result = json_decode($response->getContent(), true);
+        $this->assertContains($firstContentUrl, $result['resources']);
+        $this->assertContains($secondContentUrl, $result['resources']);
+        $this->assertContains($secondContentUrl, $result['deleted']);
+        $this->assertContains($firstContentUrl, $result['kept']);
+
+        $this->assertDatabaseMissing('h5p_contents', ['id' => $secondContent->id]);
+        $this->assertDatabaseMissing('content_versions', ['id' => $secondContentFirstVersion->id]);
+        $this->assertDatabaseHas('content_versions', ['id' => $firstContent->version_id]);
     }
 }

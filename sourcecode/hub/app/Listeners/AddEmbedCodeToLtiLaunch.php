@@ -44,18 +44,22 @@ final readonly class AddEmbedCodeToLtiLaunch
     {
         $version = $event->getContentVersion();
 
-        return sprintf(
-            <<<EOHTML
-        <iframe src="%s" title="%s" width=":w" height=":h" frameborder="0" id="edlib-%s"></iframe>
-        EOHTML,
-            htmlspecialchars(
-                route('content.embed', [$version->content]),
-                ENT_QUOTES | ENT_HTML5,
-                'UTF-8',
-            ),
-            htmlspecialchars($version->getTitle(), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-            $version->id,
-        );
+        if ($version->content) {
+            return sprintf(
+                <<<EOHTML
+            <iframe src="%s" title="%s" width=":w" height=":h" frameborder="0" id="edlib-%s"></iframe>
+            EOHTML,
+                htmlspecialchars(
+                    route('content.embed', [$version->content]),
+                    ENT_QUOTES | ENT_HTML5,
+                    'UTF-8',
+                ),
+                htmlspecialchars($version->getTitle(), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                $version->id,
+            );
+        }
+
+        return '';
     }
 
     private function getResizeCode(LaunchContent $event): string

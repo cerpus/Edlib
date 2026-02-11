@@ -57,6 +57,9 @@ document.body.addEventListener('htmx:confirm', event => {
         if (event.target.hasAttribute('data-confirm-ok')) {
             document.getElementById(`${modalId}-Ok`).innerText = event.target.getAttribute('data-confirm-ok');
         }
+        if (event.target.hasAttribute('data-confirm-ok-class')) {
+            document.getElementById(`${modalId}-Ok`).classList.add(event.target.getAttribute('data-confirm-ok-class'));
+        }
         if (event.target.hasAttribute('data-confirm-cancel') && document.getElementById(`${modalId}-Cancel`)) {
             document.getElementById(`${modalId}-Cancel`).innerText = event.target.getAttribute('data-confirm-cancel');
         }
