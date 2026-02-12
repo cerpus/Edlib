@@ -64,7 +64,7 @@ final class AdminController extends Controller
      */
     public function restore(Request $request, Content $content): RedirectResponse
     {
-        DB::transaction($content->restore(...));
+        DB::transaction(fn () => $content->restore());
 
         $request->session()->flash('alert', 'Content was restored');
 
@@ -73,38 +73,38 @@ final class AdminController extends Controller
 
     public function destroy(Request $request, Content $content): Response
     {
-        // All LTI Tool launch urls that are connected to the content we want to delete
-        $launchUrls = $content->versions->pluck('lti_launch_url', 'id')->toArray();
-
-        // The launch urls that are used by other content, these should not be deleted
-        $otherUses = ContentVersion::select('id', 'lti_launch_url')
-            ->whereIn('lti_launch_url', array_values($launchUrls))
-            ->where('content_id', '<>', $content->id)
-            ->pluck('lti_launch_url', 'id')
-            ->toArray();
-
-        $latestVersion = $content->latestVersion;
-        $tool = $latestVersion?->tool;
-
         try {
-            if ($tool && $tool->supports_destroy) {
-                // Request LTI Tool to delete data
-                $result = $this->requestResourceDestroy($tool, [
-                    'delete' => array_values($launchUrls),
-                    'shared' => array_values($otherUses),
-                ]);
-            } else {
-                Log::warning('LTI Tool used to create content was not found or does not support request', ['toolId' => $tool?->id, 'supportsDestroy' => $tool?->supports_destroy]);
-                $result = true;
-            }
-            if ($result) {
+            DB::transaction(function () use ($content) {
+                // All LTI Tool launch urls that are connected to the content we want to delete
+                $launchUrls = $content->versions->pluck('lti_launch_url', 'id')->toArray();
+
+                // The launch urls that are used by other content, these should not be deleted
+                $otherUses = ContentVersion::select('id', 'lti_launch_url')
+                    ->whereIn('lti_launch_url', array_values($launchUrls))
+                    ->where('content_id', '<>', $content->id)
+                    ->pluck('lti_launch_url', 'id')
+                    ->toArray();
+
+                $latestVersion = $content->latestVersion;
+                $tool = $latestVersion?->tool;
+
                 // Delete our local data
-                DB::transaction(function () use ($content) {
-                    $content->edlib2Usages()->delete();
-                    $content->viewsAccumulated()->delete();
-                    $content->forceDelete();
-                });
-            }
+                $content->forceDelete();
+
+                if ($tool && $tool->supports_destroy) {
+                    // Request LTI Tool to delete data
+                    $result = $this->requestResourceDestroy($tool, [
+                        'delete' => array_values($launchUrls),
+                        'shared' => array_values($otherUses),
+                    ]);
+                    if (!$result) {
+                        throw new \Exception('LTI Tool destroy failed');
+                    }
+                } else {
+                    Log::warning('LTI Tool used to create content was not found or does not support request', ['toolId' => $tool?->id, 'supportsDestroy' => $tool?->supports_destroy]);
+                }
+            });
+            $result = true;
         } catch (\Throwable $e) {
             Log::error('Failed to delete content', ['message' => $e->getMessage(), 'type' => get_class($e), 'code' => $e->getCode()]);
             $result = false;
@@ -120,7 +120,7 @@ final class AdminController extends Controller
      * @param LtiTool $tool
      * @param array<string, array<array-key, string>> $resourceUrls
      * @return bool
-     * @throws \JsonException
+     * @throws \Exception|GuzzleException|\JsonException
      */
     private function requestResourceDestroy(LtiTool $tool, array $resourceUrls): bool
     {
@@ -173,17 +173,10 @@ final class AdminController extends Controller
             'body' => $json,
         ];
 
-        try {
-            $httpClient = app(Client::class);
-            $result = $httpClient->request('DELETE', $deleteRequest->getUrl(), $options)->getBody()->getContents();
-            $data = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
-            return $data['success'];
-        } catch (GuzzleException $e) {
-            Log::error(__METHOD__ . ': Sending Destroy request failed: ' . $e->getMessage());
-        } catch (\JsonException $e) {
-            Log::error(__METHOD__ . ': Decoding response failed: ' . $e->getMessage());
-        }
+        $httpClient = app(Client::class);
+        $result = $httpClient->request('DELETE', $deleteRequest->getUrl(), $options)->getBody()->getContents();
+        $data = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
 
-        return false;
+        return $data['success'];
     }
 }
