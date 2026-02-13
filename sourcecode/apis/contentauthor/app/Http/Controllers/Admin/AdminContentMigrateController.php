@@ -150,6 +150,18 @@ class AdminContentMigrateController extends Controller
     {
         $content = json_decode($parameters, associative: true);
         $content['threeImage']['wasConvertedFromVirtualTour'] = true;
+        for ($i = 0; $i < count($contentJson["threeImage"]["scenes"] ?? []); $i++) {
+            $contentJson["threeImage"]["scenes"][$i]["enableZoom"] = true;
+            /*
+             * From code at https://github.com/NDLANO/h5p-vt2er/blob/c11a34b9cdaa6842c1430a79912e78531ca21bcb/h5p-vt2er/app/H5PVT2ER.php#L299
+             * May or may not be interested in addis this as well
+            for ($j = 0; $j < count($contentJson["threeImage"]["scenes"][$i]["interactions"] ?? []); $j++) {
+                $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["iconTypeTextBox"] = "text-icon";
+                $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["showAsHotspot"] = false;
+                $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["showAsOpenSceneContent"] = false;
+            }
+            */
+        }
 
         return json_encode($content, flags: JSON_THROW_ON_ERROR);
     }
