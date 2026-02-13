@@ -9,10 +9,10 @@ mix
     .copy('resources/assets/ckeditor/*.js', 'public/js/ckeditor')
     .copy('node_modules/@brightcove/player-loader/dist/brightcove-player-loader.min.js', 'public/build/js/videos')
     .copyDirectory('node_modules/cropperjs/dist', 'public/js/cropperjs')
-
     // Using a different public path + setResourceRoot breaks copyDirectory.
     // Each output is prefixed with 'build/' instead.
     .sass('resources/assets/entrypoints/admin.scss', 'build/css/admin.css')
+    .sass('resources/assets/entrypoints/admin-preview.scss', 'build/css/admin-preview.css')
     .js('resources/assets/entrypoints/admin.js', 'build/js/admin.js')
     .js('resources/assets/entrypoints/article.js', 'build/js/article.js')
     .sass('resources/assets/entrypoints/article.scss', 'build/css/article.css')

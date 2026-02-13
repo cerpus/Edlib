@@ -1,6 +1,6 @@
 @extends ('layouts.admin')
 @section ('content')
-    <div class="container">
+    <div class="container-admin">
         <a href="{{ route('admin.update-libraries') }}">Library list</a>
         <br>
         <a href="{{ route('admin.check-library', [$library->id]) }}">Library details</a>
