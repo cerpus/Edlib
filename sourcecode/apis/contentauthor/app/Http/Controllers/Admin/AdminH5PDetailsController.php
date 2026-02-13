@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\ContentLock;
 use App\ContentVersion;
 use App\H5PContent;
 use App\H5PContentLibrary;

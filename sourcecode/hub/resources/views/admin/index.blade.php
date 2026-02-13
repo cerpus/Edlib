@@ -66,11 +66,23 @@
                     </tr>
                     <tr>
                         <th scope="row">Deleted contents in database</th>
-                        <td>{{ \App\Models\Content::onlyTrashed()->count() }}</td>
+                        <td>
+                            @if(\App\Models\Content::onlyTrashed()->count() > 0)
+                                <a href="{{ route('admin.content.deleted') }}">
+                                    {{ \App\Models\Content::onlyTrashed()->count() }}
+                                </a>
+                            @else
+                                0
+                            @endif
+                        </td>
                     </tr>
                     <tr>
-                        <th>Users</th>
+                        <th scope="row">Users</th>
                         <td>{{ \App\Models\User::count() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ trans('messages.active-content-locks') }}</th>
+                        <td>{{ \App\Models\ContentLock::active()->count() }}</td>
                     </tr>
                 </tbody>
             </table>

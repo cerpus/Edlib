@@ -16,6 +16,7 @@ use App\Http\Controllers\LtiSample\DeepLinkController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
+use App\Http\Middleware\LockContent;
 use App\Http\Middleware\LtiSessionRequired;
 use App\Http\Middleware\LtiValidatedRequest;
 use App\Http\Middleware\LaunchCreateIfSingleTool;
@@ -166,6 +167,7 @@ Route::controller(ContentController::class)->group(function () {
 
     Route::get('/content/{content}/version/{version}/edit')
         ->uses([ContentController::class, 'edit'])
+        ->middleware(['auth', LockContent::class])
         ->name('content.edit')
         ->can('edit', ['content', 'version'])
         ->whereUlid(['content', 'version'])
@@ -190,6 +192,18 @@ Route::controller(ContentController::class)->group(function () {
         ->can('create', Content::class)
         ->can('launchCreator', ['tool', 'extra'])
         ->scopeBindings();
+
+    Route::put('/content/{content}/lock')
+        ->uses([ContentController::class, 'refreshLock'])
+        ->name('content.refresh-lock')
+        ->can('edit', 'content')
+        ->whereUlid('content');
+
+    Route::post('/content/{content}/release-lock')
+        ->uses([ContentController::class, 'releaseLock'])
+        ->name('content.release-lock')
+        ->can('edit', 'content')
+        ->whereUlid('content');
 });
 
 Route::prefix('/lti/dl')->middleware([
@@ -226,7 +240,8 @@ Route::prefix('/lti')->middleware([
         ->scopeBindings();
 
     Route::post('/content/by-edlib2-usage/{edlib2UsageContent}')
-        ->uses([LtiController::class, 'content']);
+        ->uses([LtiController::class, 'content'])
+        ->whereUuid('edlib2UsageContent');
 
     Route::post('/dl')
         ->uses([LtiController::class, 'select'])
@@ -311,6 +326,32 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
 
     Route::post('/attach-context-to-contents')
         ->uses([ContextController::class, 'performAttachToContents']);
+
+    Route::can('handle_deleted', 'content')->prefix('/deleted')->group(function () {
+        Route::get('/content')
+            ->withTrashed()
+            ->uses([AdminController::class, 'listDeletedContent'])
+            ->name('admin.content.deleted');
+
+        Route::get('/content/{content}/version/{version}/preview')
+            ->withTrashed()
+            ->uses([ContentController::class, 'preview'])
+            ->name('admin.content.deleted-preview')
+            ->whereUlid(['content', 'version'])
+            ->scopeBindings();
+
+        Route::get('/content/{content}/restore')
+            ->withTrashed()
+            ->uses([AdminController::class, 'restore'])
+            ->name('admin.content.restore')
+            ->whereUlid('content');
+
+        Route::delete('/content/{content}/destroy')
+            ->withTrashed()
+            ->uses([AdminController::class, 'destroy'])
+            ->name('admin.content.destroy')
+            ->whereUlid('content');
+    });
 
     Route::prefix('/lti-platforms')->group(function () {
         Route::get('')

@@ -6,12 +6,10 @@ namespace App\Http\Controllers\NdlaLegacy;
 
 use App\Configuration\NdlaLegacyConfig;
 use App\Models\Content;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 use function assert;
 use function response;
@@ -29,24 +27,22 @@ final readonly class CopyController
         $user = $request->user();
         assert($user instanceof User);
 
-        $oldId = $this->config->extractEdlib2IdFromUrl($request->input('url', ''));
-        $original = Content::ofTag('edlib2_usage_id:' . $oldId)
-            ->limit(1)
-            ->firstOrFail();
+        $oldUsageId = $this->config->extractEdlib2IdFromUrl($request->input('url', ''))
+            ?? abort(404, 'Could not extract Edlib 2 URL');
+        $original = Content::firstWithEdlib2UsageIdOrFail($oldUsageId);
 
-        $newId = DB::transaction(function () use ($original, $user) {
+        $newUsageId = DB::transaction(function () use ($original, $user) {
             $copy = $original->createCopyBelongingTo($user);
-
-            $tag = Tag::findOrCreateFromString('edlib2_usage_id:' . Str::uuid());
-            $copy->tags()->attach($tag);
+            $usage = $copy->edlib2Usages()->create();
+            $copy->save();
 
             $copy->contexts()->syncWithoutDetaching($original->contexts);
 
-            return $tag->name;
+            return $usage->edlib2_usage_id;
         });
 
         return response()->json([
-            'url' => route('ndla-legacy.resource', [$newId]),
+            'url' => route('ndla-legacy.resource', [$newUsageId]),
         ]);
     }
 }

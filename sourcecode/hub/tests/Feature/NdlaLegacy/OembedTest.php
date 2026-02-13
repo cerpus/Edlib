@@ -21,16 +21,16 @@ final class OembedTest extends TestCase
     #[TestWith(['https://hub-test-ndla-legacy.edlib.test/oembed/preview'])]
     public function testOembed(string $endpoint): void
     {
-        $id = $this->faker->uuid;
+        $edlib2UsageId = $this->faker->uuid;
 
         Content::factory()
             ->withVersion(ContentVersion::factory()->state([
                 'title' => 'My content',
             ]))
-            ->tag('edlib2_usage_id:' . $id)
+            ->edlib2UsageId($edlib2UsageId)
             ->create();
 
-        $this->getJson("$endpoint?url=https%3A%2F%2Fhub-test-ndla-legacy.edlib.test%2Fresource%2F$id&format=json")
+        $this->getJson("$endpoint?url=https%3A%2F%2Fhub-test-ndla-legacy.edlib.test%2Fresource%2F$edlib2UsageId&format=json")
             ->assertOk()
             ->assertHeader('Content-Type', 'application/json')
             ->assertJson(
@@ -42,7 +42,7 @@ final class OembedTest extends TestCase
                     ->where('version', '1.0')
                     ->where('html', fn(string $html) => str_contains(
                         $html,
-                        "src=\"https://hub-test-ndla-legacy.edlib.test/resource/$id\"",
+                        "src=\"https://hub-test-ndla-legacy.edlib.test/resource/$edlib2UsageId\"",
                     )),
             );
     }
@@ -55,7 +55,7 @@ final class OembedTest extends TestCase
             ->withVersion(ContentVersion::factory()->state([
                 'title' => 'My content',
             ]))
-            ->tag('edlib2_usage_id:' . $id)
+            ->edlib2UsageId($id)
             ->create();
 
         $this->getJson("https://hub-test-ndla-legacy.edlib.test/oembed?url=https%3A%2F%2Fhub-test-ndla-legacy.edlib.test%2Fresource%2F$id%3Flocale=nb-NO&format=json")

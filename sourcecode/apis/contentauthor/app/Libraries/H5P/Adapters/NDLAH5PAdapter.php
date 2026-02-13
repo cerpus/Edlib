@@ -11,6 +11,8 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Carbon\Carbon;
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use function array_unique;
 use function config;
 
@@ -121,7 +123,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         return [
             // Display of formulas
-            '//www.wiris.net/demo/plugins/app/WIRISplugins.js?viewer=image',
+            'https://www.wiris.net/client/plugins/app/WIRISplugins.js?viewer=image',
+            '/js/h5p/wiris/view.js',
             (string) mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getViewScripts(),
             ...$this->imageAdapter->getViewScripts(),
@@ -142,14 +145,34 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             }
         }
         $css[] = (string) mix('css/ndlah5p-iframe.css');
+        $customLibraryCss = $this->getLibraryCustomCss($content['library']['name'], []);
+
         return array_unique([
             ...$css,
             ...$this->audioAdapter->getViewCss(),
             ...$this->imageAdapter->getViewCss(),
             ...$this->videoAdapter->getViewCss(),
+            ...$customLibraryCss,
         ]);
     }
 
+    public function getLibraryCustomCss(string $h5pLibraryName, array $styles): array
+    {
+        if ($h5pLibraryName) {
+            $includeName = "/css/$h5pLibraryName.css";
+            $cacheKey = "h5p_custom_css_exists:$h5pLibraryName";
+
+            $exists = Cache::remember($cacheKey, 3600, function () use ($includeName) {
+                return File::exists(public_path($includeName));
+            });
+
+            if ($exists) {
+                $styles[] = $includeName;
+            }
+        }
+
+        return $styles;
+    }
     /**
      * @return void
      */
@@ -189,7 +212,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         config(collect([
             'app.enable_licensing',
             'feature.licensing',
-            'feature.content-locking',
             'feature.context-collaboration',
             'feature.collaboration',
             'feature.export_h5p_on_save',

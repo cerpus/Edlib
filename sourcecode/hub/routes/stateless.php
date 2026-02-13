@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 // Routes that should not start sessions
 
+use App\Http\Controllers\ContentAuthorController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LtiController;
 use App\Http\Controllers\LtiSample\PresentationController;
@@ -36,3 +37,17 @@ Route::get('/oembed')
 Route::get('/sitemap.xml')
     ->uses([ContentController::class, 'sitemap'])
     ->name('sitemap');
+
+Route::name('author.content.')
+    ->prefix('/author')
+    ->middleware([LtiValidatedRequest::class . ':tool'])
+    ->group(function () {
+        Route::post('/tool/{tool}/content/info')
+            ->uses([ContentAuthorController::class, 'info'])
+            ->name('info');
+
+        Route::post('/tool/{tool}/content/{content}/version/{version}/update')
+            ->uses([ContentAuthorController::class, 'update'])
+            ->whereUlid(['tool', 'content', 'version'])
+            ->name('update');
+    });

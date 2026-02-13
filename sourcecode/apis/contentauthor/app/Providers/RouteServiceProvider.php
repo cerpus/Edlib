@@ -8,15 +8,6 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * This namespace is applied to the controller routes in your routes file.
-     *
-     * In addition, it is set as the URL generator's root namespace.
-     *
-     * @var string
-     */
-    protected $namespace = 'App\Http\Controllers';
-
-    /**
      * Define your route model bindings, pattern filters, etc.
      *
      * @return void
@@ -35,11 +26,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        Route::prefix('/internal')
-            ->middleware('internal-api')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/internal-api.php'));
-
+        $this->mapRestRoutes();
         $this->mapApiRoutes();
         $this->mapWebRoutes();
         $this->mapAdminRoutes();
@@ -86,6 +73,16 @@ class RouteServiceProvider extends ServiceProvider
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/admin.php');
+        });
+    }
+
+    protected function mapRestRoutes()
+    {
+        Route::group([
+            'middleware' => 'api',
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/rest.php');
         });
     }
 }

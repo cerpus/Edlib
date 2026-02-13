@@ -68,6 +68,8 @@ const H5PEditorContainer = ({ intl }) => {
         stageUpgrade,
         iframeLoading,
         setAuthor,
+        setAuthors,
+        getAuthors,
     } = useH5PEditor(onParamsChange);
 
     const getCurrentParams = React.useCallback(() => {
@@ -144,6 +146,25 @@ const H5PEditorContainer = ({ intl }) => {
                         }
                         clearInterval(H5PLibraryInterval);
                         setLibrarySelected(true);
+
+                        // Listen for library changes to preserve authors
+                        if (h5pEditor.selector?.on) {
+                            let previousAuthors = [];
+
+                            // Capture authors before library change
+                            h5pEditor.selector.on('editorload', () => {
+                                previousAuthors = getAuthors();
+                            });
+
+                            // Restore authors after library change
+                            h5pEditor.selector.on('editorloaded', () => {
+                                if (previousAuthors.length > 0) {
+                                    setAuthors(previousAuthors);
+                                } else if (creatorName !== null) {
+                                    setAuthor(creatorName, 'Author');
+                                }
+                            });
+                        }
                     }
                     // eslint-disable-next-line no-empty
                 } catch (ignore) {}
@@ -298,17 +319,30 @@ const H5PEditorContainer = ({ intl }) => {
                         dispatch({ type: FormActions.setLanguage, payload: { language } });
                     }}
                     onGetFields={async () => {
-                        const fields = await getTextFields(getParams(), parameters.library, getLibraryCache());
+                        const params = getParams();
+                        const fields = await getTextFields(params, parameters.library, getLibraryCache());
 
-                        return fields.map(field => ({
-                            path: flattenPath(field.path),
+                        const translationFields = fields.map(field => ({
+                            path: 'params.' + flattenPath(field.path),
                             value: field.originalValue,
                         }));
+                        // Also translate the title
+                        translationFields.push(
+                            {
+                                path: "metadata.title",
+                                value: params.metadata.title,
+                            },
+                            {
+                                path: "metadata.extraTitle",
+                                value: params.metadata.extraTitle,
+                            }
+                        );
+                        return translationFields;
                     }}
                     onSetFields={(fields) => {
                         const newParameters = deepCopy(getParams());
                         for (const i in fields) {
-                            set(newParameters.params, i, fields[i]);
+                            set(newParameters, i, fields[i]);
                         }
                         onParamsChange(newParameters);
 

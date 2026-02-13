@@ -2,24 +2,6 @@
 
 Take a look in the `.env.example` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
 
-# Locking content for edit
-
-To enable the content edit locking feature add
-
-```
-FEATURE_CONTENT_LOCKING=true
-```
-
-to the `.env` file
-
-Make sure the artisan command `schedule:run` is running once per minute and the removal of stale locks will happen automatically.
-
-You can run the command manually
-
-```
-php artisan cerpus:remove-content-locks
-```
-
 # Initialize versioning
 
 Create the initial version of all content run the following command

@@ -136,6 +136,7 @@ return [
                     'tags',
                     'gives_score',
                     'content_type',
+                    'views',
                 ],
                 'pagination' => [
                     'maxTotalHits' => 1000000000,
@@ -144,6 +145,7 @@ return [
                     'created_at',
                     'updated_at',
                     'published_at',
+                    'views',
                 ],
                 "faceting" => [
                     "maxValuesPerFacet" => 300,

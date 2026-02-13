@@ -7,14 +7,14 @@ use App\Http\Middleware\LtiValidatedRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::domain('www.edlib.com')
-    ->get('/s/resources/{edlib2Content}')
+    ->get('/s/resources/{content:edlib2_id}')
     ->uses([EdlibLegacyController::class, 'redirectFromEdlib2Id'])
-    ->whereUuid('edlib2Content');
+    ->whereUuid('content');
 
 Route::domain('www.h5p.ndla.no')
-    ->get('/s/resources/{edlib2Content}')
+    ->get('/s/resources/{content:edlib2_id}')
     ->uses([EdlibLegacyController::class, 'redirectFromEdlib2Id'])
-    ->whereUuid('edlib2Content');
+    ->whereUuid('content');
 
 Route::middleware([LtiValidatedRequest::class . ':platform'])->group(function () {
     Route::domain('core.cerpus-course.com')

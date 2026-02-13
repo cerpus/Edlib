@@ -14,7 +14,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -61,7 +60,6 @@ abstract class Content extends Model
     // HasLicense / Licenseable
     // HasCollaborators / Collaboratable(?)
     // HasVersions / Versionable
-    // HasLocks / Lockable
 
     public string $userColumn = 'user_id';
     private string $versionColumn = 'version_id';
@@ -89,6 +87,11 @@ abstract class Content extends Model
     abstract public function getUrl(): string;
 
     abstract public function getMachineName(): string;
+
+    public function getMachineDisplayName(): string
+    {
+        return $this->getMachineName();
+    }
 
     public function getTitleCleanAttribute(): string|null
     {
@@ -120,14 +123,6 @@ abstract class Content extends Model
     public function isCopyable(): bool
     {
         return License::isContentCopyable($this->license);
-    }
-
-    /**
-     * @return HasMany<ContentLock, $this>
-     */
-    public function locks(): HasMany
-    {
-        return $this->hasMany(ContentLock::class, 'content_id');
     }
 
     public function isCollaborator(): bool
@@ -262,21 +257,6 @@ abstract class Content extends Model
         return $title || $content || $license;
     }
 
-    public function hasLock()
-    {
-        return (new ContentLock())->hasLock($this->id);
-    }
-
-    public function lock()
-    {
-        (new ContentLock())->lock($this->id);
-    }
-
-    public function unlock()
-    {
-        (new ContentLock())->unlock($this->id);
-    }
-
     /**
      * @param Builder<self> $query
      */
@@ -393,6 +373,7 @@ abstract class Content extends Model
             url: $this->getUrl(),
             title: $this->title_clean,
             machineName: $this->getMachineName(),
+            machineDisplayName: $this->getMachineDisplayName(),
             hasScore: ($this->getMaxScore() ?? 0) > 0,
             editUrl: $this->getEditUrl(),
             titleHtml: $this->title,

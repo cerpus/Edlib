@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P;
 
+use App\AuditLog;
 use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Image\NdlaImageAdapter;
@@ -170,16 +171,32 @@ class AjaxRequest
             H5PCore::ajaxError($this->core->h5pF->t('Could not get posted H5P.'), 'NO_CONTENT_TYPE');
             exit;
         }
+        $file = $request->file('h5p');
+        AuditLog::log(
+            'Upload content from front',
+            json_encode([
+                'file' => [
+                    'name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'target' => $file->getPathname(),
+                ],
+            ]),
+        );
 
-        $originalAjax = $this->editor->ajax;
-        $originalAjax->action(H5PEditorEndpoints::LIBRARY_UPLOAD, $request->bearerToken(), $request->file('h5p')->getRealPath(), "0");
+        $this->editor->ajax->action(H5PEditorEndpoints::LIBRARY_UPLOAD, $request->bearerToken(), $file->getRealPath(), "0");
     }
 
     private function libraryInstall($token, $library): void
     {
         set_time_limit(60);
-        $originalAjax = $this->editor->ajax;
-        $originalAjax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $library);
+        AuditLog::log(
+            'Install library from h5p.org',
+            json_encode([
+                'library' => $library,
+            ]),
+        );
+
+        $this->editor->ajax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $library);
     }
 
     private function handleEditorBehaviorSettings(Request $request, $library): array

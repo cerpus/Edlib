@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\AuditLog;
+use App\CollaboratorContext;
+use App\ContentLanguageLink;
 use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PFile;
 use App\H5PLibrary;
+use App\H5PResult;
 use App\Http\Libraries\License;
 use App\Http\Requests\H5PStorageRequest;
 use App\Jobs\H5PFilesUpload;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
 use App\Libraries\DataObjects\H5PStateDataObject;
-use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
@@ -46,12 +49,15 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Iso639p3;
 use MatthiasMullie\Minify\CSS;
+use Ramsey\Uuid\Uuid;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Throwable;
 
 use function app;
 use function config;
@@ -89,12 +95,10 @@ class H5PController extends Controller
             ->setUserUsername(Session::get('userName', false))
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
-            ->setPreview($ltiRequest?->isPreview())
+            ->setPreview($ltiRequest?->isPreview() ?? false)
             ->setContext($ltiRequest?->generateContextKey() ?? '')
-            ->setEmbedId($ltiRequest?->getExtEmbedId())
             ->setEmbedCode($ltiRequest?->getEmbedCode() ?? '')
             ->setEmbedResizeCode($ltiRequest?->getEmbedResizeCode() ?? '')
-            ->setResourceLinkTitle($ltiRequest?->getResourceLinkTitle())
             ->loadContent($id)
             ->setAlterParameterSettings(new H5PAlterParametersSettingsDataObject(useImageWidth: $h5pContent->library->includeImageWidth()));
 
@@ -111,7 +115,7 @@ class H5PController extends Controller
             'jsScripts' => $h5pView->getScripts(),
             'styles' => $styles,
             'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
-            'preview' => $ltiRequest?->isPreview(),
+            'preview' => $ltiRequest?->isPreview() ?? false,
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
         ]);
     }
@@ -261,7 +265,6 @@ class H5PController extends Controller
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
-            'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
             'enableUnsavedWarning' => $ltiRequest?->getEnableUnsavedWarning() ?? config('feature.enable-unsaved-warning'),
             'supportedTranslations' => app()->make(TranslationServiceInterface::class)->getSupportedLanguages(),
@@ -288,20 +291,6 @@ class H5PController extends Controller
             'maxScore' => $library->supportsMaxScore() ? $h5pContent->max_score : null,
             'ownerName' => null,
         ]));
-
-        if ($h5pContent->canUpdateOriginalResource(Session::get('authId', false))) {
-            if (($locked = $h5pContent->hasLock())) {
-                $editUrl = $h5pContent->getEditUrl();
-                $pollUrl = route('lock.status', $id);
-                $editorSetup->setLockedProperties(LockedDataObject::create([
-                    'pollUrl' => $pollUrl,
-                    'editor' => $locked->getEditor(),
-                    'editUrl' => $editUrl,
-                ]));
-            } else {
-                $h5pContent->lock();
-            }
-        }
 
         $state = H5PStateDataObject::create($displayOptions + [
             'id' => $h5pContent->id,
@@ -375,8 +364,6 @@ class H5PController extends Controller
         }
 
         $core->fs->deleteExport(sprintf("%s-%d.h5p", $h5p->slug, $h5p->id));
-
-        $h5p->unlock();
 
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
@@ -688,5 +675,157 @@ class H5PController extends Controller
         $information = $cache->rememberForever($h5p->getInfoCacheKey(), fn() => $h5pInfo->getInformation($h5p));
 
         return response()->json($information);
+    }
+
+    public function destroy(Request $request)
+    {
+        $runId = Uuid::uuid4()->toString(); // A unique id to use in the audit log
+        $userId = $request->json('user.id');
+        $userName = $request->json('user.name');
+        $urls = $request->json('resources');
+
+        AuditLog::log(
+            'Permanent delete',
+            json_encode([
+                'runId' => $runId,
+                'receivedUrls' => $urls,
+                'status' => 'Request received',
+            ]),
+            $userId,
+            $userName
+        );
+
+        $resources = []; // The LTI launch URLs that are connected to the content that will be deleted in Hub
+        $shared = []; // The LTI launch URLs that are used by other content in the Hub
+
+        // Extract the resource id from the LTI launch urls
+        array_walk($urls['delete'], function ($resource) use (&$resources) {
+            $route = Route::getRoutes()->match(request()->create($resource, 'POST'));
+            if ($route && $route->getName() === 'h5p.ltishow') {
+                $resources[$route->parameter('id')] = $resource;
+            }
+        });
+        array_walk($urls['shared'], function ($resource) use (&$shared) {
+            $route = Route::getRoutes()->match(request()->create($resource, 'POST'));
+            if ($route && $route->getName() === 'h5p.ltishow') {
+                $shared[$route->parameter('id')] = $resource;
+            }
+        });
+        // We want to start with the newest/latest content
+        krsort($resources, SORT_NUMERIC);
+
+        /** @var \Illuminate\Database\Eloquent\Collection<H5PContent> $resourcesContent */
+        $resourcesContent = H5PContent::find(array_keys($resources));
+
+        $deleted = [];
+        $kept = [];
+        try {
+            // Delete resource data from the top-down. If a version has child nodes they will be moved to the parent version.
+            DB::transaction(function () use ($resourcesContent, $resources, $shared, &$deleted, &$kept) {
+                $storage = app(H5PCerpusStorage::class);
+
+                foreach ($resources as $contentId => $resource) {
+                    Log::info(sprintf('Destroy: Processing content %s', $contentId));
+                    /** @var ?H5PContent $content */
+                    $content = $resourcesContent->find($contentId);
+                    if ($content !== null) {
+                        $versions = ContentVersion::where('content_id', $contentId)->where('content_type', 'h5p')->get();
+                        $isShared = array_key_exists($contentId, $shared);
+                        if (!$isShared && $versions->count() > 1) {
+                            // This content have more than one version, but it was not flagged as shared by Hub.
+                            // It's either an update using the same content id, a new branch, or both. We cannot
+                            // trust our own versioning because Hub does not inform when e.g. creating a copy. If
+                            // we trust Hub versioning, we can delete it. But, then we have to check all child
+                            // content and possibly re-connect, rewriting history for other content.
+                            // We flag content as shared and leave all versions. This will either create content and
+                            // versions that have no connection to anything, or ensure that other content have
+                            // correct history.
+                            Log::info(sprintf('Destroy: Flagging content %s as shared, more than one version found', $contentId), [$versions->pluck('content_id', 'id')->toArray()]);
+                            $isShared = true;
+                        }
+
+                        if ($isShared) {
+                            Log::info(sprintf('Destroy: Skipping shared content %s', $contentId));
+                            $kept[] = $resource;
+                        } else {
+                            $version = $versions->first();
+                            $children = $version->nextVersions;
+                            if ($children->count() > 0) {
+                                $parent = $version->previousVersion;
+                                foreach ($children as $child) {
+                                    Log::info(sprintf('Destroy: Moving child version %s (%s) to parent %s (%s)', $child->id, $child->content_id, $version->parent_id, $parent?->content_id));
+                                    $child->parent_id = $version->parent_id;
+                                    $child->saveQuietly(); // Don't trigger events, it will connect child to the latest version
+                                }
+                            }
+                            Log::info(sprintf('Destroy: Deleting content %s, version %s, and related data', $contentId, $version->id ?? 'null'));
+                            $content->contentVideos()->delete();
+                            $content->contentUserData()->delete();
+                            $content->metadata()->delete();
+                            $content->contentLibraries()->delete();
+                            $content->language()->delete();
+
+                            H5PResult::where('content_id', $contentId)->delete();
+                            ContentLanguageLink::where('main_content_id', $content->id)->orWhere('link_content_id', $content->id)->delete();
+                            CollaboratorContext::where('content_id', $content->id)->delete();
+                            DB::table('cerpus_contents_shares')->where('h5p_id', $content->id)->delete();
+
+                            // The bulk exclution list
+                            if (method_exists($content, 'exclutions')) {
+                                $content->exclutions()->delete();
+                            }
+
+                            // File operation cannot be rolled back, but it's just a cache
+                            if ($storage->hasExport($content->getExportFilename())) {
+                                $storage->deleteExport($content->getExportFilename());
+                            }
+
+                            $version->delete();
+                            $content->delete();
+                            $deleted[] = $resource;
+                        }
+                    } else {
+                        Log::info(sprintf('Destroy: Content %s was not found', $contentId));
+                    }
+                }
+            });
+            $success = true;
+            Log::info('Destroy: Done');
+            AuditLog::log(
+                'Permanent delete',
+                json_encode([
+                    'runId' => $runId,
+                    'success' => true,
+                    'deleted' => $deleted,
+                    'kept' => $kept,
+                ]),
+                $userId,
+                $userName
+            );
+        } catch (Throwable $e) {
+            $success = false;
+            Log::error(sprintf('Destroy: %s exception (%s) %s', get_class($e), $e->getCode(), $e->getMessage()));
+            AuditLog::log(
+                'Permanent delete',
+                json_encode([
+                    'runId' => $runId,
+                    'success' => false,
+                    'error' => [
+                        'type' => get_class($e),
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                    ],
+                ]),
+                $userId,
+                $userName
+            );
+        }
+
+        return response()->json([
+            'resources' => array_values($resources),
+            'deleted' => $deleted,
+            'kept' => $kept,
+            'success' => $success,
+        ]);
     }
 }

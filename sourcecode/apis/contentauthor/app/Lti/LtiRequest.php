@@ -148,16 +148,6 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         return $this->param('ext_behavior_settings');
     }
 
-    public function getExtEmbedId(): string|null
-    {
-        return $this->param('ext_embed_id');
-    }
-
-    public function getResourceLinkTitle(): string|null
-    {
-        return $this->param('resource_link_title');
-    }
-
     public function isAdministrator(): bool
     {
         $roles = explode(',', $this->param('roles') ?? '');

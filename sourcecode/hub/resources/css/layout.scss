@@ -89,46 +89,6 @@
     }
 }
 
-.filter-contenttype-toggle-button {
-    .filter-contenttype-more-content {
-        display: none;
-    }
-    .filter-contenttype-less-content {
-        display: flex;
-    }
-
-    &.collapsed {
-        .filter-contenttype-more-content {
-            display: flex;
-        }
-        .filter-contenttype-less-content {
-            display: none;
-        }
-    }
-}
-
-/* Mobile-specific styles */
-@include media-breakpoint-down(md) {
-    .accordion-item {
-        border-left: none;
-        border-right: none;
-    }
-
-    .first-accordion-item {
-        border-top: none;
-    }
-
-    .accordion-item:first-of-type .accordion-button {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
-
-    .accordion-item:last-of-type .accordion-button.collapsed {
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-}
-
 .spinner-container {
     top: -25%;
 

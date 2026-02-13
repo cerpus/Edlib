@@ -8,15 +8,15 @@
             <div class="col-md-4">
                 <div class="card mb-3">
                     @if($type->imageUrl == null)
-                        <div class="card-img-top lti-tool-image empty d-flex justify-content-center align-items-center">
+                        <div class="card-img-top lti-tool-image empty d-flex justify-content-center align-items-center" aria-hidden="true">
                             <h1>{{ $type->name }}</h1>
                         </div>
                     @else
-                        <img class="card-img-top lti-tool-image" src="{{ $type->imageUrl }}" alt="type image">
+                        <img class="card-img-top lti-tool-image" src="{{ $type->imageUrl }}" aria-hidden="true">
                     @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $type->name }}</h5>
-                        <a href="{{ $type->url }}" class="btn btn-primary">Create</a>
+                        <a href="{{ $type->url }}" class="btn btn-primary">{{ trans('messages.create') }}</a>
                     </div>
                 </div>
             </div>

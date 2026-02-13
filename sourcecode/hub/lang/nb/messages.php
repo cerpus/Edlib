@@ -182,4 +182,13 @@ return [
     'publish' => 'Publiser',
     'content-published-notice' => 'Innholdet har blitt publisert.',
     'links' => 'Lenker',
+    'deleted-contents' => 'Slettet innhold',
+    'deleted-at' => 'Slettet',
+    'restore' => 'Gjenopprett',
+    'actions' => 'Handlinger',
+    'permanent-delete' => 'Slett permanent',
+    'permanent-delete-confirm' => 'Slett innholdet permanent? Dette kan ikke angres.',
+    'supports-destroy' => 'Støtter forespørsler om å permanent slette innhold',
+    'destroy-success' => 'Innholdet ble permanent slettet',
+    'destroy-failed' => 'En feil oppstod, innholdet ble ikke slettet',
 ];

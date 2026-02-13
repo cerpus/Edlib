@@ -106,6 +106,10 @@ readonly class ContentPolicy
             return false;
         }
 
+        if ($content->isLocked()) {
+            return false;
+        }
+
         if ($user->admin) {
             return true;
         }
@@ -143,6 +147,11 @@ readonly class ContentPolicy
         }
 
         return $this->hasContentRole(ContentRole::Owner, $content, $user);
+    }
+
+    public function handle_deleted(User $user, Content $content): bool
+    {
+        return ($user->admin && $content->trashed());
     }
 
     private function ensureVersionBelongsToContent(Content $content, ContentVersion|null $version): void
