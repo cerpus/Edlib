@@ -377,8 +377,8 @@ class H5PLibrary extends Model
     {
         if ($usageCount === null) {
             $h5pFramework = app(H5PFrameworkInterface::class);
-            // Number of references by other content types/libraries. Only counts content using library as main content type, so we skip that
-            $usageCount = $h5pFramework->getLibraryUsage($libraryId, skipContent: true)['libraries'];
+            $counts = $h5pFramework->getLibraryUsage($libraryId);
+            $usageCount = $counts['libraries'] + $counts['content'];
         }
 
         return $usageCount === 0 && H5PContentLibrary::where('library_id', $libraryId)->doesntExist();
