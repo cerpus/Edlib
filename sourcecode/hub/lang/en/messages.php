@@ -255,4 +255,13 @@ return [
     'the-lock-is-held-by' => 'The lock is held by: :name.',
     'active-content-locks' => 'Active content locks',
     'the-lock-is-held-by-since' => 'The lock is held by: :name since :datetime',
+    'deleted-contents' => 'Deleted contents',
+    'deleted-at' => 'Deleted',
+    'restore' => 'Restore',
+    'actions' => 'Actions',
+    'permanent-delete' => 'Permanently delete',
+    'permanent-delete-confirm' => 'Permanently delete the content? This cannot be undone.',
+    'supports-destroy' => 'Supports receiving request to permanently delete resources',
+    'destroy-success' => 'Content was permanently deleted',
+    'destroy-failed' => 'Failed to permanently delete the content',
 ];

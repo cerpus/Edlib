@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                @if ($version->published)
+                @if (!$content->trashed() && $version->published)
                     <a
                         href="{{ route('content.share', [$content]) }}"
                         class="btn btn-secondary d-flex gap-2"

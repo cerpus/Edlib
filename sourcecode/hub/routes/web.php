@@ -327,6 +327,32 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
     Route::post('/attach-context-to-contents')
         ->uses([ContextController::class, 'performAttachToContents']);
 
+    Route::can('handle_deleted', 'content')->prefix('/deleted')->group(function () {
+        Route::get('/content')
+            ->withTrashed()
+            ->uses([AdminController::class, 'listDeletedContent'])
+            ->name('admin.content.deleted');
+
+        Route::get('/content/{content}/version/{version}/preview')
+            ->withTrashed()
+            ->uses([ContentController::class, 'preview'])
+            ->name('admin.content.deleted-preview')
+            ->whereUlid(['content', 'version'])
+            ->scopeBindings();
+
+        Route::get('/content/{content}/restore')
+            ->withTrashed()
+            ->uses([AdminController::class, 'restore'])
+            ->name('admin.content.restore')
+            ->whereUlid('content');
+
+        Route::delete('/content/{content}/destroy')
+            ->withTrashed()
+            ->uses([AdminController::class, 'destroy'])
+            ->name('admin.content.destroy')
+            ->whereUlid('content');
+    });
+
     Route::prefix('/lti-platforms')->group(function () {
         Route::get('')
             ->uses([LtiPlatformController::class, 'index'])
