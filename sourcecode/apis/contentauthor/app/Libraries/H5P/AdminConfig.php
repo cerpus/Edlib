@@ -71,6 +71,18 @@ class AdminConfig implements ConfigInterface
         $this->addAsset('scripts', asset('/js/h5p/h5peditor-pre-save.js'));
     }
 
+    /**
+     * Scripts required by bulk update of the translations stored in content
+     */
+    public function addContentLanguageScripts(): void
+    {
+        $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor.js'));
+        $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-editor.js'));
+        $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-init.js'));
+        $this->addAsset('scripts', $this->getAssetUrl('editor', 'language/en.js'));
+        $this->addAsset('scripts', (string) mix('js/content-language-update.js'));
+    }
+
     public function getSettings(H5PLibrary $library)
     {
         $upgrades = $library->getUpgrades(false)
