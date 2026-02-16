@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @php
     $activeTab = request()->query('activetab', 'tabContentTypes');
+    $sortColumn = request()->query('sort', 'machinename');
+    $listInstalled = $listInstalled ?? request()->query('listinstalled') === "1";
 @endphp
 @section('content')
     <div class="container-admin">
@@ -11,28 +13,30 @@
             <div class="col-md-12">
                 <div class="panel with-nav-tabs panel-default">
                     <div class="panel-heading">
-                        <ul class="nav nav-tabs">
-                            <li @class(['active' => $activeTab === 'tabContentTypes'])>
-                                <a href="#tabContentTypes" data-toggle="tab">
-                                    Installed content types
-                                </a>
-                            </li>
-                            <li @class(['active' => $activeTab === 'tabLibraries'])>
-                                <a href="#tabLibraries" data-toggle="tab">
-                                    Installed libraries
-                                </a>
-                            </li>
-                            <li @class(['active' => $activeTab === 'tabUpload'])>
-                                <a href="#tabUpload" data-toggle="tab">
-                                    Upload content type
-                                </a>
-                            </li>
-                            <li @class(['active' => $activeTab === 'tabInstall'])>
-                                <a href="#tabInstall" data-toggle="tab">
-                                    Install from h5p.org
-                                </a>
-                            </li>
-                        </ul>
+                        <div class="panel-heading">
+                            <ul class="nav nav-tabs">
+                                <li @class(['active' => $activeTab === 'tabContentTypes'])>
+                                    <a href="#tabContentTypes" data-toggle="tab">
+                                        Installed content types
+                                    </a>
+                                </li>
+                                <li @class(['active' => $activeTab === 'tabLibraries'])>
+                                    <a href="#tabLibraries" data-toggle="tab">
+                                        Installed libraries
+                                    </a>
+                                </li>
+                                <li @class(['active' => $activeTab === 'tabUpload'])>
+                                    <a href="#tabUpload" data-toggle="tab">
+                                        Upload content type
+                                    </a>
+                                </li>
+                                <li @class(['active' => $activeTab === 'tabInstall'])>
+                                    <a href="#tabInstall" data-toggle="tab">
+                                        Install from h5p.org
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="panel-body">
                         <div class="tab-content">
@@ -58,13 +62,20 @@
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 <p>
-                                    Installed H5P Core version: <b>{{ join('.', H5PCore::$coreApi) }}</b>
+                                    Installed H5P Core version: <code>{{ join('.', H5PCore::$coreApi) }}</code>
                                 </p>
                                 <div class="panel-body row">
-                                    @include('admin.fragments.collapse-table', [
+                                    @includeWhen($collapsable, 'admin.fragments.collapse-table', [
                                         'libraries' => $installedContentTypes,
+                                        'showCount' => true,
+                                        'activetab' => 'tabContentTypes',
                                         'isContentType' => true,
-                                        'activetab' => 'tabContentTypes'
+                                    ])
+                                    @includeUnless($collapsable, 'admin.fragments.library-table', [
+                                        'libraries' => $installedContentTypes,
+                                        'showCount' => true,
+                                        'activetab' => 'tabContentTypes',
+                                        'isContentType' => true,
                                     ])
                                 </div>
                             </div>
@@ -77,10 +88,17 @@
                             >
                                 <p>Libraries are used by content types, and are installed/updated when content types are installed/updated.</p>
                                 <div class="panel-body row">
-                                    @include('admin.fragments.collapse-table', [
+                                    @includeWhen($collapsable, 'admin.fragments.collapse-table', [
                                         'libraries' => $installedLibraries,
+                                        'showCount' => true,
+                                        'activetab' => 'tabLibraries',
                                         'isContentType' => false,
-                                        'activetab' => 'tabLibraries'
+                                    ])
+                                    @includeUnless($collapsable, 'admin.fragments.library-table', [
+                                        'libraries' => $installedLibraries,
+                                        'showCount' => true,
+                                        'activetab' => 'tabLibraries',
+                                        'isContentType' => false,
                                     ])
                                 </div>
                             </div>
@@ -94,7 +112,7 @@
                                 <h4>Install or update H5P content types and libraries by uploading a file in <code>.h5p</code> format.</h4>
                                 <p>Any content in the file will not be imported, only content types and libraries.</p>
                                 <p>
-                                    Content type and libraries must be compatible with H5P Core version <b>{{ join('.', H5PCore::$coreApi) }}</b>
+                                    Content type and libraries must be compatible with H5P Core version <code>{{ join('.', H5PCore::$coreApi) }}</code>
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
@@ -118,18 +136,26 @@
                                 </div>
                                 <h4>Content types available from <a href="https://h5p.org" target="_blank">h5p.org</a></h4>
                                 <p>
-                                    The list contains content types and versions that was available when the local cache was updated. Available content types are maintained by H5P Group.
+                                    The list contains content types that was available when the local cache was updated. Available content types are maintained by H5P Group.
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 <p>
-                                    Installed H5P Core version: <b>{{ join('.', H5PCore::$coreApi) }}</b>
+                                    Installed H5P Core version: <code>{{ join('.', H5PCore::$coreApi) }}</code>
                                 </p>
                                 <div class="panel-body row">
+                                    <label>
+                                        <a href="{{ url()->query(url()->full(), ['sort' => $sortColumn, 'activetab' => 'tabInstall', 'listinstalled' => !$listInstalled]) }}">
+                                            <input type="checkbox" {{$listInstalled ? 'checked="checked"' : ''}}>
+                                            List all libraries in cache
+                                        </a>
+                                    </label>
                                     @include('admin.fragments.library-table', [
                                         'libraries' => $available,
-                                        'activetab' => 'tabInstall'
+                                        'showSummary' => true,
+                                        'activetab' => 'tabInstall',
+                                        'isContentType' => true,
                                     ])
                                 </div>
                             </div>

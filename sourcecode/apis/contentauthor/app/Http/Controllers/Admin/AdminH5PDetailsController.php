@@ -177,7 +177,6 @@ class AdminH5PDetailsController extends Controller
             'content' => $content,
             'requestedVersion' => $version,
             'history' => $history,
-            'hasLock' => ContentLock::notExpiredById($content->id)?->updated_at,
             'libraries' => $content
                 ->contentLibraries()
                 ->get()
