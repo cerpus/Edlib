@@ -11,16 +11,12 @@ use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
 use App\Libraries\H5P\h5p;
-use App\Lti\LtiRequest;
+use App\Libraries\Hub\HubClient;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
-use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
-use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use H5PContentValidator;
 use H5PCore;
@@ -40,7 +36,7 @@ class AdminContentMigrateController extends Controller
         private readonly h5p                             $h5p,
         private readonly H5PCore                         $h5pCore,
         private readonly H5PFrameworkInterface           $framework,
-        private readonly SignerInterface                 $signer,
+        private readonly HubClient                       $hubClient,
         private readonly ContentItemsSerializerInterface $serializer,
     )
     {
@@ -66,15 +62,12 @@ class AdminContentMigrateController extends Controller
             if ($request->method() === 'POST' && $request->has('content')) {
                 $migrated = $this->migrate($fromLibrary, $toLibrary, $request->input('content'));
             }
+
+            $leafContentIds = $this->getLeafContentIds();
+
             $itemsQuery = H5PContent::select(['h5p_contents.id', 'h5p_contents.title'])
-                ->leftJoin('content_versions', 'content_versions.id', '=', 'h5p_contents.version_id')
-                ->leftJoin('content_versions as cv', 'cv.parent_id', '=', 'content_versions.id')
                 ->where('h5p_contents.library_id', $fromLibrary->id)
-                ->where(function ($query) {
-                    $query
-                        ->whereNull('cv.id')
-                        ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
-                })
+                ->whereIn('h5p_contents.id', $leafContentIds)
                 ->orderBy('h5p_contents.id');
 
             $count = $itemsQuery->count();
@@ -170,10 +163,49 @@ class AdminContentMigrateController extends Controller
 
     private function checkContent(H5PContent $content): void
     {
-        $version = $content->getVersion();
-        if (!$version->isLeaf()) {
+        $launchUrl = route('h5p.ltishow', $content->id);
+        $leafUrls = $this->getLeafLaunchUrls();
+
+        if (!in_array($launchUrl, $leafUrls, true)) {
             throw new RuntimeException('Content is not latest version');
         }
+    }
+
+    /**
+     * @return int[] Content IDs that are leaf versions in Hub
+     */
+    private function getLeafContentIds(): array
+    {
+        $leafUrls = $this->getLeafLaunchUrls();
+        $routePrefix = route('h5p.ltishow', '') . '/';
+
+        return array_values(array_filter(array_map(
+            function (string $url) use ($routePrefix) {
+                if (str_starts_with($url, $routePrefix)) {
+                    $id = substr($url, strlen($routePrefix));
+                    return is_numeric($id) ? (int) $id : null;
+                }
+                return null;
+            },
+            $leafUrls,
+        )));
+    }
+
+    /**
+     * @return string[] Leaf version launch URLs from Hub
+     * @throws GuzzleException|JsonException|RuntimeException
+     */
+    private function getLeafLaunchUrls(): array
+    {
+        $decoded = $this->hubClient->post(
+            '/content-versions/leaves',
+            ['tag' => 'h5p:h5p.ndlathreeimage'],
+        );
+
+        return array_map(
+            fn (array $item) => $item['lti_launch_url'],
+            $decoded['data'] ?? [],
+        );
     }
 
     /**
@@ -229,29 +261,13 @@ class AdminContentMigrateController extends Controller
      *
      * @throws GuzzleException|JsonException|RuntimeException
      */
-    private function getHubInfo(H5PContent $content)
+    private function getHubInfo(H5PContent $content): array
     {
-        /** @var LtiRequest $ltiRequest */
-        $ltiRequest = Session::get('lti_requests.admin');
-        $requestUrl = $ltiRequest->param('ext_edlib3_content_info_endpoint');
-
-        $infoRequest = new Oauth1Request('POST', $requestUrl, [
-            'lti_launch_url' => route('h5p.ltishow', $content->id),
-        ]);
-
-        $infoRequest = $this->signer->sign(
-            $infoRequest,
-            new Credentials(config('app.consumer-key'), config('app.consumer-secret')),
+        $decoded = $this->hubClient->post(
+            '/content/info',
+            ['lti_launch_url' => route('h5p.ltishow', $content->id)],
         );
 
-        $client = app(Client::class);
-        $response = $client->post($requestUrl, [
-            'form_params' => $infoRequest->toArray(),
-        ])
-            ->getBody()
-            ->getContents();
-
-        $decoded = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);
         if (empty($decoded)) {
             throw new RuntimeException('No content info received');
         }
@@ -283,24 +299,12 @@ class AdminContentMigrateController extends Controller
             ->withContentType($data->machineName)
             ->withContentTypeName($data->machineDisplayName);
 
-        $returnRequest = new Oauth1Request('POST', $returnUrl, [
+        $this->hubClient->post($returnUrl, [
             'content_items' => json_encode($this->serializer->serialize([$item]), flags: JSON_THROW_ON_ERROR),
             'lti_message_type' => 'ContentItemSelection',
             'lti_version' => 'LTI-1p0',
             'user_id' => Session::get('lti_requests.admin')->param('user_id'),
         ]);
-
-        $returnRequest = $this->signer->sign(
-            $returnRequest,
-            new Credentials(config('app.consumer-key'), config('app.consumer-secret')),
-        );
-
-        $client = app(Client::class);
-        $client->post($returnUrl, [
-            'form_params' => $returnRequest->toArray(),
-        ])
-            ->getBody()
-            ->getContents();
     }
 
     /**
