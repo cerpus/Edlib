@@ -17,5 +17,7 @@
         </div>
     </form>
 @else
-    Use of h5p.org hub is not enabled. To enable set <code>H5P_IS_HUB_ENABLED=true</code>
+    <div class="panel-body">
+        Use of h5p.org hub is not enabled. To enable set <code>H5P_IS_HUB_ENABLED=true</code>
+    </div>
 @endif

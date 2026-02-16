@@ -68,8 +68,8 @@
                                         <td>{{ $gameType->title }}</td>
                                         <td>{{ $gameType->getVersion() }}</td>
                                         <td>{{ $gameType->games()->count() }}</td>
-                                        <td>{{ $gameType->created_at->format('d.m.y H:i:s') }}</td>
-                                        <td>{{ $gameType->updated_at->format('d.m.y H:i:s') }}</td>
+                                        <td>{{ $gameType->created_at->format('Y-m-d H:i:s e') }}</td>
+                                        <td>{{ $gameType->updated_at->format('Y-m-d H:i:s e') }}</td>
 
                                     </tr>
                                 @empty
