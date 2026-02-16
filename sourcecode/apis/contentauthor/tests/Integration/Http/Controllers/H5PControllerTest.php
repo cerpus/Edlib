@@ -44,7 +44,6 @@ class H5PControllerTest extends TestCase
             "h5p.default-resource-language" => 'fi',
         ]);
 
-        $faker = Factory::create();
         $this->session([
             'authId' => $this->faker->uuid(),
             'name' => 'Emily Quackfaster',

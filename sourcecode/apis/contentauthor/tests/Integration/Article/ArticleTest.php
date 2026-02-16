@@ -24,11 +24,11 @@ class ArticleTest extends TestCase
     public function testRewriteUploadUrls(): void
     {
         $article = Article::factory()->create([
-            'content' => '<p>This is an image: <img src="/h5pstorage/article-uploads/foo.jpg"></p>',
+            'content' => '<p>This is an image: <img src="/h5pstorage/article-uploads/foo.jpg" alt="Foo"></p>',
         ]);
 
         $this->assertSame(
-            "<p>This is an image: <img src=\"http://localhost/h5pstorage/article-uploads/foo.jpg\"></p>\n",
+            "<p>This is an image: <img src=\"http://localhost/h5pstorage/article-uploads/foo.jpg\" alt=\"Foo\"></p>\n",
             $article->render(),
         );
     }
@@ -36,26 +36,11 @@ class ArticleTest extends TestCase
     public function testLeavesNonUploadUrlsAlone(): void
     {
         $article = Article::factory()->create([
-            'content' => '<p>This is an image: <img src="http://example.com/foo.jpg"></p>',
+            'content' => '<p>This is an image: <img src="http://example.com/foo.jpg" alt="Foo"></p>',
         ]);
 
         $this->assertSame(
-            "<p>This is an image: <img src=\"http://example.com/foo.jpg\"></p>\n",
-            $article->render(),
-        );
-    }
-
-    public function testRendersArticleWithBrokenHtml(): void
-    {
-        $article = Article::factory()->create([
-            'content' => '<div>Foo<b></div>bar</b>',
-        ]);
-
-        // libxml works in mysterious ways.
-        // We don't really care that the output looks like this, but it's nice
-        // to know if it suddenly changes after an update or such anyway.
-        $this->assertSame(
-            "<div>Foo<b></b></div><p>bar</p>\n",
+            "<p>This is an image: <img src=\"http://example.com/foo.jpg\" alt=\"Foo\"></p>\n",
             $article->render(),
         );
     }

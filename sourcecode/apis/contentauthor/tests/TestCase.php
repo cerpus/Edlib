@@ -16,6 +16,7 @@ abstract class TestCase extends BaseTestCase
 
         // Enable testing without building manifests
         $this->instance(Mix::class, self::getFakeMix());
+        config(['h5p.h5pAdapter' => 'cerpus']);
     }
 
     /**
