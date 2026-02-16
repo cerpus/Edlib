@@ -37,17 +37,19 @@ use RuntimeException;
 class AdminContentMigrateController extends Controller
 {
     public function __construct(
-        private readonly h5p $h5p,
-        private readonly H5PCore $h5pCore,
-        private readonly H5PFrameworkInterface $framework,
-        private readonly SignerInterface $signer,
+        private readonly h5p                             $h5p,
+        private readonly H5PCore                         $h5pCore,
+        private readonly H5PFrameworkInterface           $framework,
+        private readonly SignerInterface                 $signer,
         private readonly ContentItemsSerializerInterface $serializer,
-    ) {}
+    )
+    {
+    }
 
     public function index(Request $request): View
     {
         $pageSize = 25;
-        $page = (int) $request->get('page', 1);
+        $page = (int)$request->get('page', 1);
         $contents = [];
         $count = 0;
 
@@ -125,7 +127,7 @@ class AdminContentMigrateController extends Controller
                     $logData['toContentId'] = $newH5pContent->id;
                     $logData['error'] = false;
                     $this->createHubVersion($hubData['update_url'], $newH5pContent);
-                } catch (RuntimeException | GuzzleException | JsonException $e) {
+                } catch (RuntimeException|GuzzleException|JsonException $e) {
                     Log::error('Failed to migrate content: ' . $e->getMessage());
                     $result['message'] = 'Failed to migrate content: ' . $e->getMessage();
                     $logData['error'] = true;
@@ -154,7 +156,7 @@ class AdminContentMigrateController extends Controller
             $contentJson["threeImage"]["scenes"][$i]["enableZoom"] = true;
             /*
              * From code at https://github.com/NDLANO/h5p-vt2er/blob/c11a34b9cdaa6842c1430a79912e78531ca21bcb/h5p-vt2er/app/H5PVT2ER.php#L299
-             * May or may not be interested in addis this as well
+             * May or may not be interested in adding this as well
             for ($j = 0; $j < count($contentJson["threeImage"]["scenes"][$i]["interactions"] ?? []); $j++) {
                 $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["iconTypeTextBox"] = "text-icon";
                 $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["showAsHotspot"] = false;
@@ -183,7 +185,7 @@ class AdminContentMigrateController extends Controller
         $request->attributes->set('library', $toLibrary->getLibraryString(false));
         $request->attributes->set('title', $sourceH5p->title);
         $request->attributes->set('parameters', json_encode(
-            (object) [
+            (object)[
                 'params' => json_decode($params, associative: true, flags: JSON_THROW_ON_ERROR),
                 'metadata' => $sourceH5p->getMetadataStructure(),
             ],
@@ -279,8 +281,7 @@ class AdminContentMigrateController extends Controller
             ->withShared($data->shared)
             ->withTags($data->tags)
             ->withContentType($data->machineName)
-            ->withContentTypeName($data->machineDisplayName)
-        ;
+            ->withContentTypeName($data->machineDisplayName);
 
         $returnRequest = new Oauth1Request('POST', $returnUrl, [
             'content_items' => json_encode($this->serializer->serialize([$item]), flags: JSON_THROW_ON_ERROR),
@@ -311,13 +312,13 @@ class AdminContentMigrateController extends Controller
 
         // Get the dependencies based on the new main library
         $validator = new H5PContentValidator($this->framework, $this->h5pCore);
-        $params = (object) [
+        $params = (object)[
             'library' => $h5pContent->library->getLibraryString(false),
             'params' => json_decode($h5pContent->parameters),
         ];
-        $validator->validateLibrary($params, (object) [
+        $validator->validateLibrary($params, (object)[
             'options' => [
-                (object) [
+                (object)[
                     'name' => $params->library,
                 ],
             ],
