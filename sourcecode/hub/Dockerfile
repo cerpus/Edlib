@@ -116,6 +116,7 @@ COPY config config
 COPY database database
 COPY lang lang
 COPY public public
+COPY --from=frontend /app/public/build public/build
 COPY resources resources
 COPY routes routes
 COPY artisan .
