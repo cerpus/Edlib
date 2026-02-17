@@ -46,7 +46,7 @@ class AdminContentMigrateController extends Controller
     {
         $pageSize = 25;
         $page = (int)$request->get('page', 1);
-        $contents = [];
+        $contents = collect();
         $count = 0;
 
         $fromLibrary = H5PLibrary::where('name', 'H5P.NDLAThreeImage')
@@ -63,16 +63,40 @@ class AdminContentMigrateController extends Controller
                 $migrated = $this->migrate($fromLibrary, $toLibrary, $request->input('content'));
             }
 
-            $leafContentIds = $this->getLeafContentIds();
+            $leaves = $this->getLeaves();
+            $routePrefix = route('h5p.ltishow', '') . '/';
 
-            $itemsQuery = H5PContent::select(['h5p_contents.id', 'h5p_contents.title'])
-                ->where('h5p_contents.library_id', $fromLibrary->id)
-                ->whereIn('h5p_contents.id', $leafContentIds)
-                ->orderBy('h5p_contents.id');
+            // Build list of Hub resources with their CA content
+            $items = collect($leaves)->map(function (array $leaf) use ($routePrefix, $fromLibrary) {
+                $url = $leaf['lti_launch_url'];
+                if (!str_starts_with($url, $routePrefix)) {
+                    return null;
+                }
+                $h5pId = substr($url, strlen($routePrefix));
+                if (!is_numeric($h5pId)) {
+                    return null;
+                }
 
-            $count = $itemsQuery->count();
-            $contents = $itemsQuery->limit($pageSize)->offset($pageSize * ($page - 1))->get();
+                $h5pContent = H5PContent::where('id', (int) $h5pId)
+                    ->where('library_id', $fromLibrary->id)
+                    ->first();
+
+                if ($h5pContent === null) {
+                    return null;
+                }
+
+                return (object) [
+                    'h5p_id' => $h5pContent->id,
+                    'title' => $leaf['title'] ?: $h5pContent->title,
+                    'hub_content_id' => $leaf['content_id'],
+                    'update_url' => $leaf['update_url'],
+                ];
+            })->filter()->values();
+
+            $count = $items->count();
+            $contents = $items->slice($pageSize * ($page - 1), $pageSize)->values();
         }
+
         return view('admin.migrate.index', [
             'fromLibrary' => $fromLibrary,
             'toLibrary' => $toLibrary,
@@ -82,13 +106,23 @@ class AdminContentMigrateController extends Controller
         ]);
     }
 
-    private function migrate(H5pLibrary $fromLibrary, H5pLibrary $toLibrary, array $contentIds): array
+    /**
+     * @param array<array{h5p_id: string, update_url: string}> $items
+     */
+    private function migrate(H5pLibrary $fromLibrary, H5pLibrary $toLibrary, array $items): array
     {
         $migrated = [];
         $runId = Uuid::uuid4()->toString();
 
-        foreach ($contentIds as $contentId) {
-            $sourceH5p = H5PContent::where('id', $contentId)->where('library_id', $fromLibrary->id)->first();
+        foreach ($items as $item) {
+            $h5pId = $item['h5p_id'] ?? null;
+            $updateUrl = $item['update_url'] ?? null;
+
+            if (!$h5pId || !$updateUrl) {
+                continue;
+            }
+
+            $sourceH5p = H5PContent::where('id', $h5pId)->where('library_id', $fromLibrary->id)->first();
             if ($sourceH5p !== null) {
                 $logData = [
                     'runId' => $runId,
@@ -111,15 +145,13 @@ class AdminContentMigrateController extends Controller
                     'message' => '',
                 ];
                 try {
-                    $this->checkContent($sourceH5p);
-                    $hubData = $this->getHubInfo($sourceH5p);
                     $newParameters = $this->alterParameters($sourceH5p->parameters);
                     $newH5pContent = $this->save($sourceH5p, $newParameters, $fromLibrary, $toLibrary);
                     $result['id'] = $newH5pContent->id;
                     $result['message'] = 'Migrated';
                     $logData['toContentId'] = $newH5pContent->id;
                     $logData['error'] = false;
-                    $this->createHubVersion($hubData['update_url'], $newH5pContent);
+                    $this->createHubVersion($updateUrl, $newH5pContent);
                 } catch (RuntimeException|GuzzleException|JsonException $e) {
                     Log::error('Failed to migrate content: ' . $e->getMessage());
                     $result['message'] = 'Failed to migrate content: ' . $e->getMessage();
@@ -161,51 +193,18 @@ class AdminContentMigrateController extends Controller
         return json_encode($content, flags: JSON_THROW_ON_ERROR);
     }
 
-    private function checkContent(H5PContent $content): void
-    {
-        $launchUrl = route('h5p.ltishow', $content->id);
-        $leafUrls = $this->getLeafLaunchUrls();
-
-        if (!in_array($launchUrl, $leafUrls, true)) {
-            throw new RuntimeException('Content is not latest version');
-        }
-    }
-
     /**
-     * @return int[] Content IDs that are leaf versions in Hub
-     */
-    private function getLeafContentIds(): array
-    {
-        $leafUrls = $this->getLeafLaunchUrls();
-        $routePrefix = route('h5p.ltishow', '') . '/';
-
-        return array_values(array_filter(array_map(
-            function (string $url) use ($routePrefix) {
-                if (str_starts_with($url, $routePrefix)) {
-                    $id = substr($url, strlen($routePrefix));
-                    return is_numeric($id) ? (int) $id : null;
-                }
-                return null;
-            },
-            $leafUrls,
-        )));
-    }
-
-    /**
-     * @return string[] Leaf version launch URLs from Hub
+     * @return array<array{lti_launch_url: string, title: string, content_id: string, update_url: string}>
      * @throws GuzzleException|JsonException|RuntimeException
      */
-    private function getLeafLaunchUrls(): array
+    private function getLeaves(): array
     {
         $decoded = $this->hubClient->post(
             '/content-versions/leaves',
             ['tag' => 'h5p:h5p.ndlathreeimage'],
         );
 
-        return array_map(
-            fn (array $item) => $item['lti_launch_url'],
-            $decoded['data'] ?? [],
-        );
+        return $decoded['data'] ?? [];
     }
 
     /**
@@ -254,25 +253,6 @@ class AdminContentMigrateController extends Controller
         event(new H5PWasSaved($newH5p, $request, ContentVersion::PURPOSE_UPDATE, $sourceH5p));
 
         return $newH5p;
-    }
-
-    /**
-     * Get URL to create a new version in Hub for the content
-     *
-     * @throws GuzzleException|JsonException|RuntimeException
-     */
-    private function getHubInfo(H5PContent $content): array
-    {
-        $decoded = $this->hubClient->post(
-            '/content/info',
-            ['lti_launch_url' => route('h5p.ltishow', $content->id)],
-        );
-
-        if (empty($decoded)) {
-            throw new RuntimeException('No content info received');
-        }
-
-        return $decoded;
     }
 
     /**

@@ -156,6 +156,32 @@ final class LeafVersionsTest extends TestCase
                 ->where('data.0.lti_launch_url', 'https://ca.test/h5p/1'));
     }
 
+    public function testCopiedContentDoesNotAffectOriginalLeafStatus(): void
+    {
+        $originalContent = Content::factory()->create();
+        $copyContent = Content::factory()->create();
+
+        $originalVersion = ContentVersion::factory()
+            ->for($originalContent)
+            ->for($this->tool, 'tool')
+            ->withLaunchUrl('https://ca.test/h5p/1')
+            ->create();
+
+        // Copy creates a version on a different content, pointing back to the original
+        ContentVersion::factory()
+            ->for($copyContent)
+            ->for($this->tool, 'tool')
+            ->withLaunchUrl('https://ca.test/h5p/2')
+            ->create(['previous_version_id' => $originalVersion->id]);
+
+        $url = route('author.content.leaves', [$this->tool]);
+
+        $this->signedPost($url)
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->has('data', 2));
+    }
+
     public function testRejectsInvalidCredentials(): void
     {
         $url = route('author.content.leaves', [$this->tool]);

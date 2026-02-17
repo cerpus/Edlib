@@ -29,7 +29,8 @@ class ContentAuthorController extends Controller
             ->whereNotExists(function ($sub) {
                 $sub->select(DB::raw(1))
                     ->from('content_versions as cv2')
-                    ->whereColumn('cv2.previous_version_id', 'content_versions.id');
+                    ->whereColumn('cv2.previous_version_id', 'content_versions.id')
+                    ->whereColumn('cv2.content_id', 'content_versions.content_id');
             });
 
         if ($request->has('tag')) {
@@ -45,10 +46,19 @@ class ContentAuthorController extends Controller
             });
         }
 
-        $launchUrls = $query->pluck('lti_launch_url');
+        $versions = $query->get();
 
         return response()->json([
-            'data' => $launchUrls->map(fn (string $url) => ['lti_launch_url' => $url])->values(),
+            'data' => $versions->map(fn (ContentVersion $version) => [
+                'lti_launch_url' => $version->lti_launch_url,
+                'title' => $version->title,
+                'content_id' => $version->content_id,
+                'update_url' => route('author.content.update', [
+                    $version->lti_tool_id,
+                    $version->content_id,
+                    $version->id,
+                ]),
+            ])->values(),
         ]);
     }
 
