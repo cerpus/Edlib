@@ -1,5 +1,6 @@
 <div class="panel-body row">
     <table class="table table-striped">
+        <thead>
         <tr>
             <th>DB id</th>
             <th>Machine name</th>
@@ -8,6 +9,8 @@
             <th>Installed version</th>
             <th>Set in DB</th>
         </tr>
+        </thead>
+        <tbody>
         @foreach($dependencies as $dep)
             @if (empty($dep['library']) || !$dep['dependencySet'])
                 <tr style="background-color: #f2dede">
@@ -40,5 +43,6 @@
                 <td>Yes</td>
             </tr>
         @endforeach
+        </tbody>
     </table>
 </div>

@@ -46,6 +46,10 @@ Route::name('author.content.')
             ->uses([ContentAuthorController::class, 'info'])
             ->name('info');
 
+        Route::post('/tool/{tool}/content-versions/leaves')
+            ->uses([ContentAuthorController::class, 'leaves'])
+            ->name('leaves');
+
         Route::post('/tool/{tool}/content/{content}/version/{version}/update')
             ->uses([ContentAuthorController::class, 'update'])
             ->whereUlid(['tool', 'content', 'version'])

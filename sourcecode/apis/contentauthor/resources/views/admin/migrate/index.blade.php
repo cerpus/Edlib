@@ -59,10 +59,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($paginator->getCollection() as $content)
+                                        @foreach($paginator->getCollection() as $index => $content)
                                             <tr>
-                                                <td><input type="checkbox" name="content[]" value="{{ $content->id }}"></td>
-                                                <td><a href="{{ route('admin.content-details', [$content->id]) }}">{{ $content->id }}</a></td>
+                                                <td>
+                                                    <input type="checkbox" name="content[{{ $index }}][h5p_id]" value="{{ $content->h5p_id }}">
+                                                    <input type="hidden" name="content[{{ $index }}][update_url]" value="{{ $content->update_url }}">
+                                                </td>
+                                                <td><a href="{{ route('admin.content-details', [$content->h5p_id]) }}">{{ $content->h5p_id }}</a></td>
                                                 <td>{{ $content->title }}</td>
                                             </tr>
                                         @endforeach

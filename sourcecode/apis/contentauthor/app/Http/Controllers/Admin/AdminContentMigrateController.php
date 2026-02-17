@@ -11,16 +11,12 @@ use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
 use App\Libraries\H5P\h5p;
-use App\Lti\LtiRequest;
+use App\Libraries\Hub\HubClient;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
-use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
-use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use H5PContentValidator;
 use H5PCore;
@@ -37,18 +33,20 @@ use RuntimeException;
 class AdminContentMigrateController extends Controller
 {
     public function __construct(
-        private readonly h5p $h5p,
-        private readonly H5PCore $h5pCore,
-        private readonly H5PFrameworkInterface $framework,
-        private readonly SignerInterface $signer,
+        private readonly h5p                             $h5p,
+        private readonly H5PCore                         $h5pCore,
+        private readonly H5PFrameworkInterface           $framework,
+        private readonly HubClient                       $hubClient,
         private readonly ContentItemsSerializerInterface $serializer,
-    ) {}
+    )
+    {
+    }
 
     public function index(Request $request): View
     {
         $pageSize = 25;
-        $page = (int) $request->get('page', 1);
-        $contents = [];
+        $page = (int)$request->get('page', 1);
+        $contents = collect();
         $count = 0;
 
         $fromLibrary = H5PLibrary::where('name', 'H5P.NDLAThreeImage')
@@ -64,20 +62,41 @@ class AdminContentMigrateController extends Controller
             if ($request->method() === 'POST' && $request->has('content')) {
                 $migrated = $this->migrate($fromLibrary, $toLibrary, $request->input('content'));
             }
-            $itemsQuery = H5PContent::select(['h5p_contents.id', 'h5p_contents.title'])
-                ->leftJoin('content_versions', 'content_versions.id', '=', 'h5p_contents.version_id')
-                ->leftJoin('content_versions as cv', 'cv.parent_id', '=', 'content_versions.id')
-                ->where('h5p_contents.library_id', $fromLibrary->id)
-                ->where(function ($query) {
-                    $query
-                        ->whereNull('cv.id')
-                        ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
-                })
-                ->orderBy('h5p_contents.id');
 
-            $count = $itemsQuery->count();
-            $contents = $itemsQuery->limit($pageSize)->offset($pageSize * ($page - 1))->get();
+            $leaves = $this->getLeaves();
+            $routePrefix = route('h5p.ltishow', '') . '/';
+
+            // Build list of Hub resources with their CA content
+            $items = collect($leaves)->map(function (array $leaf) use ($routePrefix, $fromLibrary) {
+                $url = $leaf['lti_launch_url'];
+                if (!str_starts_with($url, $routePrefix)) {
+                    return null;
+                }
+                $h5pId = substr($url, strlen($routePrefix));
+                if (!is_numeric($h5pId)) {
+                    return null;
+                }
+
+                $h5pContent = H5PContent::where('id', (int) $h5pId)
+                    ->where('library_id', $fromLibrary->id)
+                    ->first();
+
+                if ($h5pContent === null) {
+                    return null;
+                }
+
+                return (object) [
+                    'h5p_id' => $h5pContent->id,
+                    'title' => $leaf['title'] ?: $h5pContent->title,
+                    'hub_content_id' => $leaf['content_id'],
+                    'update_url' => $leaf['update_url'],
+                ];
+            })->filter()->values();
+
+            $count = $items->count();
+            $contents = $items->slice($pageSize * ($page - 1), $pageSize)->values();
         }
+
         return view('admin.migrate.index', [
             'fromLibrary' => $fromLibrary,
             'toLibrary' => $toLibrary,
@@ -87,13 +106,23 @@ class AdminContentMigrateController extends Controller
         ]);
     }
 
-    private function migrate(H5pLibrary $fromLibrary, H5pLibrary $toLibrary, array $contentIds): array
+    /**
+     * @param array<array{h5p_id: string, update_url: string}> $items
+     */
+    private function migrate(H5pLibrary $fromLibrary, H5pLibrary $toLibrary, array $items): array
     {
         $migrated = [];
         $runId = Uuid::uuid4()->toString();
 
-        foreach ($contentIds as $contentId) {
-            $sourceH5p = H5PContent::where('id', $contentId)->where('library_id', $fromLibrary->id)->first();
+        foreach ($items as $item) {
+            $h5pId = $item['h5p_id'] ?? null;
+            $updateUrl = $item['update_url'] ?? null;
+
+            if (!$h5pId || !$updateUrl) {
+                continue;
+            }
+
+            $sourceH5p = H5PContent::where('id', $h5pId)->where('library_id', $fromLibrary->id)->first();
             if ($sourceH5p !== null) {
                 $logData = [
                     'runId' => $runId,
@@ -116,16 +145,14 @@ class AdminContentMigrateController extends Controller
                     'message' => '',
                 ];
                 try {
-                    $this->checkContent($sourceH5p);
-                    $hubData = $this->getHubInfo($sourceH5p);
                     $newParameters = $this->alterParameters($sourceH5p->parameters);
                     $newH5pContent = $this->save($sourceH5p, $newParameters, $fromLibrary, $toLibrary);
                     $result['id'] = $newH5pContent->id;
                     $result['message'] = 'Migrated';
                     $logData['toContentId'] = $newH5pContent->id;
                     $logData['error'] = false;
-                    $this->createHubVersion($hubData['update_url'], $newH5pContent);
-                } catch (RuntimeException | GuzzleException | JsonException $e) {
+                    $this->createHubVersion($updateUrl, $newH5pContent);
+                } catch (RuntimeException|GuzzleException|JsonException $e) {
                     Log::error('Failed to migrate content: ' . $e->getMessage());
                     $result['message'] = 'Failed to migrate content: ' . $e->getMessage();
                     $logData['error'] = true;
@@ -150,16 +177,34 @@ class AdminContentMigrateController extends Controller
     {
         $content = json_decode($parameters, associative: true);
         $content['threeImage']['wasConvertedFromVirtualTour'] = true;
+        for ($i = 0; $i < count($contentJson["threeImage"]["scenes"] ?? []); $i++) {
+            $contentJson["threeImage"]["scenes"][$i]["enableZoom"] = true;
+            /*
+             * From code at https://github.com/NDLANO/h5p-vt2er/blob/c11a34b9cdaa6842c1430a79912e78531ca21bcb/h5p-vt2er/app/H5PVT2ER.php#L299
+             * May or may not be interested in adding this as well
+            for ($j = 0; $j < count($contentJson["threeImage"]["scenes"][$i]["interactions"] ?? []); $j++) {
+                $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["iconTypeTextBox"] = "text-icon";
+                $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["showAsHotspot"] = false;
+                $contentJson["threeImage"]["scenes"][$i]["interactions"][$j]["showAsOpenSceneContent"] = false;
+            }
+            */
+        }
 
         return json_encode($content, flags: JSON_THROW_ON_ERROR);
     }
 
-    private function checkContent(H5PContent $content): void
+    /**
+     * @return array<array{lti_launch_url: string, title: string, content_id: string, update_url: string}>
+     * @throws GuzzleException|JsonException|RuntimeException
+     */
+    private function getLeaves(): array
     {
-        $version = $content->getVersion();
-        if (!$version->isLeaf()) {
-            throw new RuntimeException('Content is not latest version');
-        }
+        $decoded = $this->hubClient->post(
+            '/content-versions/leaves',
+            ['tag' => 'h5p:h5p.ndlathreeimage'],
+        );
+
+        return $decoded['data'] ?? [];
     }
 
     /**
@@ -171,7 +216,7 @@ class AdminContentMigrateController extends Controller
         $request->attributes->set('library', $toLibrary->getLibraryString(false));
         $request->attributes->set('title', $sourceH5p->title);
         $request->attributes->set('parameters', json_encode(
-            (object) [
+            (object)[
                 'params' => json_decode($params, associative: true, flags: JSON_THROW_ON_ERROR),
                 'metadata' => $sourceH5p->getMetadataStructure(),
             ],
@@ -211,41 +256,6 @@ class AdminContentMigrateController extends Controller
     }
 
     /**
-     * Get URL to create a new version in Hub for the content
-     *
-     * @throws GuzzleException|JsonException|RuntimeException
-     */
-    private function getHubInfo(H5PContent $content)
-    {
-        /** @var LtiRequest $ltiRequest */
-        $ltiRequest = Session::get('lti_requests.admin');
-        $requestUrl = $ltiRequest->param('ext_edlib3_content_info_endpoint');
-
-        $infoRequest = new Oauth1Request('POST', $requestUrl, [
-            'lti_launch_url' => route('h5p.ltishow', $content->id),
-        ]);
-
-        $infoRequest = $this->signer->sign(
-            $infoRequest,
-            new Credentials(config('app.consumer-key'), config('app.consumer-secret')),
-        );
-
-        $client = app(Client::class);
-        $response = $client->post($requestUrl, [
-            'form_params' => $infoRequest->toArray(),
-        ])
-            ->getBody()
-            ->getContents();
-
-        $decoded = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);
-        if (empty($decoded)) {
-            throw new RuntimeException('No content info received');
-        }
-
-        return $decoded;
-    }
-
-    /**
      * Create new version of the content in Hub
      *
      * @throws JsonException | GuzzleException
@@ -267,27 +277,14 @@ class AdminContentMigrateController extends Controller
             ->withShared($data->shared)
             ->withTags($data->tags)
             ->withContentType($data->machineName)
-            ->withContentTypeName($data->machineDisplayName)
-        ;
+            ->withContentTypeName($data->machineDisplayName);
 
-        $returnRequest = new Oauth1Request('POST', $returnUrl, [
+        $this->hubClient->post($returnUrl, [
             'content_items' => json_encode($this->serializer->serialize([$item]), flags: JSON_THROW_ON_ERROR),
             'lti_message_type' => 'ContentItemSelection',
             'lti_version' => 'LTI-1p0',
             'user_id' => Session::get('lti_requests.admin')->param('user_id'),
         ]);
-
-        $returnRequest = $this->signer->sign(
-            $returnRequest,
-            new Credentials(config('app.consumer-key'), config('app.consumer-secret')),
-        );
-
-        $client = app(Client::class);
-        $client->post($returnUrl, [
-            'form_params' => $returnRequest->toArray(),
-        ])
-            ->getBody()
-            ->getContents();
     }
 
     /**
@@ -299,13 +296,13 @@ class AdminContentMigrateController extends Controller
 
         // Get the dependencies based on the new main library
         $validator = new H5PContentValidator($this->framework, $this->h5pCore);
-        $params = (object) [
+        $params = (object)[
             'library' => $h5pContent->library->getLibraryString(false),
             'params' => json_decode($h5pContent->parameters),
         ];
-        $validator->validateLibrary($params, (object) [
+        $validator->validateLibrary($params, (object)[
             'options' => [
-                (object) [
+                (object)[
                     'name' => $params->library,
                 ],
             ],

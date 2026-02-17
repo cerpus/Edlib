@@ -4,20 +4,30 @@ namespace App\Http\Controllers\Admin;
 
 use App\ContentVersion;
 use App\H5PContent;
+use App\H5PContentLibrary;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
+use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PExport;
+use App\Libraries\H5P\H5PViewConfig;
+use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use ErrorException;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use MatthiasMullie\Minify\CSS;
 
 class AdminH5PDetailsController extends Controller
 {
@@ -171,7 +181,132 @@ class AdminH5PDetailsController extends Controller
             'content' => $content,
             'requestedVersion' => $version,
             'history' => $history,
+            'libraries' => $content
+                ->contentLibraries()
+                ->get()
+                ->map(function (H5PContentLibrary $library) {
+                    $lib = H5PLibrary::find($library->library_id);
+                    return [
+                        'id' => $library->library_id,
+                        'dependency_type' => $library->dependency_type,
+                        'weight' => $library->weight,
+                        'name' => $lib?->name,
+                        'version' => $lib ? sprintf('%d.%d.%d', $lib->major_version, $lib->minor_version, $lib->patch_version) : '',
+                    ];
+                })
+                ->sortBy(['dependency_type', 'weight']),
         ]);
+    }
+
+    public function libraryTranslation(H5PLibrary $library, string $locale): View
+    {
+        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
+            ->where('language_code', $locale)
+            ->first();
+
+        return view('admin.library-upgrade.translation', [
+            'library' => $library,
+            'languageCode' => $locale,
+            'haveTranslation' => $libLang !== null,
+            'translationDb' => $libLang?->translation,
+            'translationFile' => Storage::disk()->get(
+                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
+            ),
+        ]);
+    }
+
+    public function libraryTranslationUpdate(AdminTranslationUpdateRequest $request, H5PLibrary $library, string $locale): View
+    {
+        $messages = collect();
+        $input = $request->validated();
+
+        if (array_key_exists('translationFile', $input) && $request->file('translationFile')->isValid()) {
+            $translation = $request->file('translationFile')->getContent();
+        } else {
+            $translation = $input['translation'];
+        }
+
+        if (empty($translation)) {
+            $messages->add('Content was empty');
+        } else {
+            try {
+                json_decode($translation, flags: JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                $messages->add($e->getMessage());
+            }
+
+            if ($messages->isEmpty()) {
+                $count = $library->languages()
+                    ->where('language_code', $locale)
+                    ->limit(1)
+                    ->update(['translation' => $translation]);
+
+                if ($count === 0) {
+                    $messages->add('No rows was updated');
+                }
+            }
+        }
+
+        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
+            ->where('language_code', $locale)
+            ->first();
+
+        return view('admin.library-upgrade.translation', [
+            'library' => $library,
+            'languageCode' => $locale,
+            'haveTranslation' => $libLang !== null,
+            'translationDb' => $libLang?->translation,
+            'translationFile' => Storage::disk()->get(
+                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
+            ),
+            'messages' => $messages,
+        ]);
+    }
+
+    public function contentPreview(H5PContent $h5pContent): View
+    {
+        $viewConfig = (app(H5PViewConfig::class))
+            ->setUserId(Session::get('authId', false))
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
+            ->setPreview(true)
+            ->loadContent($h5pContent->id)
+            ->setAlterParameterSettings(new H5PAlterParametersSettingsDataObject(useImageWidth: $h5pContent->library->includeImageWidth()));
+
+        $h5p = app(h5p::class);
+        $h5pView = $h5p->createView($viewConfig);
+        $content = $viewConfig->getContent();
+        $settings = $h5pView->getSettings();
+        $styles = array_merge($h5pView->getStyles(), [
+            mix('css/admin-preview.css'),
+        ]);
+
+        return view('admin.h5p-preview', [
+            'id' => $h5pContent->id,
+            'title' => $content['title'],
+            'language' => $content['language'],
+            'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
+            'config' => $settings,
+            'jsScripts' => $h5pView->getScripts(),
+            'styles' => $styles,
+            'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
+            'preview' => true,
+            'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
+        ]);
+    }
+
+    public function contentExport(H5PContent $h5pContent): RedirectResponse|Response
+    {
+        $export = app(H5PExport::class);
+        $storage = app(H5PCerpusStorage::class);
+        $fileName = sprintf("%s-%d.h5p", $h5pContent->slug, $h5pContent->id);
+
+        if ($storage->hasExport($fileName) || $export->generateExport($h5pContent)) {
+            return $storage->downloadContent($fileName, $h5pContent->title);
+        }
+
+        return response(trans('h5p-editor.could-not-find-content'), 404);
     }
 
     private function getVersions(ContentVersion $versionData, Collection $stack, $getChildren = true): Collection

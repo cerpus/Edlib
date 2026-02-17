@@ -28,5 +28,6 @@ readonly class ContentDisplayItem
         public string|null $shareDialogUrl,
         public string|null $copyUrl,
         public string|null $deleteUrl,
+        public string|null $lockedByUserName,
     ) {}
 }

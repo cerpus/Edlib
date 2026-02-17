@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AuthPsk;
+use App\Http\Middleware\OAuth1BodySigned;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\AdapterMode;
 use App\Http\Middleware\APIAuth;
@@ -69,6 +70,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth.oauth_body' => OAuth1BodySigned::class,
 
         // App middleware
         'core.return' => \App\Http\Middleware\StoreLtiRequestInSession::class,

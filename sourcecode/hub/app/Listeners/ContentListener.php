@@ -11,6 +11,10 @@ final readonly class ContentListener
 {
     public function handleForceDeleting(ContentForceDeleting $event): void
     {
+        $event->content->edlib2Usages()->delete();
+
+        $event->content->viewsAccumulated()->delete();
+
         $event->content->views()->delete();
 
         $event->content->versions()

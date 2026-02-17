@@ -135,8 +135,12 @@ class Content extends Model
             $version->published = false;
             $version->title .= ' ' . trans('messages.content-copy-suffix');
             $copy->versions()->save($version);
-            // TODO: decide how tags in copied content should be handled.
-            // as of now, they are not copied.
+
+            $tagPivotData = $previousVersion->tags()
+                ->pluck('content_version_tag.verbatim_name', 'tags.id');
+            foreach ($tagPivotData as $tagId => $verbatimName) {
+                $version->tags()->attach($tagId, ['verbatim_name' => $verbatimName]);
+            }
             $copy->users()->save($user, ['role' => ContentRole::Owner]);
             $copy->save();
 

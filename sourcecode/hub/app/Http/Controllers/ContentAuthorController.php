@@ -9,10 +9,12 @@ use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
+use App\Models\Tag;
 use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use RuntimeException;
@@ -22,6 +24,46 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ContentAuthorController extends Controller
 {
+    public function leaves(Request $request, LtiTool $tool): JsonResponse
+    {
+        $query = ContentVersion::query()
+            ->where('lti_tool_id', $tool->id)
+            ->whereNotExists(function ($sub) {
+                $sub->select(DB::raw(1))
+                    ->from('content_versions as cv2')
+                    ->whereColumn('cv2.previous_version_id', 'content_versions.id')
+                    ->whereColumn('cv2.content_id', 'content_versions.content_id');
+            });
+
+        if ($request->has('tag')) {
+            ['prefix' => $prefix, 'name' => $name] = Tag::parse($request->input('tag'));
+
+            $query->whereExists(function ($sub) use ($prefix, $name) {
+                $sub->select(DB::raw(1))
+                    ->from('content_version_tag')
+                    ->join('tags', 'tags.id', '=', 'content_version_tag.tag_id')
+                    ->whereColumn('content_version_tag.content_version_id', 'content_versions.id')
+                    ->where('tags.prefix', strtolower($prefix))
+                    ->where('tags.name', strtolower($name));
+            });
+        }
+
+        $versions = $query->get();
+
+        return response()->json([
+            'data' => $versions->map(fn (ContentVersion $version) => [
+                'lti_launch_url' => $version->lti_launch_url,
+                'title' => $version->title,
+                'content_id' => $version->content_id,
+                'update_url' => route('author.content.update', [
+                    $version->lti_tool_id,
+                    $version->content_id,
+                    $version->id,
+                ]),
+            ])->values(),
+        ]);
+    }
+
     public function info(ContentInfoRequest $request, LtiTool $tool): JsonResponse
     {
         $data = $request->validated();
