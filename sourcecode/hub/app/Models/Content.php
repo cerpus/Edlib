@@ -136,10 +136,10 @@ class Content extends Model
             $version->title .= ' ' . trans('messages.content-copy-suffix');
             $copy->versions()->save($version);
 
-            foreach ($previousVersion->tags as $tag) {
-                $version->tags()->attach($tag, [
-                    'verbatim_name' => $tag->pivot->verbatim_name,
-                ]);
+            $tagPivotData = $previousVersion->tags()
+                ->pluck('content_version_tag.verbatim_name', 'tags.id');
+            foreach ($tagPivotData as $tagId => $verbatimName) {
+                $version->tags()->attach($tagId, ['verbatim_name' => $verbatimName]);
             }
             $copy->users()->save($user, ['role' => ContentRole::Owner]);
             $copy->save();
