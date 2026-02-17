@@ -55,7 +55,7 @@ class ArticleTest extends TestCase
         // We don't really care that the output looks like this, but it's nice
         // to know if it suddenly changes after an update or such anyway.
         $this->assertSame(
-            "<div>Foo<b></b></div><p>bar</p>\n",
+            "<div>Foo<b></b><p>bar</p></div>\n",
             $article->render(),
         );
     }
