@@ -12,6 +12,7 @@ RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
         gd \
         intl \
         opcache \
+        pcov \
         pdo_pgsql \
         redis \
         zip
@@ -101,22 +102,41 @@ VOLUME /app/storage
 COPY docker/php/fpm-prod.conf "/usr/local/etc/php-fpm.d/zz-fpm-prod.conf"
 
 
-FROM prod AS test
+FROM composer_deps AS test
 
+RUN composer install \
+    --no-autoloader \
+    --no-cache \
+    --no-progress \
+    --no-scripts
+
+COPY app app
+COPY bootstrap bootstrap
+COPY config config
+COPY database database
+COPY lang lang
+COPY public public
+COPY --from=frontend /app/public/build public/build
+COPY resources resources
+COPY routes routes
+COPY artisan .
 COPY phpunit.xml .env.testing .
 COPY tests tests
 
+RUN set -eux; \
+    mkdir -p \
+        bootstrap/cache \
+        storage/app/public \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs; \
+    ln -s /app/storage/app/public /app/public/storage; \
+    chmod -R o+w bootstrap/cache storage; \
+    composer dump-autoload
+
 ENV APP_ENV=testing \
     APP_DEBUG=true
-
-RUN set -eux; \
-    install-php-extensions \
-        pcov \
-    ; \
-    composer install \
-        --no-cache \
-        --no-progress \
-    ;
 
 CMD ["vendor/bin/phpunit"]
 
@@ -126,7 +146,6 @@ FROM base AS dev
 RUN set -eux; \
     cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \
     install-php-extensions \
-        pcov \
         xdebug \
     ;
 

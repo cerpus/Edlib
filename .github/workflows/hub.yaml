@@ -28,24 +28,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  composer-validate:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Validate
-        run: composer validate --no-check-publish
-
   phpstan:
     if: "!inputs.deploy"
-    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -78,7 +70,6 @@ jobs:
 
   test:
     if: "!inputs.deploy"
-    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     services:
@@ -108,33 +99,21 @@ jobs:
           - 7700:7700
 
     steps:
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: cerpusbot
-          password: ${{ secrets.CERPUSBOT_SECRET }}
-
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.arch }}-buildx-hub-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.arch }}-buildx-hub-
-
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
 
       - name: Build test image
         uses: docker/build-push-action@v5
         with:
           context: sourcecode/hub
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=gha,scope=hub
+          cache-to: type=gha,scope=hub,mode=max
           load: true
           tags: hub-test
           target: test
@@ -169,13 +148,6 @@ jobs:
           password: ${{ secrets.CERPUSBOT_SECRET }}
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.arch }}-buildx-hub-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.arch }}-buildx-hub-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -192,8 +164,8 @@ jobs:
       - name: Build PHP image
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/buildx-cache-new,mode=max
+          cache-from: type=gha,scope=hub
+          cache-to: type=gha,scope=hub,mode=max
           context: sourcecode/hub
           push: true
           target: prod
@@ -212,14 +184,8 @@ jobs:
       - name: Build web image
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=gha,scope=hub
           context: sourcecode/hub
           push: true
           target: web
           tags: ${{ steps.web_meta.outputs.tags }}
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache

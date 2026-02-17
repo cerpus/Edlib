@@ -28,24 +28,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  composer-validate:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Validate
-        run: composer validate
-
   phpstan:
     if: "!inputs.deploy"
-    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -78,31 +70,24 @@ jobs:
 
   test:
     if: "!inputs.deploy"
-    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     steps:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.arch }}-buildx-ca-${{ github.sha }}
-          restore-keys: |
-
-            ${{ runner.arch }}-buildx-ca-
-
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate
 
       - name: Build test image
         uses: docker/build-push-action@v5
         with:
           context: sourcecode/apis/contentauthor
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=gha,scope=contentauthor
+          cache-to: type=gha,scope=contentauthor,mode=max
           load: true
           tags: test-image
           target: test
@@ -135,15 +120,6 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.arch }}-buildx-ca-${{ github.sha }}
-          restore-keys: |
-
-            ${{ runner.arch }}-buildx-ca-
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -160,8 +136,8 @@ jobs:
       - name: Build PHP image
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=gha,scope=contentauthor
+          cache-to: type=gha,scope=contentauthor,mode=max
           context: sourcecode/apis/contentauthor
           push: true
           target: prod
@@ -180,14 +156,8 @@ jobs:
       - name: Build web image
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=gha,scope=contentauthor
           context: sourcecode/apis/contentauthor
           push: true
           target: web
           tags: ${{ steps.web_meta.outputs.tags }}
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
