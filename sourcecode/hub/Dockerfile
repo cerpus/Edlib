@@ -116,7 +116,7 @@ COPY config config
 COPY database database
 COPY lang lang
 COPY public public
-COPY --from=frontend /app/public/build public/build
+RUN mkdir -p public/build && echo '{}' > public/build/manifest.json
 COPY resources resources
 COPY routes routes
 COPY artisan .
