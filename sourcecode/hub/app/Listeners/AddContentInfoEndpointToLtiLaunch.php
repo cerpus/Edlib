@@ -14,7 +14,7 @@ class AddContentInfoEndpointToLtiLaunch
         $event->setLaunch(
             $event
                 ->getLaunch()
-                ->withClaim('ext_edlib3_content_info_endpoint', route('author.content.info', [$tool->id])),
+                ->withClaim('ext_edlib3_author_endpoint', url('/author/tool/' . $tool->id)),
         );
     }
 }

@@ -39,7 +39,7 @@ return [
     'showDisplayOptions' => env("H5P_SHOW_DISPLAY_OPTIONS", false),
 
     // one of 'null', 'nynorskroboten', 'nynorobot'
-    'translator' => env('H5P_TRANSLATOR', env('H5P_NYNORSK_ADAPTER', 'null')),
+    'translator' => env('H5P_TRANSLATOR', 'null'),
     'ckeditor' => [
         'textPartLanguages' => env("H5P_CKEDITOR_TEXT_PART_LANGUAGES", 'en,nb,nn'),
     ],

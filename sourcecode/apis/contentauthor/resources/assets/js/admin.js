@@ -12,21 +12,23 @@ $(function () {
 
 $('.install-btn')
     .each(function () {
-        const element = $(this);
-        element.on('click', installLibrary);
+        $(this).on('click', installLibrary);
     });
 
 $('.rebuild-btn')
     .each(function () {
-        const element = $(this);
-        element.on('click', rebuildLibrary);
+        $(this).on('click', rebuildLibrary);
     });
 
 $('.delete-btn')
     .each(function () {
-        const element = $(this);
-        element.on('click', deleteLibrary);
+        $(this).on('click', deleteLibrary);
     });
+
+$('button.collapse-library')
+    .each(function () {
+        $(this).on('click', toggleCollapseIcon);
+    })
 
 function sendRequest(element, optionsOrUrl, params, onDone, fail) {
     let url, method;
@@ -66,32 +68,34 @@ function installLibrary(event) {
     if (errorMessage) {
         alert(library + '\r\n' + errorMessage);
     } else {
-        element.prop('disabled', true);
-        sendRequest(element, url, {
-            action: action,
-            machineName: library,
-        }, function (response) {
-            if (response.success === true) {
-                alert('Library installed');
-                if (typeof activetab === 'string') {
-                    const params = new URLSearchParams(location.search);
-                    params.set('activetab', activetab);
-                    window.location.search = params.toString();
+        if (confirm(library + '\r\n' + (element.attr('title') || 'Install library'))) {
+            element.prop('disabled', true);
+            sendRequest(element, url, {
+                action: action,
+                machineName: library,
+            }, function (response) {
+                if (response.success === true) {
+                    alert('Library installed');
+                    if (typeof activetab === 'string') {
+                        const params = new URLSearchParams(location.search);
+                        params.set('activetab', activetab);
+                        window.location.search = params.toString();
+                    } else {
+                        window.location.reload();
+                    }
                 } else {
-                    window.location.reload();
+                    console.log(response);
+                    let message = '';
+                    if (response.message) {
+                        message = response.message;
+                    }
+                    if (response.details) {
+                        message += '\r\n' + response.details.join('\r\n');
+                    }
+                    alert('Library installation failed' + '\r\n' + message);
                 }
-            } else {
-                console.log(response);
-                let message = '';
-                if (response.message) {
-                    message = response.message;
-                }
-                if (response.details) {
-                    message += '\r\n' + response.details.join('\r\n');
-                }
-                alert('Library installation failed' + '\r\n' + message);
-            }
-        });
+            });
+        }
     }
 }
 
@@ -129,26 +133,32 @@ function deleteLibrary(event) {
     const url = element.data('ajax-url')
     const activetab = element.data('ajax-activetab');
 
-    element.prop('disabled', true);
-    sendRequest(
-        element,
-        {
-            method: 'DELETE',
-            url,
-        },
-        null,
-        () => {
-            alert('Library deleted');
-            if (typeof activetab === 'string') {
-                const params = new URLSearchParams(location.search);
-                params.set('activetab', activetab);
-                window.location.search = params.toString();
-            } else {
-                window.location.reload();
+    if (confirm('Confirm library delete\r\n' + element.data('library'))) {
+        element.prop('disabled', true);
+        sendRequest(
+            element,
+            {
+                method: 'DELETE',
+                url,
+            },
+            null,
+            () => {
+                alert('Library deleted');
+                if (typeof activetab === 'string') {
+                    const params = new URLSearchParams(location.search);
+                    params.set('activetab', activetab);
+                    window.location.search = params.toString();
+                } else {
+                    window.location.reload();
+                }
+            },
+            (err) => {
+                alert(err.responseJSON.message ?? 'Library delete failed');
             }
-        },
-        (err) => {
-            alert(err.responseJSON.message ?? 'Library delete failed');
-        }
-    );
+        );
+    }
+}
+
+function toggleCollapseIcon(event) {
+    $(event.currentTarget).toggleClass('fa-plus fa-minus');
 }

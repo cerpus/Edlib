@@ -8,6 +8,12 @@ $questionset-primary-color: #465c6c;
 
 @import "navtabs";
 
+.container-admin {
+    width: 75vw;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .versioncontent {
   margin-top: 20px;
 }
@@ -30,4 +36,22 @@ $questionset-primary-color: #465c6c;
 
 .rebuild-btn {
     border-color: $brand-primary;
+}
+
+.row-odd {
+    background-color: #f9f9f9;
+}
+
+.collapse-item {
+    background-color: #fffaf0;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+}
+
+.collapse-item-last {
+    border-bottom: 2px solid grey;
+}
+
+.vertical-align-middle {
+    vertical-align: middle;
 }

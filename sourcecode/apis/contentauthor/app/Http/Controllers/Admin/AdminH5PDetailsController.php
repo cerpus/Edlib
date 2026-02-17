@@ -4,21 +4,31 @@ namespace App\Http\Controllers\Admin;
 
 use App\ContentVersion;
 use App\H5PContent;
+use App\H5PContentLibrary;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
+use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PExport;
+use App\Libraries\H5P\H5PViewConfig;
+use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use ErrorException;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use MatthiasMullie\Minify\CSS;
 
 class AdminH5PDetailsController extends Controller
 {
@@ -167,6 +177,20 @@ class AdminH5PDetailsController extends Controller
             'content' => $content,
             'requestedVersion' => $version,
             'history' => $history,
+            'libraries' => $content
+                ->contentLibraries()
+                ->get()
+                ->map(function (H5PContentLibrary $library) {
+                    $lib = H5PLibrary::find($library->library_id);
+                    return [
+                        'id' => $library->library_id,
+                        'dependency_type' => $library->dependency_type,
+                        'weight' => $library->weight,
+                        'name' => $lib?->name,
+                        'version' => $lib ? sprintf('%d.%d.%d', $lib->major_version, $lib->minor_version, $lib->patch_version) : '',
+                    ];
+                })
+                ->sortBy(['dependency_type', 'weight']),
         ]);
     }
 
@@ -235,6 +259,52 @@ class AdminH5PDetailsController extends Controller
         ]);
     }
 
+    public function contentPreview(H5PContent $h5pContent): View
+    {
+        $viewConfig = (app(H5PViewConfig::class))
+            ->setUserId(Session::get('authId', false))
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
+            ->setPreview(true)
+            ->loadContent($h5pContent->id)
+            ->setAlterParameterSettings(new H5PAlterParametersSettingsDataObject(useImageWidth: $h5pContent->library->includeImageWidth()));
+
+        $h5p = app(h5p::class);
+        $h5pView = $h5p->createView($viewConfig);
+        $content = $viewConfig->getContent();
+        $settings = $h5pView->getSettings();
+        $styles = array_merge($h5pView->getStyles(), [
+            mix('css/admin-preview.css'),
+        ]);
+
+        return view('admin.h5p-preview', [
+            'id' => $h5pContent->id,
+            'title' => $content['title'],
+            'language' => $content['language'],
+            'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
+            'config' => $settings,
+            'jsScripts' => $h5pView->getScripts(),
+            'styles' => $styles,
+            'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
+            'preview' => true,
+            'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
+        ]);
+    }
+
+    public function contentExport(H5PContent $h5pContent): RedirectResponse|Response
+    {
+        $export = app(H5PExport::class);
+        $storage = app(H5PCerpusStorage::class);
+        $fileName = sprintf("%s-%d.h5p", $h5pContent->slug, $h5pContent->id);
+
+        if ($storage->hasExport($fileName) || $export->generateExport($h5pContent)) {
+            return $storage->downloadContent($fileName, $h5pContent->title);
+        }
+
+        return response(trans('h5p-editor.could-not-find-content'), 404);
+    }
+
     private function getVersions(ContentVersion $versionData, Collection $stack, $getChildren = true): Collection
     {
         $versionArray = $versionData->toArray();
@@ -257,7 +327,7 @@ class AdminH5PDetailsController extends Controller
                     'content_id' => $child->content_id,
                     'versionDate' => $child->created_at,
                     'version_purpose' => $child->version_purpose,
-                    'content' => $this->getContentInfo($versionData),
+                    'content' => $this->getContentInfo($child),
                 ];
             }
         }

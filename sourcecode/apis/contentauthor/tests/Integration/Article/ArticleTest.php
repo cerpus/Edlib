@@ -40,6 +40,7 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertSame(
+
             "<p>This is an image: <img src=\"http://example.com/foo.jpg\" alt=\"Foo\"></p>\n",
             $article->render(),
         );

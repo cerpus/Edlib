@@ -19,6 +19,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LibraryUpgradeController extends Controller
@@ -31,11 +33,32 @@ class LibraryUpgradeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
         (new Capability())->refresh();
 
-        $storedLibraries = $this->h5pFramework->loadLibraries();
+        $storedLibraries = H5PLibrary::select([
+                'id',
+                'name',
+                'title',
+                'major_version',
+                'minor_version',
+                'patch_version',
+                'runnable',
+                'restricted',
+                DB::raw('UNIX_TIMESTAMP(created_at) as created_ts'),
+                DB::raw('UNIX_TIMESTAMP(updated_at) as updated_ts'),
+            ])
+            ->orderBy('major_version')
+            ->orderBy('minor_version')
+            ->getQuery()
+            ->get()
+            ->mapToGroups(function ($item) {
+                return [$item->name => $item];
+            })
+            ->sortBy(function ($item) {
+                return $item->first()->title;
+            });
 
         $config = resolve(AdminConfig::class);
         $config->getConfig();
@@ -57,9 +80,12 @@ class LibraryUpgradeController extends Controller
         // Add settings for each library
         $libraries = collect();
         $contentTypes = collect();
+        $available = collect();
+        $sortColumn = $request->has('sort') ? strtolower($request->get('sort')) : null;
+        $listInstalled = $request->has('listinstalled') ? $request->get('listinstalled') === "1" : false;
+
         foreach ($storedLibraries as $versions) {
-            $lastVersion = end($versions);
-            reset($versions);
+            $lastVersion = $versions->last();
             foreach ($versions as $library) {
                 $usage = $this->h5pFramework->getLibraryUsage($library->id);
 
@@ -67,9 +93,9 @@ class LibraryUpgradeController extends Controller
                     'machineName' => $library->name,
                     'majorVersion' => $library->major_version,
                     'minorVersion' => $library->minor_version,
-                    'title' => sprintf('%s (%d.%d.%d)', $library->title, $library->major_version, $library->minor_version, $library->patch_version),
+                    'title' => $library->title,
+                    'version' => sprintf('%d.%d.%d', $library->major_version, $library->minor_version, $library->patch_version),
                     'numContent' => $usage['content'],
-                    'numLibraryDependencies' => $usage['libraries'],
                     'hubUpgrade' => null,
                     'isLast' => $library->id === $lastVersion->id,
                     'libraryId' => $library->id,
@@ -77,29 +103,60 @@ class LibraryUpgradeController extends Controller
                     'hubUpgradeIsPatch' => null,
                     'hubUpgradeError' => '',
                     'hubUpgradeMessage' => '',
+                    'hubAvailable' => false,
+                    'canRebuild' => !empty($library->id),
+                    'createdTs' => $library->created_ts,
+                    'updatedTs' => $library->updated_ts,
                 ];
 
                 if ($library->runnable) {
-                    $upgrades = $this->core->getUpgrades($library, $versions);
+                    if (config('h5p.isHubEnabled')) {
+                        $upgrades = $this->core->getUpgrades($library, $versions->toArray());
 
-                    $item['upgradeUrl'] = empty($upgrades) || empty($usage['content']) ? false : route('admin.library', [
-                        'task' => 'upgrade',
-                        'destination' => route('admin.update-libraries'),
-                        'library' => $library->id,
-                    ]);
+                        $item['upgradeUrl'] = empty($upgrades) || empty($usage['content']) ? false : route('admin.library', [
+                            'task' => 'upgrade',
+                            'destination' => route('admin.update-libraries'),
+                            'library' => $library->id,
+                        ]);
 
-                    $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);
-                    if (!empty($hasHubCache) && $lastVersion->id === $library->id) {
-                        $item['hubUpgradeIsPatch'] = false;
-                        $newVersion = $this->core->getUpgrades($library, [$hasHubCache]);
-                        if (empty($newVersion)) {
-                            $item['hubUpgradeIsPatch'] = true;
-                            $newVersion = $isPatchUpdate($hasHubCache);
-                        }
-                        if (!empty($newVersion)) {
-                            $item['hubUpgrade'] = array_shift($newVersion);
-                            $item['hubUpgradeMessage'] = $this->libraryUpdateMessage($item['hubUpgrade'], $item['hubUpgradeIsPatch']);
-                            $item['hubUpgradeError'] = $this->libraryUpdateErrorMessage($hasHubCache->h5p_major_version, $hasHubCache->h5p_minor_version, $item['hubUpgrade']);
+                        $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);
+                        if (!empty($hasHubCache) && $lastVersion->id === $library->id) {
+                            $item['hubVersion'] = sprintf('%d.%d.%d', $hasHubCache->major_version, $hasHubCache->minor_version, $hasHubCache->patch_version);
+                            $item['hubUpgradeIsPatch'] = false;
+                            $item['external_link'] = $hasHubCache->example;
+                            $newVersion = $this->core->getUpgrades($library, [$hasHubCache]);
+                            if (empty($newVersion)) {
+                                $item['hubUpgradeIsPatch'] = true;
+                                $newVersion = $isPatchUpdate($hasHubCache);
+                            }
+                            if (!empty($newVersion)) {
+                                $item['summary'] = $hasHubCache->summary;
+                                $item['hubUpgrade'] = array_shift($newVersion);
+                                $item['hubUpgradeMessage'] = $this->libraryUpdateMessage($item['hubUpgrade'], $item['hubUpgradeIsPatch']);
+                                $item['hubUpgradeError'] = $this->libraryUpdateErrorMessage($hasHubCache->h5p_major_version, $hasHubCache->h5p_minor_version, $item['hubUpgrade']);
+                                $available->push(array_merge($item, [
+                                    'summary' => $hasHubCache->summary,
+                                    'canDelete' => false,
+                                    'canRebuild' => false,
+                                    'external_link' => $hasHubCache->example,
+                                    'updatedTs' => $hasHubCache->updated_at,
+                                    'createdBy' => $hasHubCache->owner,
+                                    'coreVersion' => sprintf("%d.%d", $hasHubCache->h5p_major_version, $hasHubCache->h5p_minor_version),
+                                ]));
+                            } elseif ($listInstalled) {
+                                $available->push(array_merge($item, [
+                                    'hubUpgrade' => null,
+                                    'hubUpgradeMessage' => '',
+                                    'hubUpgradeError' => '',
+                                    'summary' => $hasHubCache->summary,
+                                    'canDelete' => false,
+                                    'canRebuild' => false,
+                                    'external_link' => $hasHubCache->example,
+                                    'updatedTs' => $hasHubCache->updated_at,
+                                    'createdBy' => $hasHubCache->owner,
+                                    'coreVersion' => sprintf("%d.%d", $hasHubCache->h5p_major_version, $hasHubCache->h5p_minor_version),
+                                ]));
+                            }
                         }
                     }
                     $contentTypes->push($item);
@@ -109,7 +166,6 @@ class LibraryUpgradeController extends Controller
             }
         }
 
-        $available = collect();
         if (config('h5p.isHubEnabled')) {
             $hubCacheLibraries
                 ->each(function ($hubCache) use ($contentTypes, $available) {
@@ -119,26 +175,57 @@ class LibraryUpgradeController extends Controller
                             'machineName' => $hubCache->name,
                             'majorVersion' => $hubCache->major_version,
                             'minorVersion' => $hubCache->minor_version,
-                            'title' => sprintf('%s (%d.%d.%d)', $hubCache->title, $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
+                            'title' => $hubCache->title,
+                            'version' => '',
+                            'hubVersion' => sprintf('%d.%d.%d', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
                             'summary' => $hubCache->summary,
                             'external_link' => $hubCache->example,
-                            'numContent' => 0,
-                            'numLibraryDependencies' => 0,
                             'hubUpgrade' => sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
                             'isLast' => true,
                             'hubUpgradeIsPatch' => null,
                             'hubUpgradeError' => $this->libraryUpdateErrorMessage($hubCache->h5p_major_version, $hubCache->h5p_minor_version),
                             'hubUpgradeMessage' => $this->libraryUpdateMessage(sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version), null),
+                            'updatedTs' => $hubCache->updated_at,
+                            'createdBy' => $hubCache->owner,
+                            'coreVersion' => sprintf("%d.%d", $hubCache->h5p_major_version, $hubCache->h5p_minor_version),
                         ]);
                     }
                 });
         }
 
+        $libraries = match ($sortColumn) {
+            'created' => $libraries->sortBy('createdTs', descending: true),
+            'updated' => $libraries->sortBy('updatedTs', descending: true),
+            'title' => $libraries->sortBy('title', SORT_STRING | SORT_FLAG_CASE),
+            default => $libraries->sortBy('minorVersion', SORT_NUMERIC, true)
+                ->sortBy('majorVersion', SORT_NUMERIC, true)
+                ->groupBy('machineName')
+                ->sortKeys(SORT_STRING | SORT_FLAG_CASE),
+        };
+
+        $contentTypes = match ($sortColumn) {
+            'created' => $contentTypes->sortBy('createdTs', descending: true),
+            'updated' => $contentTypes->sortBy('updatedTs', descending: true),
+            'title' => $contentTypes->sortBy('title', SORT_STRING | SORT_FLAG_CASE),
+            default => $contentTypes->sortBy('minorVersion', SORT_NUMERIC, true)
+                ->sortBy('majorVersion', SORT_NUMERIC, true)
+                ->groupBy('machineName')
+                ->sortKeys(SORT_STRING | SORT_FLAG_CASE),
+        };
+
+        $available = match ($sortColumn) {
+            'machinename' => $available->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE),
+            'title' => $available->sortBy('title', SORT_STRING | SORT_FLAG_CASE),
+            default => $available->sortBy('updatedTs', SORT_NUMERIC, descending: true),
+        };
+
         return view('admin.library-upgrade.index', [
-            'installedLibraries' => $libraries->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
-            'installedContentTypes' => $contentTypes->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
-            'available' => $available->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
+            'installedLibraries' => $libraries->values(),
+            'installedContentTypes' => $contentTypes->values(),
+            'collapsable' => ($sortColumn === null || $sortColumn === 'machinename'),
+            'available' => $available->toArray(),
             'contentTypeCacheUpdateAt' => H5POption::select('option_value')->where('option_name', 'content_type_cache_updated_at')->first(),
+            'listInstalled' => $listInstalled,
         ]);
     }
 
@@ -164,7 +251,7 @@ class LibraryUpgradeController extends Controller
                 ],
                 'h5p_upgrade_only' => !empty($data['h5p_upgrade_only']),
                 'h5p_disable_file_check' => !empty($data['h5p_disable_file_check']),
-            ])
+            ]),
         );
 
         try {
@@ -230,7 +317,7 @@ class LibraryUpgradeController extends Controller
         $msg = 'Download and install version ' . $newVersion;
         return $msg . match ($isPatch) {
             true => "\r\nNew version will replace installed version.",
-            false => "\r\nNew version will be installed in addition to existing versions.",
+            false => "\r\nNew version will be installed in addition to installed versions.",
             default => '',
         };
     }

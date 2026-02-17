@@ -1,9 +1,11 @@
 @extends('layouts.admin')
 @php
     $activeTab = request()->query('activetab', 'tabContentTypes');
+    $sortColumn = request()->query('sort', 'machinename');
+    $listInstalled = $listInstalled ?? request()->query('listinstalled') === "1";
 @endphp
 @section('content')
-    <div class="container">
+    <div class="container-admin">
         <div class="page-header">
             <h1>Manage H5P content types</h1>
         </div>
@@ -54,18 +56,26 @@
                                 <p>
                                     The list contains content types that are currently installed in Edlib.
                                     If available new versions can be downloaded and installed.
+                                    Hub version is the version that was available when the local cache was updated.
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 <p>
-                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
+                                    Installed H5P Core version: <code>{{ join('.', H5PCore::$coreApi) }}</code>
                                 </p>
                                 <div class="panel-body row">
-                                    @include('admin.fragments.library-table', [
+                                    @includeWhen($collapsable, 'admin.fragments.collapse-table', [
                                         'libraries' => $installedContentTypes,
                                         'showCount' => true,
-                                        'activetab' => 'tabContentTypes'
+                                        'activetab' => 'tabContentTypes',
+                                        'isContentType' => true,
+                                    ])
+                                    @includeUnless($collapsable, 'admin.fragments.library-table', [
+                                        'libraries' => $installedContentTypes,
+                                        'showCount' => true,
+                                        'activetab' => 'tabContentTypes',
+                                        'isContentType' => true,
                                     ])
                                 </div>
                             </div>
@@ -78,10 +88,17 @@
                             >
                                 <p>Libraries are used by content types, and are installed/updated when content types are installed/updated.</p>
                                 <div class="panel-body row">
-                                    @include('admin.fragments.library-table', [
+                                    @includeWhen($collapsable, 'admin.fragments.collapse-table', [
                                         'libraries' => $installedLibraries,
                                         'showCount' => true,
-                                        'activetab' => 'tabLibraries'
+                                        'activetab' => 'tabLibraries',
+                                        'isContentType' => false,
+                                    ])
+                                    @includeUnless($collapsable, 'admin.fragments.library-table', [
+                                        'libraries' => $installedLibraries,
+                                        'showCount' => true,
+                                        'activetab' => 'tabLibraries',
+                                        'isContentType' => false,
                                     ])
                                 </div>
                             </div>
@@ -95,7 +112,7 @@
                                 <h4>Install or update H5P content types and libraries by uploading a file in <code>.h5p</code> format.</h4>
                                 <p>Any content in the file will not be imported, only content types and libraries.</p>
                                 <p>
-                                    Content type and libraries must be compatible with H5P Core version {{ join('.', H5PCore::$coreApi) }}
+                                    Content type and libraries must be compatible with H5P Core version <code>{{ join('.', H5PCore::$coreApi) }}</code>
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
@@ -125,13 +142,20 @@
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 <p>
-                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
+                                    Installed H5P Core version: <code>{{ join('.', H5PCore::$coreApi) }}</code>
                                 </p>
                                 <div class="panel-body row">
+                                    <label>
+                                        <a href="{{ url()->query(url()->full(), ['sort' => $sortColumn, 'activetab' => 'tabInstall', 'listinstalled' => !$listInstalled]) }}">
+                                            <input type="checkbox" {{$listInstalled ? 'checked="checked"' : ''}}>
+                                            List all libraries in cache
+                                        </a>
+                                    </label>
                                     @include('admin.fragments.library-table', [
                                         'libraries' => $available,
                                         'showSummary' => true,
-                                        'activetab' => 'tabInstall'
+                                        'activetab' => 'tabInstall',
+                                        'isContentType' => true,
                                     ])
                                 </div>
                             </div>
