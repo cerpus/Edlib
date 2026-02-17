@@ -93,12 +93,13 @@ class h5pTest extends TestCase
             if (!is_dir($fileDir)) {
                 mkdir($fileDir, 0777, true);
             }
-            $pos = strpos($filePath, realpath($this->getTempDirectory()), 0);
+            $realFilePath = realpath($fileDir) . '/' . basename($filePath);
+            $pos = strpos($realFilePath, realpath($this->getTempDirectory()), 0);
             if ($pos !== 0) {
-                throw new Exception("Target '$filePath' is not in the tmp space");
+                throw new Exception("Target '$realFilePath' is not in the tmp space");
             }
-            if (file_put_contents($filePath, $fileContent) === false) {
-                throw new Exception("Could not write to file '$filePath'");
+            if (file_put_contents($realFilePath, $fileContent) === false) {
+                throw new Exception("Could not write to file '$realFilePath'");
             }
         }
     }
