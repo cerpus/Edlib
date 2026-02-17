@@ -28,24 +28,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  composer-validate:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Validate
-        run: composer validate --no-check-publish
-
   phpstan:
     if: "!inputs.deploy"
-    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -78,7 +70,6 @@ jobs:
 
   test:
     if: "!inputs.deploy"
-    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     services:
@@ -128,6 +119,9 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
 
       - name: Build test image
         uses: docker/build-push-action@v5
