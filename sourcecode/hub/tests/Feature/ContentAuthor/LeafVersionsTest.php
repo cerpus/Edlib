@@ -9,7 +9,7 @@ use App\Models\ContentVersion;
 use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
-use Cerpus\EdlibResourceKit\Oauth1\Signer;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -32,10 +32,14 @@ final class LeafVersionsTest extends TestCase
         $this->credentials = new Credentials('test-key', 'test-secret');
     }
 
+    /**
+     * @param array<string, string> $params
+     * @return \Illuminate\Testing\TestResponse<\Illuminate\Http\Response>
+     */
     private function signedPost(string $url, array $params = []): \Illuminate\Testing\TestResponse
     {
         $oauthRequest = new Oauth1Request('POST', $url, $params);
-        $oauthRequest = (new Signer())->sign($oauthRequest, $this->credentials);
+        $oauthRequest = app(SignerInterface::class)->sign($oauthRequest, $this->credentials);
 
         return $this->post($url, $oauthRequest->toArray());
     }
@@ -158,7 +162,7 @@ final class LeafVersionsTest extends TestCase
         $badCredentials = new Credentials('test-key', 'wrong-secret');
 
         $oauthRequest = new Oauth1Request('POST', $url, []);
-        $oauthRequest = (new Signer())->sign($oauthRequest, $badCredentials);
+        $oauthRequest = app(SignerInterface::class)->sign($oauthRequest, $badCredentials);
 
         $this->post($url, $oauthRequest->toArray())
             ->assertUnauthorized();

@@ -51,13 +51,13 @@ class ArticleTest extends TestCase
             'content' => '<div>Foo<b></div>bar</b>',
         ]);
 
-        // libxml works in mysterious ways.
-        // We don't really care that the output looks like this, but it's nice
+        // libxml works in mysterious ways, and the output differs between
+        // versions. We don't really care what it looks like, but it's nice
         // to know if it suddenly changes after an update or such anyway.
-        $this->assertSame(
-            "<div>Foo<b></b><p>bar</p></div>\n",
-            $article->render(),
-        );
+        $this->assertContains($article->render(), [
+            "<div>Foo<b></b></div><p>bar</p>\n",  // older libxml2
+            "<div>Foo<b></b><p>bar</p></div>\n",  // libxml2 2.13+ (PHP 8.4)
+        ]);
     }
 
     public function testCreateArticle()
