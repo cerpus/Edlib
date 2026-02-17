@@ -51,7 +51,7 @@ final class LeafVersionsTest extends TestCase
         $this->signedPost($url, ['tag' => 'h5p:h5p.ndlathreeimage'])
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->count('data', 0));
+                ->has('data', 0));
     }
 
     public function testReturnsLeafVersions(): void
