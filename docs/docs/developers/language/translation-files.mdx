@@ -1,0 +1,65 @@
+---
+sidebar_position: 2
+sidebar_label: "Translation files"
+---
+
+# Translation files in Content Author
+
+## Introduction
+This contains a in-depth description on how translation works in Content Author (CA). If you are unfamiliar with the
+different locale code standards and which part of CA that uses which, there is an overview on
+the [Standards and usage](./standards) page.
+
+
+### Content Author
+
+Translations are handled by Laravel and the translation files contains a PHP array with short keys.  
+New translations should be added using ISO 639-1 codes or, if the language differ by territory, IETF BCP47 code.
+
+
+### Content Author Editor / React
+
+[React-Intl](https://www.npmjs.com/package/react-intl) is used for handling translation. The translation files are in
+JSON format and are loaded from JavaScript. 
+New translations should be added using ISO 639-1 codes or, if the language differ by territory, IETF BCP47 code.
+
+
+### H5P Core
+
+H5P Core is used when creating, editing and viewing H5P content. It does not have any translations of its own,
+they are provided by Edlib through Edlibs implementation of the translation function in the `H5PFrameworkInterface`.
+The implementation uses Laravels translation functionality. The translations are also available in the `l10n` attribute
+in the `H5PIntegration` JavaScript variable. The translation strings are in the `H5P.php` file in the language folders.
+
+
+### H5P Editor
+
+Used when creating or editing H5P Content. When creating new content there is a screen where the user can selet
+which content type to use, translations for this screen is from H5P Editor. After selecting content type, the editor
+is loaded. Translations here are from several different sources:
+
+ 1. __H5P Core__  
+See the [H5P Core](#h5p-core) section above for info.
+
+ 2. __H5P Editor__  
+Javascript file containing translations is loaded together with other required H5P Editor and Core JavaScript files.
+Translations are handled by H5P.
+
+ 3. __H5P Content type__  
+The translations for the selected content type, and content types/libraries it uses, are loaded by H5P Editor by sending
+a request to Edlib. Edlib has a copy of the translations stored in the database, and uses this as a source for the
+response. The translations files are loaded into the database when the content type is installed.
+Translations are handled by the author of the content type.
+
+ 4. __Content Author__  
+The sidebar to the right of the H5P editor is React. See the [Content Author Editor / React](#content-author-editor--react)
+section above.
+
+
+### Viewing H5P content
+
+Translations are both from H5P Core and from the stored content. The [H5P Core translations](#h5p-core) are used
+for e.g. the buttons "Reuse", "Rights of use" and "Embed" displayed below of the content.  
+Translations stored with the content depend on the selected content type, and can be edited in the H5P Editor in
+the "Text overrides and translations" section. The content is set in the `content` attribute in the `H5PIntegration`
+JavaScript variable.

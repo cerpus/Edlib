@@ -1,0 +1,62 @@
+---
+sidebar_position: 3
+sidebar_label: "Standards and usage"
+---
+
+# Standards and usage in Content Author
+
+## The different locale code standards used
+
+### [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
+A two-letter code that represents a language. Examples are `en` for English and `nn` for Norwegian Nynorsk.
+
+### [ISO 639-2](https://en.wikipedia.org/wiki/ISO_639-2)
+Same languages as ISO 639-1 using a three-letter code. Also contains codes that don't represent a language, but are
+collective language codes. Examples are `eng` for English, `nno` for Norwegian Nynorsk and the collective `smi`
+for Sami languages.
+
+### [ISO 639-3](https://en.wikipedia.org/wiki/ISO_639-3)
+Three-letter code with a more comprehensive coverage than ISO 639-2, collective language codes are excluded.
+Examples are `eng` for English, `nno` for Norwegian Nynorsk. The `smi` code is removed as it's a collective code.
+
+### [ISO 15897](https://en.wikipedia.org/wiki/ISO/IEC_15897)
+A combination of language and country codes. Exampples are `en_GB` for UK English, and `nn_NO` for Norwegian nynorsk.
+
+### [IETF BCP47](https://en.wikipedia.org/wiki/IETF_language_tag)
+Most common format is a combination of language and country, but ISO 639-1 and some ISO 629-2 codes are valid.
+Examples are `en-gb` for UK English, `nn-no` and `nn` for Norwegian Nynorsk, and `sma` for Southern Sámi. Tool to check
+if a code is valid https://r12a.github.io/app-subtags/.
+
+
+
+## Who uses what standard
+
+### React-Intl
+Most front-end code is in React, like the Content Browser, CA Editor and the Question content type. React-Intl uses
+Javascript [Intl](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) that accepts
+several different codes like ISO 639-1, ISO 639-2 and IETF BCP47. For Norwegian Nynorsk, `nn`, `nn-no` and `nno`
+are all valid.
+
+### Laravel
+On the server side CA uses the Laravel framework. The Larvel
+[documentation](https://laravel.com/docs/9.x/localization) show the use of two-letter codes in their examples these are
+probably ISO 639-1 codes. For languages that differ by territory the
+[recommendation](https://laravel.com/docs/9.x/localization#using-short-keys) is to use ISO 15897. This is mainly
+due to the `Pluralizer`, see [PR in Laravel Documentation](https://github.com/laravel/docs/pull/5605).
+[Languages](https://laravel.com/docs/9.x/localization#pluralization-language) that Laravel supports for pluralization.
+
+### HTML
+The [global `lang` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang) uses IETF BCP47 format.
+
+### LTI
+[Documentation](https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide) specifies IETF BCP47 value
+for `launch_presentation_locale`.
+
+### CA Editor
+In the editor there is a dropdown where the user can select the language of the content, this is used by the Content
+Browser, aka the Hub, in the content list and also when filtering on language. This uses ISO 639-3 format.
+
+### H5P
+According to the [documentation](https://h5p.org/documentation/for-developers/translate-h5p-libraries#nameTranslation)
+ISO 639-1 codes are used as the filename of the translation files. There are some use of IETF BCP47 codes (like `es-mx` for
+Mexican Spanish) and also ISO 639-2 (`sme` for Northen Sámi).
