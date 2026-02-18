@@ -49,13 +49,6 @@
                             </div>
                             <div class="panel-body">
                                 <a
-                                    class="btn btn-default"
-                                    role="button"
-                                    href="{{ route('admin.bulkexclude.content.index') }}"
-                                >
-                                    Manage exclutions
-                                </a>
-                                <a
                                     @class([
                                         'btn btn-danger',
                                         'disabled' => $updatableCount === 0,

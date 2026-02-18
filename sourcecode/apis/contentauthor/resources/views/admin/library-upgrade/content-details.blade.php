@@ -118,18 +118,6 @@
                                     @endisset
                                 </td>
                             </tr>
-                            <tr>
-                                <th>Bulk exclutions</th>
-                                <td>
-                                    {!!
-                                        $content->exclutions->map(function ($item) {
-                                            return match($item->exclude_from) {
-                                                \App\ContentBulkExclude::BULKACTION_LIBRARY_TRANSLATION => 'Content type translation update',
-                                            };
-                                        })->join('<br>')
-                                    !!}
-                                </td>
-                            </tr>
                         </table>
                     </div>
                 </div>

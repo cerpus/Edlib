@@ -78,6 +78,7 @@ class ContentController extends Controller
         $this->authorize('view', [$content, $version]);
 
         $content->trackView($request, ContentViewSource::Detail);
+        $content->load('exclusions');
 
         return view('content.details', [
             'content' => $content,
@@ -88,6 +89,8 @@ class ContentController extends Controller
 
     public function version(Content $content, ContentVersion $version): View
     {
+        $content->load('exclusions');
+
         return view('content.details', [
             'content' => $content,
             'version' => $version,

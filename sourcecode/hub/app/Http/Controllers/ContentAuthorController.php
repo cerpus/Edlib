@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ContentExclusionRequest;
 use App\Http\Requests\ContentInfoRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Models\Content;
+use App\Models\ContentExclusion;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
 use App\Models\Tag;
 use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -172,5 +175,69 @@ class ContentAuthorController extends Controller
             ],
             Response::HTTP_CREATED,
         );
+    }
+
+    public function listExclusions(ContentExclusionRequest $request, LtiTool $tool): JsonResponse
+    {
+        $excludeFrom = $request->validated('exclude_from');
+
+        $exclusions = ContentExclusion::query()
+            ->where('exclude_from', $excludeFrom)
+            ->whereHas('content', function ($query) use ($tool) {
+                $query->whereHas('versions', function ($query) use ($tool) {
+                    $query->where('lti_tool_id', $tool->id);
+                });
+            })
+            ->with(['content.latestVersion'])
+            ->get();
+
+        return response()->json([
+            'data' => $exclusions->map(function (ContentExclusion $exclusion) {
+                $version = $exclusion->content?->latestVersion;
+
+                return [
+                    'content_id' => $exclusion->content_id,
+                    'exclude_from' => $exclusion->exclude_from,
+                    'lti_launch_url' => $version?->lti_launch_url,
+                    'title' => $version?->title,
+                ];
+            })->values(),
+        ]);
+    }
+
+    public function addExclusions(ContentExclusionRequest $request, LtiTool $tool): JsonResponse
+    {
+        $contentIds = $request->validated('content_ids');
+        $excludeFrom = $request->validated('exclude_from');
+        $userId = $request->validated('user_id');
+
+        $added = 0;
+        foreach ($contentIds as $contentId) {
+            try {
+                ContentExclusion::create([
+                    'content_id' => $contentId,
+                    'exclude_from' => $excludeFrom,
+                    'user_id' => $userId,
+                ]);
+                $added++;
+            } catch (UniqueConstraintViolationException) {
+                // Already excluded, skip
+            }
+        }
+
+        return response()->json(['added' => $added]);
+    }
+
+    public function deleteExclusions(ContentExclusionRequest $request, LtiTool $tool): JsonResponse
+    {
+        $contentIds = $request->validated('content_ids');
+        $excludeFrom = $request->validated('exclude_from');
+
+        $deleted = ContentExclusion::query()
+            ->whereIn('content_id', $contentIds)
+            ->where('exclude_from', $excludeFrom)
+            ->delete();
+
+        return response()->json(['deleted' => $deleted]);
     }
 }

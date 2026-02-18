@@ -12,11 +12,6 @@ use App\H5PLibrary;
 use App\Http\Controllers\Controller;
 use App\Libraries\H5P\h5p;
 use App\Libraries\Hub\HubClient;
-use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
-use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
 use GuzzleHttp\Exception\GuzzleException;
 use H5PContentValidator;
 use H5PCore;
@@ -25,7 +20,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use JsonException;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
@@ -33,13 +27,11 @@ use RuntimeException;
 class AdminContentMigrateController extends Controller
 {
     public function __construct(
-        private readonly h5p                             $h5p,
-        private readonly H5PCore                         $h5pCore,
-        private readonly H5PFrameworkInterface           $framework,
-        private readonly HubClient                       $hubClient,
-        private readonly ContentItemsSerializerInterface $serializer,
-    )
-    {
+        private readonly h5p               $h5p,
+        private readonly H5PCore           $h5pCore,
+        private readonly H5PFrameworkInterface $framework,
+        private readonly HubClient         $hubClient,
+    ) {
     }
 
     public function index(Request $request): View
@@ -151,7 +143,7 @@ class AdminContentMigrateController extends Controller
                     $result['message'] = 'Migrated';
                     $logData['toContentId'] = $newH5pContent->id;
                     $logData['error'] = false;
-                    $this->createHubVersion($updateUrl, $newH5pContent);
+                    $this->hubClient->createContentVersion($newH5pContent, $updateUrl);
                 } catch (RuntimeException|GuzzleException|JsonException $e) {
                     Log::error('Failed to migrate content: ' . $e->getMessage());
                     $result['message'] = 'Failed to migrate content: ' . $e->getMessage();
@@ -253,38 +245,6 @@ class AdminContentMigrateController extends Controller
         event(new H5PWasSaved($newH5p, $request, ContentVersion::PURPOSE_UPDATE, $sourceH5p));
 
         return $newH5p;
-    }
-
-    /**
-     * Create new version of the content in Hub
-     *
-     * @throws JsonException | GuzzleException
-     */
-    private function createHubVersion(string $returnUrl, H5PContent $content): void
-    {
-        $data = $content->toLtiContent();
-        $item = (new EdlibLtiLinkItem(
-            icon: $data->iconUrl ? new Image($data->iconUrl) : null,
-            title: $data->title,
-            url: $data->url,
-            lineItem: $data->maxScore > 0 ?
-                (new LineItem(new ScoreConstraints(normalMaximum: $data->maxScore))) :
-                null,
-        ))
-            ->withLanguageIso639_3($data->languageIso639_3)
-            ->withLicense($data->license)
-            ->withPublished($data->published)
-            ->withShared($data->shared)
-            ->withTags($data->tags)
-            ->withContentType($data->machineName)
-            ->withContentTypeName($data->machineDisplayName);
-
-        $this->hubClient->post($returnUrl, [
-            'content_items' => json_encode($this->serializer->serialize([$item]), flags: JSON_THROW_ON_ERROR),
-            'lti_message_type' => 'ContentItemSelection',
-            'lti_version' => 'LTI-1p0',
-            'user_id' => Session::get('lti_requests.admin')->param('user_id'),
-        ]);
     }
 
     /**

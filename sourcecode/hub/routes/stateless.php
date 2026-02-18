@@ -54,4 +54,16 @@ Route::name('author.content.')
             ->uses([ContentAuthorController::class, 'update'])
             ->whereUlid(['tool', 'content', 'version'])
             ->name('update');
+
+        Route::post('/tool/{tool}/content-exclusions/list')
+            ->uses([ContentAuthorController::class, 'listExclusions'])
+            ->name('exclusions.list');
+
+        Route::post('/tool/{tool}/content-exclusions/add')
+            ->uses([ContentAuthorController::class, 'addExclusions'])
+            ->name('exclusions.add');
+
+        Route::post('/tool/{tool}/content-exclusions/delete')
+            ->uses([ContentAuthorController::class, 'deleteExclusions'])
+            ->name('exclusions.delete');
     });

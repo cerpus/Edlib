@@ -770,11 +770,6 @@ class H5PController extends Controller
                             CollaboratorContext::where('content_id', $content->id)->delete();
                             DB::table('cerpus_contents_shares')->where('h5p_id', $content->id)->delete();
 
-                            // The bulk exclution list
-                            if (method_exists($content, 'exclutions')) {
-                                $content->exclutions()->delete();
-                            }
-
                             // File operation cannot be rolled back, but it's just a cache
                             if ($storage->hasExport($content->getExportFilename())) {
                                 $storage->deleteExport($content->getExportFilename());

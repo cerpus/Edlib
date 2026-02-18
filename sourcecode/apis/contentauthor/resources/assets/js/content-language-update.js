@@ -168,7 +168,7 @@ ContentTranslationRefresh.prototype.process = async function (content) {
     const libs = await this.loadQueuedLibraries();
     const missing = this.translationsLoaded();
     if (missing.length > 0) {
-        throw Error('Libraries missing translation: ' + missing.join(', '));
+        this.writeInfo('Libraries missing translation: ' + missing.join(', '));
     }
 
     libs.forEach(({library, semantics}) => {

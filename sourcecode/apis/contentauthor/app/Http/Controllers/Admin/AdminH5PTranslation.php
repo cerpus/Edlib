@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\AuditLog;
-use App\ContentBulkExclude;
 use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
@@ -12,17 +11,40 @@ use App\H5PLibraryLanguage;
 use App\Http\Requests\AdminTranslationContentRequest;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\H5P\AdminConfig;
+use App\Libraries\H5P\h5p;
+use App\Libraries\Hub\HubClient;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
 class AdminH5PTranslation
 {
+    /** @var array<int>|null Cached leaf CA content IDs */
+    private ?array $leafCaContentIds = null;
+
+    /** @var array<int, list<string>>|null Cached map of CA content ID → Hub update URLs */
+    private ?array $leafUpdateUrls = null;
+
+    /** @var array<int>|null Cached excluded CA content IDs */
+    private ?array $excludedCaContentIds = null;
+
+    /** @var array<string>|null Cached excluded Hub content IDs */
+    private ?array $excludedHubContentIds = null;
+
+
+    public function __construct(
+        private readonly h5p $h5p,
+        private readonly HubClient $hubClient,
+    ) {
+    }
+
     /**
      * Edit translation stored in database
      */
@@ -89,9 +111,12 @@ class AdminH5PTranslation
             'locale' => $locale,
         ];
 
+        $this->loadLeavesFromHub($library);
+        $this->loadExclusionsFromHub();
+
         return view('admin.content-translation-update', [
             'libraryName' => $library->getLibraryString(true),
-            'contentCount' => $this->getContentCount($library->id, $locale),
+            'contentCount' => $this->getContentCount(),
             'jsConfig' => $jsConfig,
             'scripts' => $adminConfig->getScriptAssets(),
             'styles' => $adminConfig->getStyleAssets(),
@@ -120,6 +145,20 @@ class AdminH5PTranslation
 
         $library = H5PLibrary::find($libraryId);
 
+        // Load leaf data from Hub on the first batch, then cache in session
+        // for subsequent batches so newly created versions don't appear
+        if (!Session::has('translation_update_leaves')) {
+            $this->loadLeavesFromHub($library);
+            Session::put('translation_update_leaves', [
+                'ids' => $this->leafCaContentIds,
+                'urls' => $this->leafUpdateUrls,
+            ]);
+        } else {
+            $cached = Session::get('translation_update_leaves');
+            $this->leafCaContentIds = $cached['ids'];
+            $this->leafUpdateUrls = $cached['urls'];
+        }
+
         $params->each(function ($item, $id) use (&$failed, &$unchanged, &$updated, &$messages, $request) {
             try {
                 $decoded = json_decode($item, flags: JSON_THROW_ON_ERROR);
@@ -130,29 +169,33 @@ class AdminH5PTranslation
                 } else {
                     /** @var H5PContent $original */
                     $original = H5PContent::findOrFail($id);
-                    $version = ContentVersion::latestLeaf($original->version_id);
 
-                    if ($original->version_id !== $version->id) {
+                    // JSON stored in database has escaped unicode and slashes, the JS encoded content in $item
+                    // does not, so we re-encode
+                    $parameters = json_encode($decoded, flags: JSON_THROW_ON_ERROR);
+                    if ($parameters === $original->parameters) {
+                        $messages[] = 'Content ' . $id . ' not changed';
                         $unchanged[] = $id;
-                        $messages[] = 'Content ' . $id . ' is not latest version, leaving unchanged';
                     } else {
-                        // JSON stored in database has escaped unicode and slashes, the JS encoded content in $item
-                        // does not, so we re-encode
-                        $parameters = json_encode($decoded, flags: JSON_THROW_ON_ERROR);
-                        if ($parameters === $original->parameters) {
-                            $messages[] = 'Content ' . $id . ' not changed';
-                            $unchanged[] = $id;
-                        } else {
-                            $original->parameters = $parameters;
-                            $original->filtered = '';
-                            if ($original->save() !== true) {
-                                throw new \Exception('Content ' . $id . ': Failed saving parameters');
+                        // Create a separate new version for each Hub resource pointing
+                        // to this CA content, so they each get independent content going forward.
+                        $newIds = [];
+                        foreach ($this->leafUpdateUrls[$id] ?? [null] as $updateUrl) {
+                            $newH5p = $this->createNewVersion($original, $parameters);
+                            event(new H5PWasSaved($newH5p, $request, ContentVersion::PURPOSE_UPDATE, $original));
+
+                            if ($updateUrl !== null) {
+                                try {
+                                    $this->hubClient->createContentVersion($newH5p, $updateUrl);
+                                } catch (\Throwable $e) {
+                                    Log::warning('Failed to create Hub version for content ' . $id . ': ' . $e->getMessage());
+                                }
                             }
-                            // Trigger creation of new version log entry
-                            event(new H5PWasSaved($original, $request, ContentVersion::PURPOSE_UPDATE, $original));
-                            $messages[] = 'Content ' . $id . ' updated';
-                            $updated[] = $id;
+                            $newIds[] = $newH5p->id;
                         }
+
+                        $messages[] = 'Content ' . $id . ' updated (new ids: ' . implode(', ', $newIds) . ')';
+                        $updated[] = $id;
                     }
                 }
             } catch (Exception $e) {
@@ -162,6 +205,8 @@ class AdminH5PTranslation
         });
 
         if (count($unchanged) > 0 || count($updated) > 0 || count($failed) > 0) {
+            $this->loadExclusionsFromHub();
+
             AuditLog::log('Content type translation update', json_encode([
                 'runId' => $runId,
                 'libraryId' => $libraryId,
@@ -170,7 +215,7 @@ class AdminH5PTranslation
                 'unchanged' => $unchanged,
                 'updated' => $updated,
                 'failed' => $failed,
-                'excluded' => $this->getExcludedContent($libraryId, $locale)->get()->pluck('content_id')->toArray(),
+                'excluded' => $this->excludedHubContentIds ?? [],
             ]));
             $messages[] = sprintf('Content updated/unchanged/failed: %d / %d / %d', count($updated), count($unchanged), count($failed));
         }
@@ -181,7 +226,7 @@ class AdminH5PTranslation
         ];
 
         $contentQuery = $this->getContentQuery($libraryId, $locale)
-            ->where('content_versions.content_id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
+            ->where('h5p_contents.id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
             ->orderBy('h5p_contents.id');
 
         $response->left = $contentQuery->select(DB::raw('count(distinct(h5p_contents.id)) as total'))->first()->getAttribute('total');
@@ -198,6 +243,7 @@ class AdminH5PTranslation
             });
         } else {
             Session::forget('translation_update_run_id');
+            Session::forget('translation_update_leaves');
         }
 
         return response()->json($response);
@@ -214,50 +260,184 @@ class AdminH5PTranslation
             $fileTranslation = Storage::disk()->get($filename);
         }
 
+        $this->loadLeavesFromHub($library);
+        $this->loadExclusionsFromHub();
+
         return [
             'library' => $library,
             'languageCode' => $locale,
             'translationDb' => $libLang,
             'translationFile' => $fileTranslation ?? null,
-            'updatableCount' => $this->getContentCount($library->id, $locale),
-            'excludedCount' => $this->getExcludedContent($library->id, $locale)->count(),
+            'updatableCount' => $this->getContentCount(),
+            'excludedCount' => count($this->excludedCaContentIds ?? []),
         ];
     }
 
-    private function getContentQuery(int $libraryId, string $locale): Builder
+    /**
+     * Query for content that should be updated: must be a Hub leaf, match
+     * the library version and locale, and not be excluded.
+     */
+    private function getContentQuery(int $libraryId, string $locale): \Illuminate\Database\Eloquent\Builder
     {
-        return H5PContent::leftJoin('content_versions', 'content_versions.id', '=', 'h5p_contents.version_id')
-            ->leftJoin('content_versions as cv', 'cv.parent_id', '=', 'content_versions.id')
-            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
-            ->leftJoin('content_bulk_excludes', function ($query) {
-                $query->on('content_bulk_excludes.content_id', '=', 'h5p_contents.id')
-                ->where('content_bulk_excludes.exclude_from', '=', ContentBulkExclude::BULKACTION_LIBRARY_TRANSLATION);
-            })
-            ->whereNull('content_bulk_excludes.id')
+        $leafCaIds = $this->leafCaContentIds ?? [];
+        $excludedCaIds = $this->getExcludedCaContentIds();
+
+        $query = H5PContent::join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
             ->where('h5p_contents.library_id', $libraryId)
             ->where('h5p_contents_metadata.default_language', $locale)
-            ->where(function ($query) {
-                $query
-                    ->whereNull('cv.content_id')
-                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
-            });
+            ->whereIn('h5p_contents.id', $leafCaIds);
+
+        if (count($excludedCaIds) > 0) {
+            $query->whereNotIn('h5p_contents.id', $excludedCaIds);
+        }
+
+        return $query;
     }
 
-    private function getContentCount(int $libraryId, string $locale): int
+    /**
+     * Count the number of Hub resources that will get new versions.
+     * Derived purely from Hub data (leaves minus exclusions).
+     */
+    private function getContentCount(): int
     {
-        return $this->getContentQuery($libraryId, $locale)
-            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
-            ->first()
-            ->getAttribute('total');
+        $excludedCaIds = $this->getExcludedCaContentIds();
+
+        $count = 0;
+        foreach ($this->leafUpdateUrls ?? [] as $caId => $urls) {
+            if (!in_array($caId, $excludedCaIds, true)) {
+                $count += count($urls);
+            }
+        }
+
+        return $count;
     }
 
-    private function getExcludedContent(int $libraryId, string $locale): Builder
+    /**
+     * Load leaf versions from Hub. Populates CA content IDs and update URLs.
+     */
+    private function loadLeavesFromHub(H5PLibrary $library): void
     {
-        return ContentBulkExclude::select(['content_bulk_excludes.content_id'])
-            ->leftJoin('h5p_contents', 'h5p_contents.id', '=', 'content_bulk_excludes.content_id')
-            ->join('h5p_contents_metadata', 'h5p_contents_metadata.content_id', '=', 'content_bulk_excludes.content_id')
-            ->where('exclude_from', ContentBulkExclude::BULKACTION_LIBRARY_TRANSLATION)
-            ->where('h5p_contents.library_id', $libraryId)
-            ->where('h5p_contents_metadata.default_language', $locale);
+        if ($this->leafCaContentIds !== null) {
+            return;
+        }
+
+        $caIds = [];
+        $updateUrls = [];
+        $routePrefix = route('h5p.ltishow', '') . '/';
+        $tag = 'h5p:' . strtolower($library->name);
+
+        try {
+            $data = $this->hubClient->post('/content-versions/leaves', [
+                'tag' => $tag,
+            ]);
+
+            foreach ($data['data'] ?? [] as $leaf) {
+                $launchUrl = $leaf['lti_launch_url'] ?? null;
+                if ($launchUrl && str_starts_with($launchUrl, $routePrefix)) {
+                    $caId = substr($launchUrl, strlen($routePrefix));
+                    if (is_numeric($caId)) {
+                        $caIds[] = (int) $caId;
+                        if (isset($leaf['update_url'])) {
+                            $updateUrls[(int) $caId][] = $leaf['update_url'];
+                        }
+                    }
+                }
+            }
+        } catch (GuzzleException|\JsonException $e) {
+            Log::warning(__METHOD__ . ': Failed to load leaves from Hub: ' . $e->getMessage());
+        }
+
+        $this->leafCaContentIds = array_values(array_unique($caIds));
+        $this->leafUpdateUrls = $updateUrls;
+    }
+
+    /**
+     * Load exclusions from Hub API. Populates both CA content IDs and Hub content IDs.
+     */
+    private function loadExclusionsFromHub(): void
+    {
+        if ($this->excludedCaContentIds !== null) {
+            return;
+        }
+
+        $caIds = [];
+        $hubIds = [];
+        $routePrefix = route('h5p.ltishow', '') . '/';
+
+        try {
+            $data = $this->hubClient->post('/content-exclusions/list', [
+                'exclude_from' => 'library_translation_update',
+            ]);
+
+            foreach ($data['data'] ?? [] as $exclusion) {
+                $hubIds[] = $exclusion['content_id'];
+
+                $launchUrl = $exclusion['lti_launch_url'] ?? null;
+                if ($launchUrl && str_starts_with($launchUrl, $routePrefix)) {
+                    $caId = substr($launchUrl, strlen($routePrefix));
+                    if (is_numeric($caId)) {
+                        $caIds[] = (int) $caId;
+                    }
+                }
+            }
+        } catch (GuzzleException|\JsonException $e) {
+            Log::warning(__METHOD__ . ': Failed to load exclusions from Hub: ' . $e->getMessage());
+        }
+
+        $this->excludedCaContentIds = $caIds;
+        $this->excludedHubContentIds = $hubIds;
+    }
+
+    /**
+     * Get CA content IDs that are excluded from bulk translation updates.
+     *
+     * @return array<int>
+     */
+    private function getExcludedCaContentIds(): array
+    {
+        $this->loadExclusionsFromHub();
+        return $this->excludedCaContentIds ?? [];
+    }
+
+    /**
+     * Create a new H5PContent with updated parameters, preserving the
+     * original content as the previous version.
+     */
+    private function createNewVersion(H5PContent $original, string $parameters): H5PContent
+    {
+        $library = $original->library;
+
+        $request = new Request();
+        $request->attributes->set('library', $library->getLibraryString(false));
+        $request->attributes->set('title', $original->title);
+        $request->attributes->set('parameters', json_encode(
+            (object) [
+                'params' => json_decode($parameters, associative: true, flags: JSON_THROW_ON_ERROR),
+                'metadata' => $original->getMetadataStructure(),
+            ],
+            flags: JSON_THROW_ON_ERROR,
+        ));
+        $request->attributes->set('isDraft', $original->is_draft);
+        $request->attributes->set('language_iso_639_3', $original->language_iso_639_3);
+        $request->attributes->set('license', $original->license);
+        $request->attributes->set('max_score', $original->max_score);
+
+        $oldContent = $original->toArray();
+        $oldContent['library'] = [
+            'name' => $library->name,
+            'majorVersion' => $library->major_version,
+            'minorVersion' => $library->minor_version,
+        ];
+        $oldContent['useVersioning'] = true;
+        $oldContent['params'] = $oldContent['parameters'];
+
+        $newContent = $this->h5p->storeContent($request, $oldContent, $original->user_id);
+        $newH5p = H5PContent::findOrFail($newContent['id']);
+
+        $newH5p->license = $original->license;
+        $newH5p->disable = $original->disable;
+        $newH5p->saveQuietly();
+
+        return $newH5p;
     }
 }

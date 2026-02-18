@@ -92,9 +92,6 @@
                             <li>
                                 <a href="{{ route('admin.migrate.library-content') }}">Migrate library content</a>
                             </li>
-                            <li>
-                                <a href="{{ route('admin.bulkexclude.content.index') }}">Manage content bulk exclution</a>
-                            </li>
                         </ul>
                     </li>
                     @if(app(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->getAdapterName() !== 'ndla')
