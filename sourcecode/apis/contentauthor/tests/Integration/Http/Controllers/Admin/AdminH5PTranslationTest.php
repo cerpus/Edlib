@@ -3,17 +3,22 @@
 namespace Tests\Integration\Http\Controllers\Admin;
 
 use App\ContentVersion;
+use App\Events\H5PWasSaved;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
+use App\Libraries\H5P\h5p;
+use App\Libraries\Hub\HubClient;
 use Generator;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -22,9 +27,41 @@ class AdminH5PTranslationTest extends TestCase
     use WithFaker;
     use RefreshDatabase;
 
+    /**
+     * Mock the HubClient to return the given content IDs as leaf versions.
+     *
+     * @param array<int> $leafContentIds CA content IDs to return as leaves
+     */
+    private function mockHubClient(array $leafContentIds = []): void
+    {
+        $routePrefix = route('h5p.ltishow', '') . '/';
+
+        $leafData = array_map(fn ($id) => [
+            'lti_launch_url' => $routePrefix . $id,
+            'title' => 'Content ' . $id,
+            'content_id' => 'hub-' . $id,
+            'update_url' => 'http://hub.test/update/' . $id,
+        ], $leafContentIds);
+
+        $this->mock(HubClient::class, function (MockInterface $mock) use ($leafData) {
+            $mock->shouldReceive('post')
+                ->with('/content-versions/leaves', \Mockery::any())
+                ->andReturn(['data' => $leafData]);
+
+            $mock->shouldReceive('post')
+                ->with('/content-exclusions/list', \Mockery::any())
+                ->andReturn(['data' => []]);
+
+            $mock->shouldReceive('createContentVersion')
+                ->zeroOrMoreTimes();
+        });
+    }
+
     public function test_libraryTranslation(): void
     {
         Storage::fake();
+        $this->mockHubClient();
+
         $user = new GenericUser([
             'roles' => ['superadmin'],
             'name' => 'Super Tester',
@@ -58,6 +95,8 @@ class AdminH5PTranslationTest extends TestCase
     public function test_libraryTranslation_UnknownCode(): void
     {
         Storage::fake();
+        $this->mockHubClient();
+
         $user = new GenericUser([
             'roles' => ['superadmin'],
             'name' => 'Super Tester',
@@ -91,6 +130,8 @@ class AdminH5PTranslationTest extends TestCase
     public function test_libraryTranslationUpdate_Text(): void
     {
         Storage::fake();
+        $this->mockHubClient();
+
         $user = new GenericUser([
             'roles' => ['superadmin'],
             'name' => 'Super Tester',
@@ -139,6 +180,8 @@ class AdminH5PTranslationTest extends TestCase
     public function test_libraryTranslationUpdate_UnkownCode(): void
     {
         Storage::fake();
+        $this->mockHubClient();
+
         $user = new GenericUser([
             'roles' => ['superadmin'],
             'name' => 'Super Tester',
@@ -181,6 +224,8 @@ class AdminH5PTranslationTest extends TestCase
     public function test_libraryTranslationUpdate_FileError(string $fileContents, ?string $expectedMessage): void
     {
         Storage::fake();
+        $this->mockHubClient();
+
         $user = new GenericUser([
             'roles' => ['superadmin'],
             'name' => 'Super Tester',
@@ -258,65 +303,46 @@ class AdminH5PTranslationTest extends TestCase
             'language_iso_639_3' => 'nob',
             'version_id' => $this->faker->uuid,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_1->version_id,
-            'content_id' => $content_1->id,
-            'version_purpose' => ContentVersion::PURPOSE_CREATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_1->id,
             'default_language' => 'nb',
         ]);
 
-        // Not counted since $content_3 is an update of this
+        // Not counted since $content_3 is an update of this (Hub returns content_3, not content_2)
         $content_2 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
             'version_id' => $this->faker->uuid,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_2->version_id,
-            'content_id' => $content_2->id,
-            'version_purpose' => ContentVersion::PURPOSE_CREATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_2->id,
             'default_language' => 'nb',
         ]);
 
-        // An update of $content_2. Will be counted and prevents $content_2 from being counted
+        // An update of $content_2. Will be counted (Hub returns this as leaf)
         $content_3 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
             'version_id' => $this->faker->uuid,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_3->version_id,
-            'parent_id' => $content_2->version_id,
-            'content_id' => $content_3->id,
-            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_3->id,
             'default_language' => 'nb',
         ]);
 
-        // A copy of $content_1. Will be counted, and should not prevent $content_1 from being counted
+        // A copy of $content_1. Will be counted (Hub returns both original and copy)
         $content_4 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
             'version_id' => $this->faker->uuid,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_4->version_id,
-            'parent_id' => $content_1->version_id,
-            'content_id' => $content_4->id,
-            'version_purpose' => ContentVersion::PURPOSE_COPY,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_4->id,
             'default_language' => 'nb',
         ]);
+
+        // Hub returns content_1, content_3, content_4 as leaves (content_2 is not a leaf)
+        $this->mockHubClient([$content_1->id, $content_3->id, $content_4->id]);
 
         $response = $this->withSession(['user' => $user])
             ->get(
@@ -353,68 +379,49 @@ class AdminH5PTranslationTest extends TestCase
             'version_id' => $this->faker->uuid,
             'parameters' => '{"text":"First"}',
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_1->version_id,
-            'content_id' => $content_1->id,
-            'version_purpose' => ContentVersion::PURPOSE_CREATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_1->id,
             'default_language' => 'nb',
         ]);
 
-        // Not included since $content_3 is an update of this
+        // Not included (Hub does not return this as a leaf)
         $content_2 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
             'version_id' => $this->faker->uuid,
             'parameters' => '{"text":"Second"}',
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_2->version_id,
-            'content_id' => $content_2->id,
-            'version_purpose' => ContentVersion::PURPOSE_CREATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_2->id,
             'default_language' => 'nb',
         ]);
 
-        // An update of $content_2. Will be included and prevents $content_2 from being included
+        // An update of $content_2. Hub returns this as the leaf
         $content_3 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
             'version_id' => $this->faker->uuid,
             'parameters' => '{"text":"Third"}',
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_3->version_id,
-            'parent_id' => $content_2->version_id,
-            'content_id' => $content_3->id,
-            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_3->id,
             'default_language' => 'nb',
         ]);
 
-        // A copy of $content_1. Will be included, and should not prevent $content_1 from being included
+        // A copy of $content_1. Hub returns both original and copy as leaves
         $content_4 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
             'version_id' => $this->faker->uuid,
             'parameters' => '{"text":"Fourth"}',
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_4->version_id,
-            'parent_id' => $content_1->version_id,
-            'content_id' => $content_4->id,
-            'version_purpose' => ContentVersion::PURPOSE_COPY,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_4->id,
             'default_language' => 'nb',
         ]);
+
+        // Hub returns content_1, content_3, content_4 as leaves
+        $this->mockHubClient([$content_1->id, $content_3->id, $content_4->id]);
 
         $response = $this->withSession(['user' => $user])
             ->post(
@@ -439,6 +446,8 @@ class AdminH5PTranslationTest extends TestCase
 
     public function test_contentUpdate_updateAndSecondBatch(): void
     {
+        Event::fake([H5PWasSaved::class]);
+
         $ownerId = $this->faker->uuid;
 
         $admin = new GenericUser([
@@ -457,17 +466,12 @@ class AdminH5PTranslationTest extends TestCase
             'filtered' => '{"text":"First"}',
             'user_id' => $ownerId,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_1->version_id,
-            'content_id' => $content_1->id,
-            'version_purpose' => ContentVersion::PURPOSE_CREATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_1->id,
             'default_language' => 'nb',
         ]);
 
-        // Not included since $content_3 is an update of this
+        // Not included (Hub does not return this as a leaf)
         $content_2 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
@@ -476,17 +480,12 @@ class AdminH5PTranslationTest extends TestCase
             'filtered' => '{"text":"Second"}',
             'user_id' => $ownerId,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_2->version_id,
-            'content_id' => $content_2->id,
-            'version_purpose' => ContentVersion::PURPOSE_CREATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_2->id,
             'default_language' => 'nb',
         ]);
 
-        // An update of $content_2. Will be included and prevents $content_2 from being included
+        // An update of $content_2. Hub returns this as the leaf
         $content_3 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
@@ -495,18 +494,12 @@ class AdminH5PTranslationTest extends TestCase
             'filtered' => '{"text":"Third"}',
             'user_id' => $ownerId,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_3->version_id,
-            'parent_id' => $content_2->version_id,
-            'content_id' => $content_3->id,
-            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_3->id,
             'default_language' => 'nb',
         ]);
 
-        // A copy of $content_1. Will be included, and should not prevent $content_1 from being included
+        // A copy of $content_1. Hub returns both original and copy as leaves
         $content_4 = H5PContent::factory()->create([
             'library_id' => $library->id,
             'language_iso_639_3' => 'nob',
@@ -515,16 +508,30 @@ class AdminH5PTranslationTest extends TestCase
             'filtered' => '{"text":"Fourth"}',
             'user_id' => $ownerId,
         ]);
-        ContentVersion::factory()->create([
-            'id' => $content_4->version_id,
-            'parent_id' => $content_1->version_id,
-            'content_id' => $content_4->id,
-            'version_purpose' => ContentVersion::PURPOSE_COPY,
-        ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content_4->id,
             'default_language' => 'nb',
         ]);
+
+        // Hub returns content_1, content_3, content_4 as leaves
+        $this->mockHubClient([$content_1->id, $content_3->id, $content_4->id]);
+
+        // Mock h5p service to create new H5PContent records
+        $createdIds = [];
+        $this->mock(h5p::class, function (MockInterface $mock) use ($library, &$createdIds) {
+            $mock->shouldReceive('storeContent')
+                ->andReturnUsing(function ($request, $oldContent, $userId) use ($library, &$createdIds) {
+                    $wrapper = json_decode($request->attributes->get('parameters'), true);
+                    $newH5p = H5PContent::factory()->create([
+                        'library_id' => $library->id,
+                        'parameters' => json_encode($wrapper['params']),
+                        'filtered' => '',
+                        'user_id' => $userId,
+                    ]);
+                    $createdIds[] = $newH5p->id;
+                    return ['id' => $newH5p->id];
+                });
+        });
 
         // Sending 1 updated: $content_1
         // and 1 unchanged: $content_3
@@ -550,22 +557,29 @@ class AdminH5PTranslationTest extends TestCase
         $this->assertCount(3, $response['messages']);
 
         $this->assertSame($content_4->id, $response['params'][0]['id']);
-        $this->assertSame('Content ' . $content_1->id . ' updated', $response['messages'][0]);
+
+        // New content was created for the updated content_1
+        $this->assertCount(1, $createdIds);
+        $newContent = H5PContent::find($createdIds[0]);
+        $this->assertSame('{"text":"Updated"}', $newContent->parameters);
+        $this->assertSame($ownerId, $newContent->user_id);
+
+        $this->assertSame(
+            'Content ' . $content_1->id . ' updated (new ids: ' . $createdIds[0] . ')',
+            $response['messages'][0],
+        );
         $this->assertSame('Content ' . $content_3->id . ' not changed', $response['messages'][1]);
         $this->assertSame('Content updated/unchanged/failed: 1 / 1 / 0', $response['messages'][2]);
 
+        // Original content_1 is unchanged (new version is a separate record)
         $content_1_fresh = $content_1->fresh();
-        $this->assertNotSame($content_1_fresh->version_id, $content_1->version_id);
-        $this->assertNotSame($content_1_fresh->parameters, $content_1->parameters);
-        $this->assertSame('{"text":"Updated"}', $content_1_fresh->parameters);
-        $this->assertEmpty($content_1_fresh->filtered);
-        $this->assertDatabaseHas('content_versions', [
-            'id' => $content_1_fresh->version_id,
-            'content_id' => $content_1->id,
-            'parent_id' => $content_1->version_id,
-            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
-        ]);
+        $this->assertSame($content_1->version_id, $content_1_fresh->version_id);
+        $this->assertSame($content_1->parameters, $content_1_fresh->parameters);
 
+        // H5PWasSaved event was dispatched for the new content
+        Event::assertDispatched(H5PWasSaved::class);
+
+        // content_3 is unchanged
         $content_3_fresh = $content_3->fresh();
         $this->assertSame($content_3->version_id, $content_3_fresh->version_id);
         $this->assertSame($content_3->parameters, $content_3_fresh->parameters);
