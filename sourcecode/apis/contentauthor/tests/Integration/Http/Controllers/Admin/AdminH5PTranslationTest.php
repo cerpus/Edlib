@@ -44,15 +44,15 @@ class AdminH5PTranslationTest extends TestCase
         ], $leafContentIds);
 
         $this->mock(HubClient::class, function (MockInterface $mock) use ($leafData) {
-            $mock->shouldReceive('post')
+            $mock->shouldReceive('post') // @phpstan-ignore method.notFound
                 ->with('/content-versions/leaves', \Mockery::any())
                 ->andReturn(['data' => $leafData]);
 
-            $mock->shouldReceive('post')
+            $mock->shouldReceive('post') // @phpstan-ignore method.notFound
                 ->with('/content-exclusions/list', \Mockery::any())
                 ->andReturn(['data' => []]);
 
-            $mock->shouldReceive('createContentVersion')
+            $mock->shouldReceive('createContentVersion') // @phpstan-ignore method.notFound
                 ->zeroOrMoreTimes();
         });
     }
@@ -519,7 +519,7 @@ class AdminH5PTranslationTest extends TestCase
         // Mock h5p service to create new H5PContent records
         $createdIds = [];
         $this->mock(h5p::class, function (MockInterface $mock) use ($library, &$createdIds) {
-            $mock->shouldReceive('storeContent')
+            $mock->shouldReceive('storeContent') // @phpstan-ignore method.notFound
                 ->andReturnUsing(function ($request, $oldContent, $userId) use ($library, &$createdIds) {
                     $wrapper = json_decode($request->attributes->get('parameters'), true);
                     $newH5p = H5PContent::factory()->create([

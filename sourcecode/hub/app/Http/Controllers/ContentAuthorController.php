@@ -185,7 +185,7 @@ class ContentAuthorController extends Controller
             ->where('exclude_from', $excludeFrom)
             ->whereHas('content', function ($query) use ($tool) {
                 $query->whereHas('versions', function ($query) use ($tool) {
-                    $query->where('lti_tool_id', $tool->id);
+                    $query->where('lti_tool_id', $tool->id); // @phpstan-ignore argument.type
                 });
             })
             ->with(['content.latestVersion'])

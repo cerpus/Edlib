@@ -51,7 +51,7 @@ final class ContentExclusionController extends Controller
         } elseif (mb_strlen($searchTitle) >= 3) {
             $paginator = Content::with('latestPublishedVersion')
                 ->whereHas('latestPublishedVersion', function ($query) use ($searchTitle) {
-                    $query->where('title', 'ILIKE', '%' . $searchTitle . '%');
+                    $query->where('title', 'ILIKE', '%' . $searchTitle . '%'); // @phpstan-ignore argument.type
                 })
                 ->paginate(25);
             $paginator->appends(['title' => $searchTitle]);
