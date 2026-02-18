@@ -27,10 +27,10 @@ class QuestionSet extends H5PBase
     {
         $semantics = $this->getPackageSemantics();
         $semantics->questions = $data->map(function ($question) {
-            return (object)[
+            return (object) [
                 'params' => $question['semantics'],
                 'library' => $question['library'],
-                'subContentId' => $question['subContentId']
+                'subContentId' => $question['subContentId'],
             ];
         })->toArray();
         return $semantics;

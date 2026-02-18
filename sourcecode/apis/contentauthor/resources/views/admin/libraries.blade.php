@@ -40,7 +40,11 @@
                 <td>{{ $library['title'] }}</td>
                 <td>{{ $library['numContent'] }}</td>
                 <td>{{ $library['numLibraryDependencies'] }}</td>
-                <td>{!! !empty($library['upgradeUrl']) ? HTML::link($library['upgradeUrl'], '', ['class'=>"fa fa-rocket"]) : '' !!}</td>
+                <td>
+                    @if (!empty($library['upgradeUrl']))
+                        <a href="{{ $library['upgradeUrl'] }}"><i class="fa fa-rocket"></i></a>
+                    @endif
+                </td>
                 <td><a href="{{ $library['detailsUrl'] }}"><i class="fa fa-search"></i></a></td>
                 <td>
                     @if ($library['numLibraryDependencies'] < 1 && $library['numContent'] < 1)

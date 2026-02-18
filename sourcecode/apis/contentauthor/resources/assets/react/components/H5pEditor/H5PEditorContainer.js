@@ -6,11 +6,11 @@ import H5P from '../H5P';
 import { injectIntl } from 'react-intl';
 import useH5PEditor from '../H5P/useH5PEditor';
 import useConfirmWindowClose from './useConfirmWindowClose';
-import { nextTick, removeKeys } from '../../utils/utils';
+import { deepCopy, flattenPath, nextTick, removeKeys, set } from '../../utils/utils';
 import FileUploadProgress from '../FileUploadProgress';
 import Fade from '@material-ui/core/Fade';
 import EditorContainer from '../EditorContainer/EditorContainer';
-import { useForm } from '../../contexts/FormContext';
+import { FormActions, useForm } from '../../contexts/FormContext';
 import Sidebar, {
     AdapterSelector,
     DisplayOptions,
@@ -20,11 +20,13 @@ import { getLanguageStringFromCode } from '../../utils/Helper';
 import NewReleases from '@material-ui/icons/NewReleases';
 import { useTheme } from '@material-ui/core/styles';
 import { useEditorSetupContext } from '../../contexts/EditorSetupContext';
+import getTextFields from "./List/getTextFields";
 
 const H5PEditorContainer = ({ intl }) => {
     const {
         state: formState,
         state: { parameters: formParameters, max_score: maxScore },
+        dispatch,
     } = useForm();
     const [currentView, setCurrentView] = React.useState(views.H5P);
     const [parameters, setParameters] = React.useState({
@@ -66,6 +68,8 @@ const H5PEditorContainer = ({ intl }) => {
         stageUpgrade,
         iframeLoading,
         setAuthor,
+        setAuthors,
+        getAuthors,
     } = useH5PEditor(onParamsChange);
 
     const getCurrentParams = React.useCallback(() => {
@@ -93,7 +97,9 @@ const H5PEditorContainer = ({ intl }) => {
         );
     }, [getCurrentParams, startupParameters, isSaved]);
 
-    useConfirmWindowClose(shouldConfirmClose);
+    if (editorSetup.enableUnsavedWarning) {
+        useConfirmWindowClose(shouldConfirmClose);
+    }
 
     React.useEffect(() => {
         const H5PReadyInterval = setInterval(() => {
@@ -140,6 +146,25 @@ const H5PEditorContainer = ({ intl }) => {
                         }
                         clearInterval(H5PLibraryInterval);
                         setLibrarySelected(true);
+
+                        // Listen for library changes to preserve authors
+                        if (h5pEditor.selector?.on) {
+                            let previousAuthors = [];
+
+                            // Capture authors before library change
+                            h5pEditor.selector.on('editorload', () => {
+                                previousAuthors = getAuthors();
+                            });
+
+                            // Restore authors after library change
+                            h5pEditor.selector.on('editorloaded', () => {
+                                if (previousAuthors.length > 0) {
+                                    setAuthors(previousAuthors);
+                                } else if (creatorName !== null) {
+                                    setAuthor(creatorName, 'Author');
+                                }
+                            });
+                        }
                     }
                     // eslint-disable-next-line no-empty
                 } catch (ignore) {}
@@ -234,7 +259,6 @@ const H5PEditorContainer = ({ intl }) => {
             copyright,
             download,
             language_iso_639_3: languageISO6393,
-            isNewLanguageVariant,
         } = formState;
 
         const components = [];
@@ -290,15 +314,42 @@ const H5PEditorContainer = ({ intl }) => {
             info: languageText !== null ? <div>({languageText})</div> : null,
             component: (
                 <LanguagePicker
-                    getParameters={() => getCurrentParams()}
-                    library={parameters.library}
-                    hideNewVariant={editorSetup.hideNewVariant}
-                    isNewLanguageVariant={isNewLanguageVariant}
-                    autoTranslateTo={editorSetup.autoTranslateTo}
-                    value={languageISO6393}
-                    libraryCache={getLibraryCache}
-                    setParams={(newParameters) => {
-                        onParamsChange({ parameters: newParameters });
+                    language={languageISO6393}
+                    onChange={(language) => {
+                        dispatch({ type: FormActions.setLanguage, payload: { language } });
+                    }}
+                    onGetFields={async () => {
+                        const params = getParams();
+                        const fields = await getTextFields(params, parameters.library, getLibraryCache());
+
+                        const translationFields = fields.map(field => ({
+                            path: 'params.' + flattenPath(field.path),
+                            value: field.originalValue,
+                        }));
+                        // Also translate the title
+                        translationFields.push(
+                            {
+                                path: "metadata.title",
+                                value: params.metadata.title,
+                            },
+                            {
+                                path: "metadata.extraTitle",
+                                value: params.metadata.extraTitle,
+                            }
+                        );
+                        return translationFields;
+                    }}
+                    onSetFields={(fields) => {
+                        const newParameters = deepCopy(getParams());
+                        for (const i in fields) {
+                            set(newParameters, i, fields[i]);
+                        }
+                        onParamsChange(newParameters);
+
+                        dispatch({ type: FormActions.setIsNewLanguageVariant, payload: {
+                            isNewLanguageVariant: true,
+                        }});
+
                         nextTick(() => {
                             if (currentView === views.H5P) {
                                 reDraw(newParameters, parameters.library);
@@ -308,6 +359,7 @@ const H5PEditorContainer = ({ intl }) => {
                             }
                         });
                     }}
+                    supportedLanguages={editorSetup.supportedTranslations}
                 />
             ),
         });

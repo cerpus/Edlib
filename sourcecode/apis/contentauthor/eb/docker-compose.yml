@@ -1,0 +1,67 @@
+services:
+  contentauthor:
+    image: edlib:php-latest
+    env_file:
+      - .env
+    environment:
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    healthcheck:
+      test: [CMD, nc, -z, localhost, "9000"]
+    platform: linux/amd64
+
+  contentauthor-cron:
+    image: edlib:php-latest
+    command: [php, artisan, "schedule:work"]
+    depends_on:
+      contentauthor-startup: { condition: service_completed_successfully }
+    env_file:
+      - .env
+    environment:
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    platform: linux/amd64
+
+  contentauthor-startup:
+    image: edlib:php-latest
+    command: [startup.sh]
+    env_file:
+      - .env
+    environment:
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    platform: linux/amd64
+
+  contentauthor-web:
+    image: edlib:web-latest
+    depends_on:
+      contentauthor: { condition: service_healthy }
+    environment:
+      PHP_FPM_HOST: contentauthor:9000
+    volumes:
+      - "${EB_LOG_BASE_DIR}/contentauthor-web:/var/log/nginx"
+    env_file:
+      - .env
+    platform: linux/amd64
+    ports:
+      - 80:80
+      - 443:443
+
+  contentauthor-worker:
+    image: edlib:php-latest
+    command: [php, artisan, "queue:work"]
+    env_file:
+      - .env
+    environment:
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    platform: linux/amd64
+
+  nightwatch-agent:
+    image: laravelphp/nightwatch-agent:latest
+    healthcheck:
+      test: php nightwatch-status
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    env_file:
+      - .env
+    platform: linux/amd64

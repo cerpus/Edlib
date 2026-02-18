@@ -1,0 +1,26 @@
+server {
+  listen 80;
+
+  server_name nynorskroboten.${EDLIB_ROOT_DOMAIN};
+
+  return 301 https://nynorskroboten.${EDLIB_ROOT_DOMAIN};
+}
+
+server {
+  include includes/https.conf;
+
+  server_name nynorskroboten.${EDLIB_ROOT_DOMAIN};
+
+  root /srv/www/nynorskroboten/public;
+
+  location / {
+    try_files $uri /index.php$is_args$args;
+  }
+
+  location ~ \.php$ {
+    set $upstream nynorskroboten:9000;
+
+    include fastcgi.conf;
+    fastcgi_pass $upstream;
+  }
+}

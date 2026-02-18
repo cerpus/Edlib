@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\ResourceSaved;
-use App\Libraries\DataObjects\ResourceUserDataObject;
-use App\Libraries\Storage\LogStorage;
 use Carbon\Carbon;
 use Exception;
 use App\Article;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
 class AdminArticleController extends Controller
 {
     public const chunkSize = 30;
     public const logFile = 'articleMaxScore.log';
 
-    private $log;
+    private Filesystem $log;
 
-    public function __construct(LogStorage $logStorage)
+    public function __construct()
     {
-        $this->log = $logStorage::disk();
+        $this->log = Storage::disk('storageLogs');
     }
 
     public function index()
@@ -66,9 +65,6 @@ class AdminArticleController extends Controller
                 } finally {
                     $batch->push($status);
                     $article->save();
-                    if ($status['success'] === true) {
-                        event(new ResourceSaved($article->getEdlibDataObject()));
-                    }
                 }
             });
         return response()->json([
@@ -85,7 +81,7 @@ class AdminArticleController extends Controller
         ];
 
         if (is_scalar($context)) {
-            $lines[] = (string)$context;
+            $lines[] = (string) $context;
         } else {
             if (is_array($context) && count($context) > 0) {
                 $lines[] = json_encode($context);
@@ -104,14 +100,8 @@ class AdminArticleController extends Controller
 
     public function viewFailedCalculations()
     {
-        $resources = Article::ofBulkCalculated(Article::BULK_FAILED)
-            ->get()
-            ->each(function (Article $resource) {
-                /** @var ResourceUserDataObject $ownerData */
-                $ownerData = $resource->getOwnerData();
-                $resource->ownerName = $ownerData->getNameAndEmail();
-                return $resource;
-            });
+        $resources = Article::ofBulkCalculated(Article::BULK_FAILED)->get();
+
         return view('admin.articles.maxscore-failed-overview', compact('resources'));
     }
 }

@@ -35,7 +35,7 @@ class MathMLSpaceNormalize extends HTMLPurifier_Injector
         $token->data = preg_replace(
             '/[ \t\n\r]+/',
             ' ',
-            trim($token->data) // Using trim($token->data, ' \t\n\r') trims t,n,r
+            trim($token->data), // Using trim($token->data, ' \t\n\r') trims t,n,r
         );
     }
 }

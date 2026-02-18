@@ -15,8 +15,7 @@ final class ContentUpgradeController
     public function __construct(
         private readonly H5PCore $core,
         private readonly H5PFrameworkInterface $framework,
-    ) {
-    }
+    ) {}
 
     public function upgrade(H5PLibrary $library): View
     {
@@ -72,8 +71,11 @@ final class ContentUpgradeController
                 'error' => 'An error occurred while processing parameters:',
                 'errorData' => 'Could not load data for library %lib.',
                 'errorContent' => 'Could not upgrade content %id:',
+                'errorLibrary' => 'Missing required library %lib.',
                 'errorScript' => 'Could not load upgrades script for %lib.',
                 'errorParamsBroken' => 'Parameters are broken.',
+                'errorTooHighVersion' => 'Parameters contain %used while only %supported or earlier are supported.',
+                'errorNotSupported' => 'Parameters contain %used which is not supported.',
                 'done' => 'You have successfully upgraded ' . $library->title,
                 'library' => [
                     'name' => $library->name,
@@ -87,8 +89,8 @@ final class ContentUpgradeController
                 'buttonLabel' => 'Start upgrade',
                 'infoUrl' => route('admin.content-upgrade', ['id' => $library->id]),
                 'total' => $upgradableContentCount,
-                'token' => csrf_token()
-            ]
+                'token' => csrf_token(),
+            ],
         ];
     }
 }

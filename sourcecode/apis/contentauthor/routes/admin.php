@@ -1,30 +1,35 @@
 <?php
+
 /**
  * Admin routes
  */
 
 use App\Http\Controllers\Admin\AdminArticleController;
+use App\Http\Controllers\Admin\AdminContentMigrateController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
-use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
-use App\Http\Controllers\Admin\ImportExportSettingsController;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
-use App\Http\Controllers\Admin\LocksController;
-use App\Http\Controllers\Admin\NDLAReplaceRefController;
+use App\Http\Controllers\Admin\LtiAdminAccess;
+use App\Http\Controllers\Admin\PresaveController;
 use App\Http\Controllers\Admin\VersioningController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('auth/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('auth/login', [LoginController::class, 'login']);
-Route::post('auth/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('auth/logout', LogoutController::class)->name('logout');
 
-Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
+Route::post('/lti/admin', LtiAdminAccess::class)
+    ->middleware(['lti.add-to-session', 'lti.signed-launch']);
+
+Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
     function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin');
+        Route::get('/log/audit', [AdminController::class, 'auditLog'])->name('admin.log.audit');
+        Route::post('/clear-cache')
+            ->uses([AdminController::class, 'clearCache'])
+            ->name('admin.clear-cache');
 
         /*
          * Update H5P libraries
@@ -46,8 +51,12 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
             ->name('admin.check-library');
         Route::get('libraries/{library}/content', [AdminH5PDetailsController::class, 'contentForLibrary'])
             ->name('admin.content-library');
-        Route::get('content/{content}/details', [AdminH5PDetailsController::class, 'contentHistory'])
+        Route::get('content/{content}/details/{version?}', [AdminH5PDetailsController::class, 'contentHistory'])
             ->name('admin.content-details');
+        Route::post('content/{h5pContent}/preview', [AdminH5PDetailsController::class, 'contentPreview'])
+            ->name('admin.content-preview');
+        Route::post('content/{h5pContent}/export', [AdminH5PDetailsController::class, 'contentExport'])
+            ->name('admin.content-export');
         Route::get('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslation'])
             ->name('admin.library-translation');
         Route::post('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslationUpdate']);
@@ -58,6 +67,10 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
 
         Route::match(['GET', 'POST'], 'ajax', [AdminController::class, 'ajaxLoading'])->name('admin.ajax');
 
+        // Migrate content from H5P.NDLAThreeImage to H5P.EscapeRoom
+        Route::match(['GET', 'POST'], '/migrate/library-content', [AdminContentMigrateController::class, 'index'])
+            ->name('admin.migrate.library-content');
+
         /*
          * Capabilities
          */
@@ -67,11 +80,11 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
         Route::post('/capability/{capability}/score', [CapabilityController::class, 'score'])->name('admin.capability.score');
         Route::post(
             '/capability/{capability}/description',
-            [CapabilityController::class, 'description']
+            [CapabilityController::class, 'description'],
         )->name('admin.capability.description');
         Route::get(
             '/capability/{capability}/translation',
-            [CapabilityController::class, 'translation']
+            [CapabilityController::class, 'translation'],
         )->name('admin.capability.translation');
 
         Route::get('games', [GamesAdminController::class, 'index'])->name('admin.games');
@@ -86,25 +99,10 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
         Route::get('article/maxscore/log', [AdminArticleController::class, 'download'])->name('admin.article.maxscore.download');
         Route::get('article/maxscore/failed', [AdminArticleController::class, 'viewFailedCalculations'])->name('admin.article.maxscore.failed');
 
-        // Settings for import export
-        Route::get('ndla-import-export/settings', [ImportExportSettingsController::class, 'index'])->name('admin.importexport.index');
-        Route::post('ndla-import-export/settings/reset-tracking', [ImportExportSettingsController::class, 'resetTracking'])->name('admin.importexport.reset-tracking');
-        Route::post('ndla-import-export/settings/empty-article-import-log', [ImportExportSettingsController::class, 'emptyArticleImportLog'])->name('admin.importexport.empty-article-import-log');
-        Route::post('ndla-import-export/settings/run-presave', [ImportExportSettingsController::class, 'runPresave'])->name('admin.importexport.run-presave');
+        Route::get('presave', [PresaveController::class, 'index'])->name('admin.presave.index');
+        Route::post('presave/run-presave', [PresaveController::class, 'runPresave'])->name('admin.presave.run-presave');
 
         // More general Admin Backend routes
-        Route::resource('admin-users', AdminUserController::class)->only(['index', 'store', 'destroy']);
-
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
-
-        // Locks admin
-        Route::get("locks", [LocksController::class, 'index'])->name("admin.locks");
-        Route::delete("locks", [LocksController::class, 'destroy'])->name("admin.locks.delete");
-
-        // Refs
-        Route::get("video/ndla/replace", [NDLAReplaceRefController::class, 'index'])->name("admin.video.ndla.replaceref");
-        Route::get("video/ndla/doreplaceref", [NDLAReplaceRefController::class, 'doReplaceRef'])->name("admin.video.ndla.doreplaceref");
-        Route::get("video/ndla/populatetargets", [NDLAReplaceRefController::class, 'populateTable'])->name("admin.video.ndla.populatetargets");
-        Route::get("video/ndla/reindexrefs", [NDLAReplaceRefController::class, 'reindex'])->name("admin.video.ndla.reindexrefs");
-    }
+    },
 );

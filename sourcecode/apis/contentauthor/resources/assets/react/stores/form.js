@@ -26,10 +26,10 @@ const form = (state, action) => {
             };
         }
         case actions.setSharing: {
-            const { isPrivate } = action.payload;
+            const { isShared } = action.payload;
             return {
                 ...state,
-                share: isPrivate !== true ? 'share' : 'private',
+                isShared,
             };
         }
         case actions.setDisplayOptions: {
@@ -46,16 +46,18 @@ const form = (state, action) => {
             };
         }
         case actions.setLanguage: {
-            const {
-                language,
-                isNewVariant,
-            } = action.payload;
+            const { language } = action.payload;
             return {
                 ...state,
-                isNewLanguageVariant: isNewVariant,
                 language_iso_639_3: language,
             };
         }
+        case actions.setIsNewLanguageVariant:
+            const { isNewLanguageVariant } = action.payload;
+            return {
+                ...state,
+                isNewLanguageVariant,
+            };
         case actions.setError: {
             const {
                 messages,
@@ -112,6 +114,7 @@ const actions = {
     setContent: 'SET_CONTENT',
     setQuestionSetData: 'SET_QUESTIONSET_DATA',
     setEmbed: 'SET_EMBED',
+    setIsNewLanguageVariant: 'SET_IS_NEW_LANGUAGE_VARIANT',
 };
 
 

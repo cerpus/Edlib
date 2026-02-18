@@ -1,7 +1,9 @@
 @extends ('layouts.admin')
 @section ('content')
-    <div class="container">
-        <a href="{{ route('admin.update-libraries') }}">Back to library list</a>
+    <div class="container-admin">
+        <a href="{{ route('admin.update-libraries') }}">Library list</a>
+        <br>
+        <a href="{{ route('admin.check-library', [$library->id]) }}">Library details</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -34,9 +36,6 @@
                                     <th>Updated &#8595;</th>
                                     <th>Language</th>
                                     <th>License</th>
-                                    <th>Published</th>
-                                    <th>Listed</th>
-                                    <th>Has lock</th>
                                     <th>Latest</th>
                                 </tr>
                                 @foreach($paginator->getCollection() as $content)
@@ -48,9 +47,6 @@
                                             <td>{{ $content['item']->updated_at->format('Y-m-d H:i:s e') }}</td>
                                             <td>{{ $content['item']->language_iso_639_3 }}</td>
                                             <td>{{ $content['item']->license }}</td>
-                                            <td>{{ $content['item']->isPublished() ? 1 : 0 }}</td>
-                                            <td>{{ $content['item']->isListed() ? 1 : 0 }}</td>
-                                            <td>{{ $content['item']->hasLock() ? 1 : 0 }}</td>
                                             <td>{{ $content['isLatest'] !== null ? ($content['isLatest'] ? 'Yes' : 'No') : '' }}</td>
                                         </tr>
                                     @endif

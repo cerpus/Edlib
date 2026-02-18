@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { AlertBox, SaveBox, Publish, Lock } from './components';
+import React, { useMemo } from 'react';
+import { AlertBox, SaveBox, Publish } from './components';
 import SidebarCommonComponents from './SidebarCommonComponents';
 import { useForm } from '../../contexts/FormContext';
 import { injectIntl } from 'react-intl';
@@ -43,11 +43,8 @@ const Sidebar = ({
         state,
         initialState: { isDraft: isInitialDraft },
     } = useForm();
-    const { locked, lockedProperties, pulseUrl } = setup;
-    const [isLocked, setLocked] = useState(locked);
     const classes = useStyle();
     const onChange = (type, payload) => dispatch({ type: type, payload });
-    const toggleLock = () => setLocked(!isLocked);
 
     const components = useMemo(() => {
         let commonComponents = SidebarCommonComponents(
@@ -99,27 +96,16 @@ const Sidebar = ({
                     </Box>
                 )}
                 <Box padding={1}>
-                    {!isLocked && (
-                        <SaveBox
-                            onSave={onSave}
-                            onSaveCallback={onSaveCallback}
-                            pulseUrl={pulseUrl}
-                        />
-                    )}
-                    {isLocked && (
-                        <Lock
-                            {...lockedProperties}
-                            lockReleased={() => toggleLock()}
-                        />
-                    )}
+                    <SaveBox
+                        onSave={onSave}
+                        onSaveCallback={onSaveCallback}
+                    />
                     <AlertBox />
-                    {setup.userPublishEnabled === true && (
-                        <Publish
-                            label={intl.formatMessage({
-                                id: 'SHARINGCOMPONENT.ISPUBLISHED',
-                            })}
-                        />
-                    )}
+                    <Publish
+                        label={intl.formatMessage({
+                            id: 'SHARINGCOMPONENT.ISPUBLISHED',
+                        })}
+                    />
                     {components.map((box, index) => (
                         <Accordion key={index}>
                             <AccordionSummary

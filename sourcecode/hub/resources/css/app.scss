@@ -1,0 +1,64 @@
+@import '@fontsource/lato';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+$font-family-sans-serif: Lato, sans-serif;
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+
+// 4. Include any default map overrides here
+
+// 5. Include remainder of required parts
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+
+// 6. Optionally include any other parts as needed
+//    Should follow same order as in bootstrap/scss/bootstrap.scss as there
+//    are some requirements and dependencies across components
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/accordion";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/tooltip";
+@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/offcanvas";
+@import "bootstrap/scss/helpers";
+
+// 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
+@import "bootstrap/scss/utilities/api";
+
+// 8. Add additional custom code here
+@import 'content/action-buttons';
+@import 'content/icon';
+@import 'content/layout-toggle';
+@import 'content/card';
+@import 'content/list-item';
+@import 'choices.js/src/styles/choices';
+@import 'billboard.js/dist/billboard';
+@import 'layout';
+@import 'theme-edlib';
+@import 'theme-dark';

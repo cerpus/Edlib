@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine AS base
+FROM php:8.3-fpm-alpine AS base
 
 RUN apk add --no-cache \
         git \
@@ -6,17 +6,16 @@ RUN apk add --no-cache \
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
+RUN install-php-extensions \
         bcmath \
         gettext \
         igbinary \
         intl \
         opcache \
         pcntl \
+        pcov \
         pdo_mysql \
         redis \
-        sockets \
-        xmlrpc \
         zip
 
 COPY --from=composer/composer:2-bin /composer /usr/local/bin/
@@ -26,9 +25,11 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME="/tmp" \
     COMPOSER_MEMORY_LIMIT=-1
 
-COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
+COPY docker/php/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 
 RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf;
+
+COPY docker/php/startup.sh /usr/local/bin/
 
 WORKDIR /app
 
@@ -52,7 +53,7 @@ WORKDIR /app
 RUN npm i -g node-gyp
 
 COPY package.json package-lock.json ./
-RUN npm i
+RUN npm ci
 
 COPY --from=composer_deps /app/vendor/ckeditor/ckeditor vendor/ckeditor/ckeditor
 COPY --from=composer_deps /app/vendor/h5p vendor/h5p
@@ -94,7 +95,7 @@ RUN set -eux; \
         storage/framework/sessions \
         storage/framework/views \
         storage/logs; \
-    ln -s /app/public/storage/app/public /app/public/storage; \
+    ln -s ../storage/app public/h5pstorage; \
     chmod -R o+w \
         bootstrap/cache \
         storage; \
@@ -103,27 +104,42 @@ RUN set -eux; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
     chown -R www-data:www-data .
 
+COPY docker/php/fpm-prod.conf "/usr/local/etc/php-fpm.d/zz-fpm-prod.conf"
 
-FROM prod as test
 
+FROM composer_deps AS test
+
+RUN composer install \
+    --no-autoloader \
+    --no-cache \
+    --no-progress \
+    --no-scripts
+
+COPY app app
+COPY bootstrap bootstrap
+COPY config config
+COPY database database
+COPY public public
+COPY resources resources
+COPY routes routes
+COPY artisan .
+COPY .env.example .
 COPY phpunit.xml .
 COPY tests tests
 
 RUN set -eux; \
-    install-php-extensions \
-        pcov \
-    ; \
-    composer install \
-        --no-cache \
-        --no-progress \
-    ;
+    mkdir -p \
+        bootstrap/cache \
+        storage/app/public \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs; \
+    ln -s ../storage/app public/h5pstorage; \
+    chmod -R o+w bootstrap/cache storage; \
+    composer dump-autoload
 
 CMD ["vendor/bin/phpunit"]
-
-
-FROM prod AS startup
-
-CMD ["php", "artisan", "migrate", "--force"]
 
 
 FROM base AS dev
@@ -131,11 +147,12 @@ FROM base AS dev
 RUN set -eux; \
     cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \
     install-php-extensions \
-        pcov \
         xdebug \
     ;
 
-COPY docker/php/docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
+COPY docker/php/docker-entrypoint-dev.sh /
+COPY docker/php/php-dev.ini "$PHP_INI_DIR/conf.d/zz-php-dev.ini"
+COPY docker/php/startup-dev.sh /usr/local/bin/
 
 ENTRYPOINT ["/docker-entrypoint-dev.sh"]
 
@@ -147,5 +164,5 @@ FROM nginx:1-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 
 COPY --from=prod /app/public /app/public
-COPY docker/no-security-theatre.conf /etc/nginx/conf.d/
-COPY docker/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template
+COPY docker/nginx/no-security-theatre.conf /etc/nginx/conf.d/
+COPY docker/nginx/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template

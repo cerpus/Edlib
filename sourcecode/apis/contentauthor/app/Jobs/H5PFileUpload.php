@@ -37,7 +37,7 @@ class H5PFileUpload implements ShouldQueue
      */
     public function tags()
     {
-        return ['H5PFileUpload', 'h5pContentId:'.$this->contentId, 'h5pFileId:'.$this->h5pFileId];
+        return ['H5PFileUpload', 'h5pContentId:' . $this->contentId, 'h5pFileId:' . $this->h5pFileId];
     }
 
     /**

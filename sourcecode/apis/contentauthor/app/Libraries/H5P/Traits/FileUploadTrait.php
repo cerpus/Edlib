@@ -2,7 +2,7 @@
 
 namespace App\Libraries\H5P\Traits;
 
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Log;
 use Exception;
 use App\H5PFile;
@@ -35,7 +35,7 @@ trait FileUploadTrait
                 'from' => $fromPath,
                 'to' => $toPath,
                 'action' => $fileAction,
-            ] = (array)$file->params;
+            ] = (array) $file->params;
             if (!empty($fromPath) && !empty($toPath) && $this->filesystem->exists($fromPath) && $this->filesystem->missing($toPath)) {
                 $result = $this->performAction($fromPath, $toPath, $fileAction);
                 if (!$result) {

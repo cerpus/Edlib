@@ -12,22 +12,29 @@ use GuzzleHttp\Exception\GuzzleException;
 use Masterminds\HTML5;
 use RuntimeException;
 
-final class NynorobotAdapter implements TranslationServiceInterface
+final readonly class NynorobotAdapter implements TranslationServiceInterface
 {
     public const STYLE_MODERATE = 'Moderat nynorsk';
     public const STYLE_RADICAL = 'Radikal nynorsk';
     public const STYLE_CONSERVATIVE = 'Konservativ nynorsk';
+    public const STYLE_INTERNAL_4 = 'Intern nynorsk 4';
 
     /**
      * @param self::STYLE_* $style
      */
     public function __construct(
-        private readonly ClientInterface $client,
-        private readonly string $style,
-    ) {
+        private ClientInterface $client,
+        private string $style,
+    ) {}
+
+    public function getSupportedLanguages(): array|null
+    {
+        return [
+            'nob' => ['nno'],
+        ];
     }
 
-    public function getTranslations(H5PTranslationDataObject $data): H5PTranslationDataObject
+    public function translate(string $toLanguage, H5PTranslationDataObject $data): H5PTranslationDataObject
     {
         $html = $this->convertFieldsToHtml($data->getFields());
 
@@ -44,7 +51,7 @@ final class NynorobotAdapter implements TranslationServiceInterface
                         'headers' => [
                             'Content-Type' => 'text/html',
                         ],
-                    ]
+                    ],
                 ],
                 'query' => [
                     'stilmal' => $this->style,
@@ -58,7 +65,7 @@ final class NynorobotAdapter implements TranslationServiceInterface
             $response->getBody()->getContents(),
         );
 
-        return new H5PTranslationDataObject($translated);
+        return new H5PTranslationDataObject($translated, 'nno');
     }
 
     /**

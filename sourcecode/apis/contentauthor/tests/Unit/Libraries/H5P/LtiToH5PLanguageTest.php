@@ -4,17 +4,18 @@ namespace Tests\Unit\Libraries\H5P;
 
 use App\Libraries\H5P\LtiToH5PLanguage;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class LtiToH5PLanguageTest extends TestCase
 {
-    /** @dataProvider dataset */
+    #[DataProvider('dataset')]
     public function testConvert($expected, $input = null, $default = null): void
     {
         $this->assertEquals($expected, LtiToH5PLanguage::convert($input, $default));
     }
 
-    public function dataset(): Generator
+    public static function dataset(): Generator
     {
         yield 'nb-nb' => ['nb', 'nb-no'];
         yield 'nn' => ['nn', 'nn'];

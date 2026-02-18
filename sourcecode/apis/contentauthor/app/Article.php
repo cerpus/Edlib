@@ -3,9 +3,7 @@
 namespace App;
 
 use App\Http\Libraries\ArticleFileVersioner;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use Carbon\Carbon;
 use Cerpus\Helper\Clients\Client;
@@ -21,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
@@ -32,21 +31,22 @@ use const LIBXML_HTML_NOIMPLIED;
 
 /**
  * @property string $id
- * @property string $parent_id
- * @property string $parent_version_id
- * @property string $original_id
+ * @property ?string $parent_id
+ * @property ?string $parent_version_id
+ * @property ?string $version_id
+ * @property ?string $original_id
  * @property string $owner_id
  * @property string $content
- * @property Carbon $deleted_at
- * @property string $note_id
- * @property string $ndla_url
+ * @property ?Carbon $deleted_at
+ * @property ?string $node_id
+ * @property ?string $ndla_url
  *
  * @property Collection<Collaborator> $collaborators
  *
  * @method static Builder|null|self noMaxScore()
  * @method static Builder|null|self ofBulkCalculated($type)
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class Article extends Content implements VersionableObject
 {
@@ -77,7 +77,7 @@ class Article extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<ArticleCollaborator>
+     * @return HasMany<ArticleCollaborator, $this>
      */
     public function collaborators(): HasMany
     {
@@ -85,7 +85,7 @@ class Article extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<File>
+     * @return HasMany<File, $this>
      */
     public function files(): HasMany
     {
@@ -103,7 +103,7 @@ class Article extends Content implements VersionableObject
     }
 
     /**
-     * @return BelongsTo<Article, self>
+     * @return BelongsTo<Article, $this>
      */
     public function parent(): BelongsTo
     {
@@ -276,15 +276,9 @@ class Article extends Content implements VersionableObject
         return false;
     }
 
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        return new ContentTypeDataObject('Article', $contentType, 'Article', "fa:newspaper-o");
-    }
-
     private static function rewriteUploadUrls(string $content): string
     {
-        $cas = app()->make(ContentAuthorStorage::class);
-        assert($cas instanceof ContentAuthorStorage);
+        $fs = Storage::disk();
 
         $previous = libxml_use_internal_errors(true);
         try {
@@ -292,12 +286,12 @@ class Article extends Content implements VersionableObject
             $dom->loadHTML($content, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
 
             collect($dom->getElementsByTagName('img'))
-                ->filter(fn (DOMElement $node) => $node->hasAttribute('src'))
-                ->each(fn (DOMElement $node) => $node->setAttribute(
+                ->filter(fn(DOMElement $node) => $node->hasAttribute('src'))
+                ->each(fn(DOMElement $node) => $node->setAttribute(
                     'src',
                     preg_replace_callback(
                         '@^/h5pstorage/article-uploads/(.*?)@',
-                        fn (array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
+                        fn(array $matches) => $fs->url(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
                         $node->getAttribute('src'),
                     ),
                 ));

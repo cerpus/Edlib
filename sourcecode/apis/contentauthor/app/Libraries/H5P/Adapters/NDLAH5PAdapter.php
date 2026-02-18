@@ -3,42 +3,40 @@
 namespace App\Libraries\H5P\Adapters;
 
 use App\H5POption;
-use App\Libraries\H5P\Audio\NDLAAudioBrowser;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use App\Libraries\H5P\File\NDLATextTrack;
-use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PAudioInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
+use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
-use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
+use function array_unique;
+use function config;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use const JSON_THROW_ON_ERROR;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
 
-    /** @var H5PImageAdapterInterface */
-    private $imageBrowser;
+    public function __construct(
+        private readonly H5PAudioInterface $audioAdapter,
+        private readonly H5PImageInterface $imageAdapter,
+        private readonly H5PVideoInterface $videoAdapter,
+    ) {}
 
-    /** @var H5PAlterParametersSettingsDataObject */
-    private $parameterSettings;
+    public function alterParameters(
+        string $parameters,
+        H5PAlterParametersSettingsDataObject $settings = new H5PAlterParametersSettingsDataObject(),
+    ): string {
+        if ($parameters === '') {
+            return '';
+        }
 
-    /**
-     * Alter parameters before added to the H5PIntegrationObject
-     *
-     * @param string $parameters
-     * @return string
-     */
-    public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null)
-    {
-        $this->imageBrowser = resolve(NDLAContentBrowser::class);
-        $this->parameterSettings = $settings ?? resolve(H5PAlterParametersSettingsDataObject::class);
-        return $this->traverseParameters(collect(json_decode($parameters)))->toJson();
+        return $this->traverseParameters(collect(json_decode($parameters, flags: JSON_THROW_ON_ERROR)), $settings)->toJson();
     }
 
     public function getEditorExtraTags($field): array
@@ -55,144 +53,84 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $field->font = new \stdClass();
         }
 
-        $field->font->size = [
-            (object)[
-                'label' => '50%',
-                'css' => '0.5em'
-            ],
-            (object)[
-                'label' => '56.25%',
-                'css' => '0.5625em'
-            ],
-            (object)[
-                'label' => '62.50%',
-                'css' => '0.625em'
-            ],
-            (object)[
-                'label' => '68.75%',
-                'css' => '0.6875em'
-            ],
-            (object)[
-                'label' => '75%',
-                'css' => '0.75em'
-            ],
-            (object)[
-                'label' => '87.50%',
-                'css' => '0.875em'
-            ],
-            (object)[
-                'label' => '100%',
-                'css' => '1em'
-            ],
-            (object)[
-                'label' => '112.50%',
-                'css' => '1.125em'
-            ],
-            (object)[
-                'label' => '125%',
-                'css' => '1.25em'
-            ],
-            (object)[
-                'label' => '137.50%',
-                'css' => '1.375em'
-            ],
-            (object)[
-                'label' => '150%',
-                'css' => '1.5em'
-            ],
-            (object)[
-                'label' => '162.50%',
-                'css' => '1.625em'
-            ],
-            (object)[
-                'label' => '175%',
-                'css' => '1.75em'
-            ],
-            (object)[
-                'label' => '225%',
-                'css' => '2.25em'
-            ],
-            (object)[
-                'label' => '300%',
-                'css' => '3em'
-            ],
-            (object)[
-                'label' => '450%',
-                'css' => '4.5em'
-            ],
-            (object)[
-                'label' => '675%',
-                'css' => '6.75em'
-            ],
-            (object)[
-                'label' => '1350%',
-                'css' => '13.5em'
-            ],
-            (object)[
-                'label' => '3375%',
-                'css' => '33.75em'
-            ]
-        ];
+        $field->font->size = collect([
+            '50%', '56.25%', '62.50%', '68.75%', '75%', '87.50%', '100%', '112.50%', '125%', '137.50%',
+            '150%', '162.50%', '175%', '225%', '300%', '450%', '675%', '1350%', '3375%',
+        ])
+            ->map(fn(string $size) => (object) [
+                'label' => $size,
+                'css' => $size,
+            ])
+            ->toArray();
     }
 
 
     public function getEditorCss(): array
     {
-        $css = [(string) mix('css/ndlah5p-editor.css')];
         $css[] = '/js/cropperjs/cropper.min.css';
         if (config('h5p.include-custom-css') === true) {
             $css[] = (string) mix('css/ndlah5p-edit.css');
         }
-        $isAdmin = Session::get('isAdmin');
-        if (!$isAdmin) {
-            $css[] = '/css/ndlah5p-youtube.css';
-        }
-        return $css;
+        return array_unique([
+            ...$this->audioAdapter->getEditorCss(),
+            ...$this->imageAdapter->getEditorCss(),
+            ...$this->videoAdapter->getEditorCss(),
+            ...$css,
+        ]);
     }
 
 
     public function getEditorSettings(): array
     {
         return [
-            'wirisPath' => 'https://www.wiris.net/client/plugins/ckeditor/plugin.js',
+            'wysiwygButtons' => [
+                'language',
+                'mathtype',
+            ],
+            'textPartLanguages' =>
+                collect(explode(',', config('h5p.ckeditor.textPartLanguages', '')))
+                    ->map(fn(string $language) => [
+                        'title' => locale_get_display_name($language, app()->getLocale()),
+                        'languageCode' => $language,
+                    ])
+                    ->sortBy('title')
+                    ->values(),
         ];
     }
 
 
     public function getCustomEditorScripts(): array
     {
-        $js[] = "/js/h5p/wiris/h5peditor-html-wiris-addon.js";
-        $js[] = (string) mix("js/ndla-contentbrowser.js");
-        $js[] = "/js/videos/brightcove.js";
-        $js[] = (string) mix('js/h5peditor-image-popup.js');
-        $js[] = (string) mix('js/h5peditor-custom.js');
-        $isAdmin = Session::get('isAdmin');
-        if (!$isAdmin) {
-            $js[] = '/js/h5p/ndlah5p-youtube.js';
-        }
-        return $js;
+        return array_unique([
+            // Custom HTML component to enable CKEDitor 5 plugins TextPartLanguage, MathType and ChemType
+            (string) mix('js/ndla-h5peditor-html.js'),
+            // Custom image editor/cropper
+            (string) mix('js/h5peditor-image-popup.js'),
+            // H5P.getCrossOrigin override
+            (string) mix('js/h5peditor-custom.js'),
+            ...$this->audioAdapter->getEditorScripts(),
+            ...$this->imageAdapter->getEditorScripts(),
+            ...$this->videoAdapter->getEditorScripts(),
+        ]);
     }
 
     public function getCustomEditorStyles(): array
     {
-        return [];
+        return $this->videoAdapter->getEditorCss();
     }
-
 
     public function getCustomViewScripts(): array
     {
-        $scripts = [
-            '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
+        return [
+            // Display of formulas
+            'https://www.wiris.net/client/plugins/app/WIRISplugins.js?viewer=image',
             '/js/h5p/wiris/view.js',
             (string) mix('js/h5peditor-custom.js'),
+            ...$this->audioAdapter->getViewScripts(),
+            ...$this->imageAdapter->getViewScripts(),
+            ...$this->videoAdapter->getViewScripts(),
         ];
-        $libraries = $this->config->h5pCore->loadContentDependencies($this->config->id, "preloaded");
-        if ($this->hasVideoLibrary($libraries, 1, 3) === true) {
-            $scripts[] = '/js/videos/brightcove.js';
-        }
-        return $scripts;
     }
-
 
     public function getCustomViewCss(): array
     {
@@ -207,9 +145,34 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             }
         }
         $css[] = (string) mix('css/ndlah5p-iframe.css');
-        return $css;
+        $customLibraryCss = $this->getLibraryCustomCss($content['library']['name'], []);
+
+        return array_unique([
+            ...$css,
+            ...$this->audioAdapter->getViewCss(),
+            ...$this->imageAdapter->getViewCss(),
+            ...$this->videoAdapter->getViewCss(),
+            ...$customLibraryCss,
+        ]);
     }
 
+    public function getLibraryCustomCss(string $h5pLibraryName, array $styles): array
+    {
+        if ($h5pLibraryName) {
+            $includeName = "/css/$h5pLibraryName.css";
+            $cacheKey = "h5p_custom_css_exists:$h5pLibraryName";
+
+            $exists = Cache::remember($cacheKey, 3600, function () use ($includeName) {
+                return File::exists(public_path($includeName));
+            });
+
+            if ($exists) {
+                $styles[] = $includeName;
+            }
+        }
+
+        return $styles;
+    }
     /**
      * @return void
      */
@@ -246,26 +209,16 @@ class NDLAH5PAdapter implements H5PAdapterInterface
      */
     public function overrideAdapterSettings()
     {
-        config(['app.deploymentEnvironment' => 'ndlaprod']);
         config(collect([
             'app.enable_licensing',
             'feature.licensing',
-            'feature.content-locking',
             'feature.context-collaboration',
             'feature.collaboration',
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
             'h5p.video.enable',
-            'h5p.video.url',
-            'h5p.video.key',
-            'h5p.video.secret',
-            'h5p.video.accountId',
-            'h5p.video.authUrl',
             'h5p.video.deleteVideoSourceAfterConvertToStream',
             'h5p.video.pingDelay',
-            'h5p.image.authDomain',
-            'h5p.image.url',
-            'h5p.audio.url',
             'h5p.H5P_DragQuestion',
             'h5p.H5P_Dialogcards',
             'h5p.isHubEnabled',
@@ -284,52 +237,9 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             ->toArray());
     }
 
-    /**
-     * @return bool
-     */
-    public function getDefaultImportPrivacy()
-    {
-        return true; // Private by default. Corresponds to is_private = true
-    }
-
-    public function emptyArticleImportLog($sessionKey = 'message'): void
-    {
-        session()->flash($sessionKey, 'Article Import Log NOT Emptied.');
-    }
-
-    public function resetNdlaIdTracking($sessionKey = 'message'): void
-    {
-        session()->flash($sessionKey, 'NDLA ID tracking NOT Reset.');
-    }
-
-    public function showArticleImportExportFunctionality(): bool
-    {
-        return false;
-    }
-
-    public function runPresaveCommand(): void
-    {
-        session()->flash('message', 'Presave command NOT run.');
-    }
-
     public function useEmbedLink(): int
     {
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
-    }
-
-    public function isUserPublishEnabled(): bool
-    {
-        return filter_var(config("feature.enableUserPublish"), FILTER_VALIDATE_BOOLEAN);
-    }
-
-    public function getExternalProviders(): array
-    {
-        return [
-            resolve(NDLAContentBrowser::class),
-            resolve(NDLAVideoAdapter::class),
-            resolve(NDLAAudioBrowser::class),
-            resolve(NDLATextTrack::class),
-        ];
     }
 
     public function useMaxScore(): bool
@@ -337,34 +247,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return false;
     }
 
-    public function autoTranslateTo(): ?string
-    {
-        return 'nno';
-    }
-
-    private function traverseParameters(Collection $values): Collection
-    {
-        return $values->map(function ($value) {
-            if ($this->isImageTarget($value)) {
-                $value = $this->imageBrowser->alterImageProperties($value, $this->parameterSettings->useImageWidth);
-            }
-            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
-                return $this->traverseParameters(collect($value));
-            }
-
-            return $value;
-        });
-    }
-
-    private function isImageTarget($value): bool
-    {
-        return is_object($value) && !empty($value->mime) && !empty($value->path) && $this->imageBrowser->isTargetType($value->mime, $value->path);
-    }
-
     public function addTrackingScripts(): ?string
     {
         return null;
-//        return <<<TRACKINGDOC
+        //        return <<<TRACKINGDOC
         //<!-- Global site tag (gtag.js) - Google Analytics -->
         //<script async src="https://www.googletagmanager.com/gtag/js?id=G-R51SSMVE78"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);}gtag('js', new Date()); gtag('config', 'G-R51SSMVE78'); </script>
         //TRACKINGDOC;
@@ -377,13 +263,24 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function getConfigJs(): array
     {
-        return [
-            (string) mix('js/react-contentbrowser.js')
-        ];
+        return array_unique([
+            ...$this->audioAdapter->getConfigJs(),
+            ...$this->imageAdapter->getConfigJs(),
+            ...$this->videoAdapter->getConfigJs(),
+        ]);
     }
 
     public function getAdapterName(): string
     {
         return 'ndla';
+    }
+
+    public function filterEditorScripts(): array
+    {
+        return [
+            // Remove default HTML component. Custom version added in getCustomEditorScripts()
+            'ckeditor/ckeditor.js',
+            'scripts/h5peditor-html.js',
+        ];
     }
 }

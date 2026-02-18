@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Libraries\H5P;
 
-use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use H5PCore;
+use H5peditor;
 use Illuminate\Support\Facades\Session;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 abstract class H5PConfigAbstract implements ConfigInterface
 {
@@ -20,7 +21,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
 
     public function __construct(
         protected H5PAdapterInterface $adapter,
-        public \H5PCore $h5pCore,
+        public H5PCore $h5pCore,
         public ?int $id = null,
         protected array $config = [],
         protected array $contentConfig = [],
@@ -36,7 +37,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
     ) {
         $this->adapter->setConfig($this);
 
-        $url = UrlHelper::getCurrentBaseUrl();
+        $url = request()->getSchemeAndHttpHost() . request()->getBasePath();
         $locale = Session::get('locale', config('app.fallback_locale'));
 
         $this->config = [
@@ -55,7 +56,6 @@ abstract class H5PConfigAbstract implements ConfigInterface
                 'contentUserData' => Uuid::uuid4()->toString(),
             ],
             'saveFreq' => config('h5p.saveFrequency'),
-            'siteUrl' => $url,
             'l10n' => $this->getL10n(),
             'loadedJs' => [],
             'loadedCss' => [],
@@ -69,7 +69,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
             'locale' => $locale,
             'localeConverted' => LtiToH5PLanguage::convert($locale),
             'pluginCacheBuster' => '?v=' . self::CACHE_BUSTER_STRING,
-            'libraryUrl' => url('/h5p-php-library/js'),
+            'libraryUrl' => '/h5p-php-library/js',
         ];
     }
 
@@ -91,6 +91,14 @@ abstract class H5PConfigAbstract implements ConfigInterface
             ];
         }
 
+        if (!empty($this->userId)) {
+            $this->config['postUserStatistics'] = true;
+            unset($this->config['siteUrl']);
+        } else {
+            $this->config['postUserStatistics'] = false;
+            $this->config['siteUrl'] = request()->getSchemeAndHttpHost() . request()->getBasePath();
+        }
+
         $this->addInheritorConfig();
 
         return (object) $this->config;
@@ -106,7 +114,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
         return $this->assets['styles'] ?? [];
     }
 
-    public function getH5PCore(): \H5PCore
+    public function getH5PCore(): H5PCore
     {
         return $this->h5pCore;
     }
@@ -114,7 +122,6 @@ abstract class H5PConfigAbstract implements ConfigInterface
     public function setUserId(string|bool|null $id): static
     {
         $this->userId = $id;
-        $this->config['postUserStatistics'] = !empty($this->userId);
 
         return $this;
     }
@@ -193,43 +200,24 @@ abstract class H5PConfigAbstract implements ConfigInterface
     {
         $editorStyles[] = (string) mix('css/h5p-core.css');
         $editorStyles[] = (string) mix('css/h5p-admin.css');
-        foreach (\H5peditor::$styles as $style) {
+        foreach (H5peditor::$styles as $style) {
             $editorStyles[] = $this->getAssetUrl("editor", $style);
         }
         $editorStyles[] = '//fonts.googleapis.com/css?family=Lato:400,700';
 
         $editorScripts = [];
 
-        foreach (\H5PCore::$scripts as $script) {
-            $scriptPath = $this->getAssetUrl("core", $script);
-            $editorScripts[] = $scriptPath;
+        foreach (H5PCore::$scripts as $script) {
+            $editorScripts[] = $this->getAssetUrl("core", $script);
         }
 
-        $replaceScripts = [
-            'scripts/h5peditor-metadata-author-widget.js',
-            'scripts/h5peditor-metadata.js',
-            'scripts/h5peditor-number.js',
-            'scripts/h5peditor-select.js',
-            'scripts/h5peditor-text.js',
-            'scripts/h5peditor-textarea.js',
-            'scripts/h5peditor-editor.js',
-            'scripts/h5peditor-list-editor.js',
-            'scripts/h5peditor-list.js',
-        ];
-        foreach (\H5peditor::$scripts as $script) {
-            if (!in_array($script, $replaceScripts)) {
-                $editorScripts[] = $this->getAssetUrl("editor", $script);
-            }
-        }
-
-        foreach ([(string) mix("js/h5pmetadata.js"), '/js/editor-setup.js'] as $script) {
-            $scriptPath = $this->getAssetUrl(null, $script);
-            $editorScripts[] = $scriptPath;
+        foreach ($this->getEditorScripts() as $script) {
+            $editorScripts[] = $this->getAssetUrl("editor", $script);
         }
 
         $customScripts = array_map(
-            fn ($script) => $this->getAssetUrl(null, $script),
-            $this->adapter->getCustomEditorScripts()
+            fn($script) => $this->getAssetUrl(null, $script),
+            $this->getCustomEditorScripts(),
         );
 
         return (object) [
@@ -240,7 +228,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
 
     protected function addCoreAssets(): void
     {
-        $coreAssets = array_merge(\H5PCore::$scripts, ["js/h5p-display-options.js"]);
+        $coreAssets = array_merge(H5PCore::$scripts, ["js/h5p-display-options.js"]);
         foreach ($coreAssets as $script) {
             $scriptPath = $this->getAssetUrl("core", $script);
             if (!in_array($scriptPath, $this->getScriptAssets())) {
@@ -249,7 +237,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
             }
         }
 
-        foreach (\H5PCore::$styles as $style) {
+        foreach (H5PCore::$styles as $style) {
             $stylePath = $this->getAssetUrl("core", $style);
             if (!in_array($stylePath, $this->getStyleAssets())) {
                 $this->addAsset("styles", $stylePath);
@@ -260,7 +248,6 @@ abstract class H5PConfigAbstract implements ConfigInterface
 
     protected function addDefaultEditorAssets(): void
     {
-        $this->addAsset("scripts", $this->getAssetUrl(null, "/js/cerpus.js"));
         $this->addAsset("scripts", $this->getAssetUrl("editor", "scripts/h5peditor-editor.js"));
         $this->addAsset("scripts", $this->getAssetUrl("editor", "scripts/h5peditor-init.js"));
         $this->addAsset("scripts", $this->getAssetUrl("editor", $this->getLanguage()));
@@ -302,5 +289,40 @@ abstract class H5PConfigAbstract implements ConfigInterface
         return [
             "H5P" => $this->h5pCore->getLocalization(),
         ];
+    }
+
+    private function getEditorScripts(): array
+    {
+        return array_diff(
+            H5peditor::$scripts,
+            [
+                // TODO: Review why these are replaced
+                // Replaced by js/h5pmetadata.js
+                'scripts/h5peditor-metadata-author-widget.js',
+                'scripts/h5peditor-metadata.js',
+                'scripts/h5peditor-number.js',
+                'scripts/h5peditor-select.js',
+                'scripts/h5peditor-text.js',
+                'scripts/h5peditor-textarea.js',
+                'scripts/h5peditor-list.js',
+                'scripts/h5peditor-list-editor.js',
+
+                // Delay loading, added in addDefaultEditorAssets()
+                'scripts/h5peditor-editor.js',
+            ],
+            $this->adapter->filterEditorScripts(),
+        );
+    }
+
+    private function getCustomEditorScripts(): array
+    {
+        return array_merge(
+            [
+                (string) mix("js/h5pmetadata.js"),
+                // Used by 'Update content' functionality, upgrading to a newer version of the content type, in Editor
+                '/js/editor-setup.js',
+            ],
+            $this->adapter->getCustomEditorScripts(),
+        );
     }
 }

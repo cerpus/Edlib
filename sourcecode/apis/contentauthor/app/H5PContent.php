@@ -2,14 +2,14 @@
 
 namespace App;
 
+use App\Events\H5pContentDeleted;
+use App\Events\H5pContentUpdated;
 use App\Http\Libraries\H5PFileVersioner;
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Libraries\Versioning\VersionableObject;
 use H5PCore;
-use H5PFrameworkInterface;
 use H5PMetadata;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -46,8 +46,9 @@ use function route;
  * @see H5PContent::noMaxScoreScope()
  * @method static Builder noMaxScore()
  * @method self replicate(array $except = null)
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Builder make(array $attributes = [])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class H5PContent extends Content implements VersionableObject
 {
@@ -58,19 +59,22 @@ class H5PContent extends Content implements VersionableObject
 
     protected $guarded = [
         'user_id',
-        'is_private',
         'version_id',
         'library_id',
     ];
 
     protected $casts = [
         'library_id' => "int",
-        'is_published' => 'boolean',
         'is_draft' => 'boolean',
     ];
 
+    protected $dispatchesEvents = [
+        'updated' => H5pContentUpdated::class,
+        'deleted' => H5pContentDeleted::class,
+    ];
+
     /**
-     * @return HasMany<H5PCollaborator>
+     * @return HasMany<H5PCollaborator, $this>
      */
     public function collaborators(): HasMany
     {
@@ -78,7 +82,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return BelongsTo<H5PLibrary, self>
+     * @return BelongsTo<H5PLibrary, $this>
      */
     public function library(): BelongsTo
     {
@@ -86,7 +90,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentsUserData>
+     * @return HasMany<H5PContentsUserData, $this>
      */
     public function contentUserData(): HasMany
     {
@@ -94,7 +98,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentLibrary>
+     * @return HasMany<H5PContentLibrary, $this>
      */
     public function contentLibraries(): HasMany
     {
@@ -102,7 +106,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasOne<H5PContentsMetadata>
+     * @return HasOne<H5PContentsMetadata, $this>
      */
     public function metadata(): HasOne
     {
@@ -201,7 +205,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentsVideo>
+     * @return HasMany<H5PContentsVideo, $this>
      */
     public function contentVideos(): HasMany
     {
@@ -300,7 +304,7 @@ class H5PContent extends Content implements VersionableObject
     // Overrides Method from trait
     public function getPublicId(): string
     {
-        return "h5p-".$this->id;
+        return "h5p-" . $this->id;
     }
 
     public function getMaxScore(): int|null
@@ -324,37 +328,6 @@ class H5PContent extends Content implements VersionableObject
         return $authors[0]->name;
     }
 
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        $library = H5PLibrary::fromMachineName($contentType)
-            ->orderBy('major_version', 'desc')
-            ->orderBy('minor_version', 'desc')
-            ->orderBy('patch_version', 'desc')
-            ->first();
-
-        if (!$library) {
-            return null;
-        }
-
-        $icon = null;
-
-        if ($library->has_icon) {
-            $h5pFramework = app(H5PFrameworkInterface::class);
-            $library_folder = $library->getFolderName();
-            $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');
-
-            if (!empty($icon_path)) {
-                $icon = $icon_path;
-            }
-        }
-
-        if ($icon === null) {
-            $icon = url('/graphical/h5p_logo.svg');
-        }
-
-        return new ContentTypeDataObject("H5P", $contentType, $library->title, $icon);
-    }
-
     public function getUrl(): string
     {
         return route('h5p.show', [$this->id]);
@@ -363,5 +336,30 @@ class H5PContent extends Content implements VersionableObject
     public function getMachineName(): string
     {
         return $this->library()->firstOrFail()->name;
+    }
+
+    public function getMachineDisplayName(): string
+    {
+        return $this->library()->first()->title ?? $this->getMachineName();
+    }
+
+    public function getCopyrightCacheKey(): string
+    {
+        return 'h5p-copyright-' . $this->id;
+    }
+
+    public function getInfoCacheKey(): string
+    {
+        return 'h5p-info-' . $this->id;
+    }
+
+    protected function getIconUrl(): string
+    {
+        return $this->library()->firstOrFail()->getIconUrl();
+    }
+
+    public function getExportFilename(): string
+    {
+        return sprintf("%s-%d.h5p", $this->slug, $this->id);
     }
 }

@@ -1,0 +1,23 @@
+[data-bs-theme="dark"] {
+    --logo-color: rgba(255, 255, 255, 0.9);
+
+    @import 'billboard.js/dist/theme/dark';
+
+    .choices {
+        &[data-type*=select-one] {
+            .choices__button {
+                background-image: $choices-icon-cross;
+            }
+        }
+    }
+
+    .btn-outline-secondary {
+        @include button-outline-variant($gray-500, $gray-900, $gray-200, $gray-100, $gray-900);
+    }
+
+    .lti-tool-image {
+        &.empty {
+            background-color: #075035;
+        }
+    }
+}

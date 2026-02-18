@@ -56,18 +56,14 @@ abstract class H5PBase implements PackageInterface, ContentTypeInterface
         return sprintf("%s %d.%d", static::$machineName, static::$majorVersion, static::$minorVersion);
     }
 
-    public function alterSemantics(&$semantics)
-    {
-    }
+    public function alterSemantics(&$semantics) {}
 
     public function alterSource($sourceFile, array $newSource)
     {
         return true;
     }
 
-    public function getSources()
-    {
-    }
+    public function getSources() {}
 
     public function validate(): bool
     {

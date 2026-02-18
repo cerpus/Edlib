@@ -40,7 +40,7 @@ trait Attributable
 
     public function getAttributionAsString(): string
     {
-        return (string)$this->getAttribution();
+        return (string) $this->getAttribution();
     }
 
     public function updateAttribution(?string $origin, array $originators)

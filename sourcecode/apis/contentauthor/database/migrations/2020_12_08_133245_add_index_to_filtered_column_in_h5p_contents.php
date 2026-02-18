@@ -13,8 +13,7 @@ class AddIndexToFilteredColumnInH5pContents extends Migration
      */
     public function up()
     {
-        Schema::table('h5p_contents', function (Blueprint $table) {
-        });
+        Schema::table('h5p_contents', function (Blueprint $table) {});
     }
 
     /**
@@ -24,7 +23,6 @@ class AddIndexToFilteredColumnInH5pContents extends Migration
      */
     public function down()
     {
-        Schema::table('h5p_contents', function (Blueprint $table) {
-        });
+        Schema::table('h5p_contents', function (Blueprint $table) {});
     }
 }

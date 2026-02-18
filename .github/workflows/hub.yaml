@@ -1,0 +1,191 @@
+name: Hub
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/hub.yaml"
+      - "sourcecode/hub/**"
+  workflow_call:
+    inputs:
+      version:
+        description: "A version to release"
+        required: true
+        type: string
+      deploy:
+        description: "A version to release"
+        required: false
+        type: boolean
+        default: false
+
+defaults:
+  run:
+    working-directory: sourcecode/hub
+
+concurrency:
+  group: hub-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  phpstan:
+    if: "!inputs.deploy"
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: sockets, zip
+          coverage: pcov
+
+      - name: Get Composer cache dir
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: hub-composer-${{ hashFiles('sourcecode/hub/composer.lock') }}
+          restore-keys: |
+            hub-composer-
+
+      - name: Install dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Run PHPStan
+        run: |
+          sourcecode/hub/vendor/bin/phpstan analyse \
+            --configuration=sourcecode/hub/phpstan.dist.neon \
+            --memory-limit=512M
+        working-directory: ${{ github.workspace }}
+
+  test:
+    if: "!inputs.deploy"
+    runs-on: ubuntu-22.04
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_PASSWORD: thepgpassword
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      meilisearch:
+        image: getmeili/meilisearch:v1.0
+        env:
+          MEILI_NO_ANALYTICS: "true"
+          MEILI_MASTER_KEY: masterkey1234567
+        options: >-
+          --health-cmd "curl -f http://localhost:7700/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 7700:7700
+
+    steps:
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
+
+      - name: Build test image
+        uses: docker/build-push-action@v5
+        with:
+          context: sourcecode/hub
+          cache-from: type=gha,scope=hub
+          cache-to: type=gha,scope=hub,mode=max
+          load: true
+          tags: hub-test
+          target: test
+
+      - name: Run tests
+        run: |
+          docker run --rm -v "/tmp:/reports" --net=host \
+            -e MEILISEARCH_HOST=http://localhost:7700 \
+            -e DB_HOST=127.0.0.1 \
+            -e DB_DATABASE=postgres \
+            hub-test vendor/bin/phpunit \
+              --exclude-testsuite Browser \
+              --coverage-clover /reports/coverage.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: /tmp/coverage.xml
+          context: sourcecode/hub
+
+  build_publish:
+    if: inputs.version && !inputs.deploy
+    needs: [test, phpstan]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: cerpusbot
+          password: ${{ secrets.CERPUSBOT_SECRET }}
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Gather Docker metadata for PHP image
+        id: php_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            name=ghcr.io/cerpus/edlib-hub
+          tags: |
+            type=raw,value=latest,prefix=php-
+            type=raw,value=${{ inputs.version }},prefix=php-
+
+      - name: Build PHP image
+        uses: docker/build-push-action@v5
+        with:
+          cache-from: type=gha,scope=hub
+          cache-to: type=gha,scope=hub,mode=max
+          context: sourcecode/hub
+          push: true
+          target: prod
+          tags: ${{ steps.php_meta.outputs.tags }}
+
+      - name: Gather Docker metadata for web image
+        id: web_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            name=ghcr.io/cerpus/edlib-hub
+          tags: |
+            type=raw,value=latest,prefix=web-
+            type=raw,value=${{ inputs.version }},prefix=web-
+
+      - name: Build web image
+        uses: docker/build-push-action@v5
+        with:
+          cache-from: type=gha,scope=hub
+          context: sourcecode/hub
+          push: true
+          target: web
+          tags: ${{ steps.web_meta.outputs.tags }}

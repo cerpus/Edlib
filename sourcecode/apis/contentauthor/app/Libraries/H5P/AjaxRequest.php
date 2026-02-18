@@ -2,10 +2,12 @@
 
 namespace App\Libraries\H5P;
 
+use App\AuditLog;
 use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\Image\NdlaImageAdapter;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -19,6 +21,7 @@ use H5PValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use LogicException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -37,8 +40,7 @@ class AjaxRequest
         private readonly H5PCore $core,
         private readonly H5peditor $editor,
         private readonly ContentAuthorStorage $contentAuthorStorage,
-    ) {
-    }
+    ) {}
 
     public function getReturnType(): string|null
     {
@@ -112,7 +114,7 @@ class AjaxRequest
                 $request->get('language'),
                 app(CerpusStorageInterface::class)->getAjaxPath(),
                 null,
-                $request->get('default-language')
+                $request->get('default-language'),
             );
             $settings = $this->handleEditorBehaviorSettings($request, $name);
             if (!empty($settings['file']) && is_array($libraryData->css ?? null)) {
@@ -151,9 +153,9 @@ class AjaxRequest
             'recentlyUsed' => $this->editor->ajaxInterface->getAuthorsRecentlyUsedLibraries(),
             'apiVersion' => [
                 'major' => H5PCore::$coreApi['majorVersion'],
-                'minor' => H5PCore::$coreApi['minorVersion']
+                'minor' => H5PCore::$coreApi['minorVersion'],
             ],
-            'details' => $this->core->h5pF->getMessages('info')
+            'details' => $this->core->h5pF->getMessages('info'),
         ];
     }
 
@@ -169,16 +171,32 @@ class AjaxRequest
             H5PCore::ajaxError($this->core->h5pF->t('Could not get posted H5P.'), 'NO_CONTENT_TYPE');
             exit;
         }
+        $file = $request->file('h5p');
+        AuditLog::log(
+            'Upload content from front',
+            json_encode([
+                'file' => [
+                    'name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'target' => $file->getPathname(),
+                ],
+            ]),
+        );
 
-        $originalAjax = $this->editor->ajax;
-        $originalAjax->action(H5PEditorEndpoints::LIBRARY_UPLOAD, $request->bearerToken(), $request->file('h5p')->getRealPath(), "0");
+        $this->editor->ajax->action(H5PEditorEndpoints::LIBRARY_UPLOAD, $request->bearerToken(), $file->getRealPath(), "0");
     }
 
     private function libraryInstall($token, $library): void
     {
         set_time_limit(60);
-        $originalAjax = $this->editor->ajax;
-        $originalAjax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $library);
+        AuditLog::log(
+            'Install library from h5p.org',
+            json_encode([
+                'library' => $library,
+            ]),
+        );
+
+        $this->editor->ajax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $library);
     }
 
     private function handleEditorBehaviorSettings(Request $request, $library): array
@@ -207,7 +225,7 @@ class AjaxRequest
 
         return [
             'styles' => $styles,
-            'file' => $this->contentAuthorStorage->getAssetUrl($fileName),
+            'file' => Storage::disk()->url($fileName),
         ];
     }
 
@@ -237,10 +255,10 @@ class AjaxRequest
             exit;
         }
         $validator = new H5PContentValidator($this->core->h5pF, $this->core);
-        $validator->validateLibrary($libraryParameters, (object)['options' => [$libraryParameters->library]]);
+        $validator->validateLibrary($libraryParameters, (object) ['options' => [$libraryParameters->library]]);
         return [
             'success' => true,
-            'data' => $libraryParameters
+            'data' => $libraryParameters,
         ];
     }
 
@@ -298,9 +316,9 @@ class AjaxRequest
         // Download files from bucket to tmp folder
         $this->contentAuthorStorage->copyFolder(
             Storage::disk(),
-            $this->contentAuthorStorage->getH5pTmpDisk(),
+            Storage::disk('h5pTmp'),
             $tmpLibraryRelative,
-            $tmpLibraryRelative
+            $tmpLibraryRelative,
         );
         $tmpLibraries = $this->core->h5pF->getH5pPath($tmpLibrariesRelative);
         $tmpLibraryFolder = $this->core->h5pF->getH5pPath($tmpLibraryRelative);
@@ -329,8 +347,11 @@ class AjaxRequest
     {
         $imageId = $request->get('imageId');
 
-        /** @var H5PImageAdapterInterface $imageAdapter */
-        $imageAdapter = app(H5PImageAdapterInterface::class);
-        return $imageAdapter->getImageUrlFromId($imageId, $request->all(), false);
+        $imageAdapter = app(H5PImageInterface::class);
+        if ($imageAdapter instanceof NdlaImageAdapter) {
+            return $imageAdapter->getImageUrlFromId($imageId, $request->all(), false);
+        }
+
+        throw new LogicException('not implemented');
     }
 }

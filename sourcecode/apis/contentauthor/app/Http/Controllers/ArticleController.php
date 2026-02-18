@@ -2,25 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\ACL\ArticleAccess;
 use App\Article;
-use App\Content;
+use App\ContentVersion;
 use App\Events\ArticleWasSaved;
 use App\Exceptions\UnhandledVersionReasonException;
 use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ArticleRequest;
 use App\Libraries\DataObjects\ArticleStateDataObject;
 use App\Libraries\DataObjects\EditorConfigObject;
-use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
 use App\Lti\Lti;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,30 +25,17 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 class ArticleController extends Controller
 {
-    use ArticleAccess;
-    use LtiTrait;
     use ReturnToCore;
 
     public function __construct(private readonly Lti $lti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.behavior-settings:view', ['only' => ['show']]);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        abort(404);
     }
 
     /**
@@ -61,10 +43,6 @@ class ArticleController extends Controller
      */
     public function create(Request $request): View
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $ltiRequest = $this->lti->getRequest($request);
 
         $license = License::getDefaultLicense($ltiRequest);
@@ -77,29 +55,24 @@ class ArticleController extends Controller
             ],
         ]);
 
-        /** @var H5PAdapterInterface $adapter */
-        $adapter = app(H5PAdapterInterface::class);
-
         $editorSetup = EditorConfigObject::create(
             [
-                'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-                'canPublish' => true,
                 'canList' => true,
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            ]
+            ],
         )->toJson();
 
         $state = ArticleStateDataObject::create([
             'license' => $license,
-            'isPublished' => false,
-            'share' => config('h5p.defaultShareSetting'),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('article.store'),
             '_method' => "POST",
         ])->toJson();
 
         return view('article.create')->with(compact([
-            'emails', 'config', 'editorSetup', 'state'
+            'emails', 'config', 'editorSetup', 'state',
         ]));
     }
 
@@ -108,10 +81,6 @@ class ArticleController extends Controller
      */
     public function store(ArticleRequest $request): JsonResponse
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $inputs = $request->all();
         if (!empty($inputs['content'])) {
             $inputs['content'] = $this->cleanContent($inputs['content']);
@@ -126,7 +95,6 @@ class ArticleController extends Controller
         // next line commented out in anticipation of permanently deciding if attribution for Articles is no longer maintained
         //$article->updateAttribution($inputs['origin'] ?? null, $inputs['originators'] ?? []);
 
-        $article->is_published = $article::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $article->is_draft = $request->input('isDraft', 0);
 
         $article->save();
@@ -138,10 +106,13 @@ class ArticleController extends Controller
             $emailCollaborators = collect(explode(",", $request->get('col-emails')));
         }
 
-        // Handles privacy, collaborators, and registering a new version
-        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), VersionData::CREATE, Session::all()));
+        // Handles collaborators, and registering a new version
+        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
-        $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
+        $url = $this->getRedirectToCoreUrl($article->toLtiContent(
+            published: $request->validated('isPublished'),
+            shared: $request->validated('isShared'),
+        ), $request->get('redirectToken'));
 
         return response()->json(['url' => $url], Response::HTTP_CREATED);
     }
@@ -152,31 +123,20 @@ class ArticleController extends Controller
      * @param int $id
      * @return View
      */
-    public function doShow($id, $context, $preview = false)
+    public function show($id)
     {
         /** @var Article $article */
         $article = Article::findOrFail($id);
         $customCSS = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
-        if (!$article->canShow($preview)) {
-            return view('layouts.draft-resource', [
-                'styles' => !is_null($customCSS) ? [$customCSS] : [],
-            ]);
-        }
 
         if (!is_null($customCSS)) {
             Session::flash(SessionKeys::EXT_CSS_URL, $customCSS);
         }
 
         $ndlaArticle = $article->isImported();
-        $inDraftState = !$article->isActuallyPublished();
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
 
-        return view('article.show')->with(compact('article', 'customCSS', 'preview', 'ndlaArticle', 'inDraftState', 'resourceType'));
-    }
-
-    public function show($id)
-    {
-        return $this->doShow($id, null);
+        return view('article.show')->with(compact('article', 'customCSS', 'ndlaArticle', 'resourceType'));
     }
 
     /**
@@ -187,17 +147,11 @@ class ArticleController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        /** @var Article $article */
+        $ltiRequest = $this->lti->getRequest($request);
         $article = Article::findOrFail($id);
-
-        if (!$this->canUpdateArticle($article)) {
-            abort(403);
-        }
 
         $origin = $article->getAttribution()->getOrigin();
         $originators = $article->getAttribution()->getOriginators();
-
-        $ownerName = $article->getOwnerName($article->owner_id);
 
         $emails = $this->getCollaboratorsEmails($article);
 
@@ -211,34 +165,17 @@ class ArticleController extends Controller
 
         $editorSetup = EditorConfigObject::create(
             [
-                'userPublishEnabled' => Content::isUserPublishEnabled(),
-                'canPublish' => $article->canPublish($request),
                 'canList' => $article->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-                'pulseUrl' => config('feature.content-locking') ? route('lock.status', ['id' => $id]) : null,
-            ]
+            ],
         );
 
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $article['id'],
             'createdAt' => $article->created_at->toIso8601String(),
             'maxScore' => $article->max_score,
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
-
-        if (!$article->shouldCreateFork(Session::get('authId', false))) {
-            if (($locked = $article->hasLock())) {
-                $editUrl = $article->getEditUrl();
-                $pollUrl = route('lock.status', $id);
-                $editorSetup->setLockedProperties(LockedDataObject::create([
-                    'pollUrl' => $pollUrl,
-                    'editor' => $locked->getEditor(),
-                    'editUrl' => $editUrl,
-                ]));
-            } else {
-                $article->lock();
-            }
-        }
 
         $editorSetup = $editorSetup->toJson();
 
@@ -247,9 +184,9 @@ class ArticleController extends Controller
             'title' => $article->title,
             'content' => $article->render(),
             'license' => $article->license,
-            'isPublished' => $article->isPublished(),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $article->isDraft(),
-            'share' => !$article->isListed() ? 'private' : 'share',
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('article.update', ['article' => $id]),
             '_method' => "PUT",
@@ -267,14 +204,11 @@ class ArticleController extends Controller
     public function update(ArticleRequest $request, Article $article)
     {
         $oldArticle = clone $article;
-        if (!$this->canUpdateArticle($oldArticle)) {
-            abort(403);
-        }
 
         $oldLicense = $oldArticle->getContentLicense();
-        $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
+        $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;
 
-        if ($reason === VersionData::COPY && !$request->input("license", false)) {
+        if ($reason === ContentVersion::PURPOSE_COPY && !$request->input("license", false)) {
             $request->merge(["license" => $oldLicense]);
         }
 
@@ -285,10 +219,10 @@ class ArticleController extends Controller
 
         if ($oldArticle->requestShouldBecomeNewVersion($request)) {
             switch ($reason) {
-                case VersionData::UPDATE:
+                case ContentVersion::PURPOSE_UPDATE:
                     $article = $oldArticle->makeCopy();
                     break;
-                case VersionData::COPY:
+                case ContentVersion::PURPOSE_COPY:
                     $article = $oldArticle->makeCopy(Session::get('authId'));
                     break;
                 default:
@@ -303,12 +237,10 @@ class ArticleController extends Controller
         }
         $article->max_score = $article->getMaxScoreHelper($article->content);
         $article->license = $request->input('license', $oldLicense);
-        $article->is_published = $article::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $article->is_draft = $request->input('isDraft', false);
 
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));
         $article->save();
-        $oldArticle->unlock();
 
         $collaborators = $this->handleCollaborators($request, $oldArticle, $article, $reason);
 
@@ -319,7 +251,13 @@ class ArticleController extends Controller
 
         event(new ArticleWasSaved($article, $request, $collaborators, Session::get('authId'), $reason, Session::all()));
 
-        $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
+        $url = $this->getRedirectToCoreUrl(
+            $article->toLtiContent(
+                published: $request->validated('isPublished'),
+                shared: $request->validated('isShared'),
+            ),
+            $request->get('redirectToken'),
+        );
 
         return response()->json([
             'url' => $url,
@@ -364,7 +302,7 @@ class ArticleController extends Controller
     protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason): Collection
     {
         switch ($reason) {
-            case VersionData::UPDATE:
+            case ContentVersion::PURPOSE_UPDATE:
                 $collaborators = "";
                 if (!$newArticle->isOwner(Session::get('authId'))) { // Collaborators cannot update collaborators
                     $collaborators = $this->getCollaboratorsEmails($oldArticle);
@@ -375,7 +313,7 @@ class ArticleController extends Controller
                 }
                 return collect(explode(",", $collaborators));
 
-            case VersionData::COPY:
+            case ContentVersion::PURPOSE_COPY:
             default:
                 return collect();
         }

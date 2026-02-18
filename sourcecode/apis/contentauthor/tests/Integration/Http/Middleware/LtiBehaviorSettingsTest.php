@@ -32,7 +32,7 @@ class LtiBehaviorSettingsTest extends TestCase
         ]);
 
         $middleware = app(LtiBehaviorSettings::class);
-        $middleware->handle($request, fn () => null, 'view');
+        $middleware->handle($request, fn() => null, 'view');
 
         $settings = Session::get(SessionKeys::EXT_BEHAVIOR_SETTINGS);
 
@@ -50,7 +50,7 @@ class LtiBehaviorSettingsTest extends TestCase
         ]);
 
         $middleware = app(LtiBehaviorSettings::class);
-        $middleware->handle($request, fn () => null, 'editor');
+        $middleware->handle($request, fn() => null, 'editor');
 
         $editorSettings = Session::get(sprintf(SessionKeys::EXT_EDITOR_BEHAVIOR_SETTINGS, $request->get('redirectToken')));
 

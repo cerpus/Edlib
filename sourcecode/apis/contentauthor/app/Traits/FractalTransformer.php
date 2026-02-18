@@ -110,7 +110,7 @@ trait FractalTransformer
         return response()->json(
             $manager->createData($resource)->toArray(),
             $status,
-            $headers
+            $headers,
         );
     }
 

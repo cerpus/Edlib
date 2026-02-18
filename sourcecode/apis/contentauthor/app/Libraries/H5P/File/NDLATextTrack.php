@@ -15,8 +15,7 @@ class NDLATextTrack implements H5PExternalProviderInterface
         private readonly Client $client,
         private readonly CerpusStorageInterface $storage,
         private readonly NDLAVideoAdapter $video,
-    ) {
-    }
+    ) {}
 
     public function isTargetType($mimeType, $pathToFile): bool
     {
@@ -41,13 +40,13 @@ class NDLATextTrack implements H5PExternalProviderInterface
             parse_str(parse_url($source, PHP_URL_QUERY), $result);
             ['id' => $id, 'track' => $track] = $result;
             $source = collect($this->video->getVideoDetails($id)->text_tracks ?? [])
-                ->firstOrFail(fn ($item) => $item->id === $track)
+                ->firstOrFail(fn($item) => $item->id === $track)
                 ->sources[0]
                 ->src;
         }
         $tempFile = tempnam(sys_get_temp_dir(), 'h5p-');
         $this->client->get($source, [
-            'sink' => $tempFile
+            'sink' => $tempFile,
         ]);
         $extension = 'vtt';
         $fileName = md5($source);

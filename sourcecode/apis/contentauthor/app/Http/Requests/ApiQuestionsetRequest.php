@@ -2,32 +2,23 @@
 
 namespace App\Http\Requests;
 
-use App\Content;
-use App\Game;
-use App\H5PContent;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Packages\QuestionSet;
-use App\Rules\canPublishContent;
 use App\Rules\LicenseContent;
-use App\Rules\shareContent;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
-use App\QuestionSet as QuestionSetModel;
 
 class ApiQuestionsetRequest extends FormRequest
 {
     private ?string $selectedPresentation;
-    private $contentModel;
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    protected function prepareForValidation(): void
     {
-        return true; //$this->session()->has("userId");
+        if ($this->has('isShared')) {
+            $this->merge([
+                'isShared' => $this->boolean('isShared'),
+            ]);
+        }
     }
 
     /**
@@ -53,7 +44,6 @@ class ApiQuestionsetRequest extends FormRequest
                     'cards.*.answers.*.answerText' => 'required_with:cards.*.question.text|string',
                     'cards.*.answers.*.image' => 'present|array|nullable',
                 ];
-                $this->contentModel = $this->route()->parameter('id') ?? new H5PContent();
                 break;
             case Millionaire::$machineName:
                 $rules = [
@@ -66,7 +56,6 @@ class ApiQuestionsetRequest extends FormRequest
                     'cards.*.answers.*.answerText' => 'required_with:cards.*.question.text|string',
                     'cards.*.answers.*.image' => 'present|array|nullable',
                 ];
-                $this->contentModel = $this->route()->parameter('game') ?? new Game();
                 break;
             default:
                 $rules = [
@@ -79,7 +68,6 @@ class ApiQuestionsetRequest extends FormRequest
                     'cards.*.answers.*.answerText' => 'required_with:cards.*.question.text|string',
                     'cards.*.answers.*.image' => 'present|array|nullable',
                 ];
-                $this->contentModel = $this->route()->parameter('questionset') ?? new QuestionSetModel();
         }
 
         return array_merge($this->getCommonRules(), $rules);
@@ -111,8 +99,7 @@ class ApiQuestionsetRequest extends FormRequest
             'questionSetJsonData' => 'sometimes|json',
             'title' => 'required|string',
             'tags' => 'present|array',
-            'isPublished' => [Rule::requiredIf(Content::isUserPublishEnabled()), 'boolean', new canPublishContent($this->contentModel, $this)],
-            'share' => ['sometimes', new shareContent(), new canPublishContent($this->contentModel, $this, 'list')],
+            'isShared' => ['sometimes', 'boolean'],
         ];
     }
 

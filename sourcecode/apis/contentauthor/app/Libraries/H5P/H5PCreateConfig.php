@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Libraries\H5P;
 
+use App\Libraries\H5P\Audio\NdlaAudioAdapter;
+use App\Libraries\H5P\Image\NdlaImageAdapter;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 
 class H5PCreateConfig extends H5PConfigAbstract
 {
@@ -17,7 +19,7 @@ class H5PCreateConfig extends H5PConfigAbstract
         $validator = app(\H5PContentValidator::class);
         $this->editorConfig = [
             'assets' => $this->getEditorAssets(),
-            'libraryUrl' => '/h5p-editor-php-library/'  ,
+            'libraryUrl' => '/h5p-editor-php-library/',
             'copyrightSemantics' => $validator->getCopyrightSemantics(),
             'metadataSemantics' => $validator->getMetadataSemantics(),
             'ajaxPath' => '',
@@ -58,13 +60,13 @@ class H5PCreateConfig extends H5PConfigAbstract
 
         $this->config['editor'] = (object) $this->editorConfig;
 
-        $imageBrowser = app(H5PImageAdapterInterface::class);
-        if ($imageBrowser) {
-            $this->config['imageBrowserDetailsUrl'] = $imageBrowser::getClientDetailsUrl();
+        $imageBrowser = app(H5PImageInterface::class);
+        if ($imageBrowser instanceof NdlaImageAdapter) {
+            $this->config['imageBrowserConfig'] = $imageBrowser->getBrowserConfig();
         }
         $audioBrowser = app(H5PAudioInterface::class);
-        if ($audioBrowser) {
-            $this->config['audioBrowserDetailsUrl'] = $audioBrowser::getClientDetailsUrl();
+        if ($audioBrowser instanceof NdlaAudioAdapter) {
+            $this->config['audioBrowserConfig'] = $audioBrowser->getBrowserConfig();
         }
     }
 }

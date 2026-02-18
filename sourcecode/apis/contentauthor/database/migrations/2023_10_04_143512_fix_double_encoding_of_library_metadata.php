@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Collection;
 
-return new class () extends Migration {
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -20,7 +20,7 @@ return new class () extends Migration {
             ->chunk(50, function (Collection $libraries) {
                 $libraries->each(function ($library) {
                     try {
-                        $decoded = json_decode($library->metadata_settings, flags:JSON_THROW_ON_ERROR);
+                        $decoded = json_decode($library->metadata_settings, flags: JSON_THROW_ON_ERROR);
                         if (is_string($decoded)) {
                             $data = json_decode($decoded, flags: JSON_THROW_ON_ERROR);
                             if (is_object($data)) {

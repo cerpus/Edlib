@@ -1,0 +1,193 @@
+.edlib-logo {
+    mask-image: url('/resources/images/logo_black_2025.svg');
+    background-color: var(--logo-color);
+    mask-size: cover;
+    display: inline-block;
+
+    // Original is 851px x 357.5px
+    &.edlib-logo-navbar {
+        width: 80px;
+        height: calc(357.5px*(80/851));
+
+        @include media-breakpoint-up(md) {
+            width: calc(851px*(50/357.5));
+            height: 50px;
+        }
+    }
+
+    &.edlib-logo-footer {
+        width: 80px;
+        height: calc(357.5px*(80/851));
+    }
+}
+
+.edlib-debug {
+    position: relative;
+    display: block;
+    font-size: 1.2rem;
+    left: 10px;
+    top: 10px;
+    z-index: 1000;
+
+    @include media-breakpoint-up(md) {
+        position: absolute;
+    }
+}
+
+.debug-messages {
+    max-height: 100vh;
+}
+
+.text-line-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.clamp-2-lines {
+        -webkit-line-clamp: 2;
+    }
+
+    &.clamp-3-lines {
+        -webkit-line-clamp: 3;
+    }
+}
+
+.offcanvas.offcanvas-bottom {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 35px;
+    right: 35px;
+    height: calc(100% - 35px);
+}
+
+.filter-side-legend {
+    font-size: var(--bs-body-font-size);
+}
+
+.filter-badge {
+    cursor: pointer;
+    font-size: $font-size-sm;
+    padding: .35em .65em;
+    border-radius: var(--bs-border-radius);
+    color: var(--bs-secondary-color);
+    background: var(--bs-body-bg);
+
+    &.filter-focus:hover, &.filter-focus:focus-visible {
+        outline: none;
+        box-shadow: $focus-ring-box-shadow;
+    }
+
+    &.filter-selected {
+        color: var(--bs-secondary-color);
+        background: var(--bs-primary-bg-subtle);
+    }
+
+    label {
+        cursor: pointer;
+    }
+}
+
+.spinner-container {
+    top: -25%;
+
+    .spinner-border {
+        color: var(--bs-info);
+    }
+}
+
+.status-container {
+    &:not(.htmx-request) {
+        .spinner-container, .message-loading {
+            display:none;
+        }
+        .message-done {
+            display: initial;
+        }
+    }
+
+    &.htmx-request {
+        .spinner-container, .message-loading {
+            display: initial;
+        }
+        .message-done {
+            display: none;
+        }
+    }
+}
+
+.flex-max {
+    flex: 1 1 100%;
+}
+
+.choices {
+    border-radius: var(--bs-border-radius);
+
+    &[data-type*=select-one] {
+        &::after {
+            border-top-color: var(--bs-body-color);
+        }
+    }
+
+    .choices__inner {
+        background-color: var(--bs-body-bg);
+        border-color: var(--bs-border-color);
+        border-radius: var(--bs-border-radius);
+
+    }
+
+    &.is-focused,
+    &.is-open {
+        overflow: visible;
+
+        .choices__inner {
+            color: $input-focus-color;
+            background-color: $input-focus-bg;
+            border-color: $input-focus-border-color;
+            box-shadow: $form-select-focus-box-shadow;
+        }
+    }
+
+    .choices__list--multiple {
+        .choices__item {
+            background-color: $component-active-bg;
+            color: $component-active-color;
+            border-color: $component-active-bg;
+
+            .choices__button {
+                border-color: $component-active-color;
+            }
+        }
+    }
+
+    .choices__input {
+        background-color: var(--bs-body-bg);
+    }
+
+    .choices__list--dropdown {
+        background-color: var(--bs-body-bg);
+        border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
+
+        &.is-active {
+            box-shadow: $form-select-focus-box-shadow;
+        }
+
+        .choices__input {
+            background-color: var(--bs-body-bg);
+        }
+
+        .choices__item--selectable {
+            &.is-highlighted {
+                background-color: var(--bs-highlight-bg);
+                color: var(--bs-highlight-color);
+            }
+        }
+    }
+}
+
+.lti-tool-image {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}

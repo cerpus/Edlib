@@ -1,18 +1,8 @@
 <?php
 
-return [
+use Illuminate\Support\Str;
 
-    /*
-    |--------------------------------------------------------------------------
-    | PDO Fetch Style
-    |--------------------------------------------------------------------------
-    |
-    | By default, database results will be returned as instances of the PHP
-    | stdClass object; however, you may desire to retrieve records in an
-    | array format for simplicity. Here you can tweak the fetch style.
-    |
-    */
-    'fetch' => PDO::FETCH_CLASS,
+return [
 
     /*
     |--------------------------------------------------------------------------
@@ -42,39 +32,46 @@ return [
     |
     */
     'connections' => [
-        'sqlite-test' => [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ],
-        'mysql-test' => [
-            'driver'    => 'mysql',
-            'host'      => 'localhost',
-            'database'  => env('DB_DATABASE', 'forge').'-test',
-            'username'  => env('DB_USERNAME', 'forge'),
-            'password'  => env('DB_PASSWORD', ''),
-            'charset'   => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
-        ],
+
         'sqlite' => [
-            'driver'   => 'sqlite',
-            'database' => storage_path('database.sqlite'),
-            'prefix'   => '',
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL'),
+            'database' => env('DB_DATABASE', storage_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+            'busy_timeout' => null,
+            'journal_mode' => null,
+            'synchronous' => null,
         ],
+
         'mysql' => [
-            'driver'    => 'mysql',
-            'host'      => env('EDLIBCOMMON_DB_HOST', 'localhost'),
-            'database'  => env('DB_DATABASE', env('EDLIBCOMMON_DB_PREFIX', '') . 'contentauthor'),
-            'username'  => env('EDLIBCOMMON_DB_USER', 'forge'),
-            'password'  => env('EDLIBCOMMON_DB_PASSWORD', ''),
-            'port'      => env('EDLIBCOMMON_DB_PORT', '3306'),
-            'charset'   => 'utf8mb4',
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', env('EDLIBCOMMON_DB_HOST', '127.0.0.1')),
+            'database' => env('DB_DATABASE', env('EDLIBCOMMON_DB_PREFIX', '') . 'contentauthor'),
+            'username' => env('DB_USERNAME', env('EDLIBCOMMON_DB_USER', 'forge')),
+            'password' => env('DB_PASSWORD', env('EDLIBCOMMON_DB_PASSWORD', '')),
+            'port' => env('DB_PORT', env('EDLIBCOMMON_DB_PORT', '3306')),
+            'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
+            'prefix' => '',
+            'strict' => false,
         ],
+
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
     ],
 
     /*
@@ -100,14 +97,28 @@ return [
     |
     */
     'redis' => [
-        'cluster' => false,
+
         'client' => env('REDIS_CLIENT', 'predis'),
-        'default' => [
-            'host'     => env('EDLIBCOMMON_REDIS_HOST', 'redis'),
-            'port'     => env('EDLIBCOMMON_REDIS_PORT', 6379),
-            'password' => env('REDIS_PASSWORD', null),
-            'database' => env('REDIS_DATABASE', 0),
-            'read_write_timeout' => 0
+
+        'options' => [
+            'cluster' => env('REDIS_CLUSTER', 'redis'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'Content Author'), '_') . '_database_'),
         ],
+
+        'default' => [
+            'host' => env('REDIS_HOST', env('EDLIBCOMMON_REDIS_HOST', 'redis')),
+            'port' => env('REDIS_PORT', env('EDLIBCOMMON_REDIS_PORT', '6379')),
+            'password' => env('REDIS_PASSWORD'),
+            'database' => env('REDIS_DB', '0'),
+            'read_write_timeout' => 0,
+        ],
+
+        'cache' => [
+            'host' => env('REDIS_HOST', env('EDLIBCOMMON_REDIS_HOST', 'redis')),
+            'port' => env('REDIS_PORT', env('EDLIBCOMMON_REDIS_PORT', '6379')),
+            'password' => env('REDIS_PASSWORD'),
+            'database' => env('REDIS_CACHE_DB', '1'),
+        ],
+
     ],
 ];

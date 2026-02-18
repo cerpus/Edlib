@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.site-name', 'Laravel') }} </title>
+    <title>{{ config('app.site-name') }} </title>
 
     <!-- Styles -->
     <link href="{{ mix('css/admin.css') }}" rel="stylesheet">
@@ -27,7 +27,7 @@
     <div class="container">
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <a class="navbar-brand" href="{{ route('admin') }}">
-                {{ config('app.site-name', 'Laravel'). ' Admin' }}
+                {{ config('app.site-name'). ' Admin' }}
             </a>
             <ul class="nav navbar-nav navbar-right">
                 <!-- Authentication Links -->
@@ -40,36 +40,16 @@
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('admin-users.index') }}">Admin users</a>
+                                <a href="{{ route('admin.presave.index') }}">Presave</a>
                             </li>
-
-                            <li>
-                                <a href="{{ route('admin.locks') }}">Manage Edit Locks</a>
-                            </li>
-
                             <li>
                                 <a href="{{ route('admin.support.versioning') }}">Versioning</a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.video.ndla.replaceref') }}">Replace ref with videoid</a>
+                                <a href="{{ route('admin.log.audit') }}">Audit log</a>
                             </li>
                         </ul>
                     </li>
-                    @if(app(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->getAdapterName() !== 'ndla')
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                NDLA Import <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu" role="menu">
-                                @if(resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->showArticleImportExportFunctionality())
-                                    <li>
-                                        <a href="{{ route('admin.importexport.index') }}">Import / Export Settings</a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
                     @if( config('h5p.isHubEnabled') !== true )
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -97,7 +77,7 @@
                                 <a href="{{ route('admin.capability') }}">Capabilities</a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.update-libraries') }}">Update libraries</a>
+                                <a href="{{ route('admin.update-libraries') }}">Manage content types</a>
                             </li>
                             @if( resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->useMaxscore() )
                                 <li>
@@ -109,6 +89,9 @@
                                     </a>
                                 </li>
                             @endif
+                            <li>
+                                <a href="{{ route('admin.migrate.library-content') }}">Migrate library content</a>
+                            </li>
                         </ul>
                     </li>
                     @if(app(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->getAdapterName() !== 'ndla')
@@ -123,7 +106,7 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('logout') }}"
+                                <a href="#"
                                    onclick="
                                         event.preventDefault();
                                         document.getElementById('logout-form').submit();">

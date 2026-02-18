@@ -2,14 +2,11 @@
 
 namespace App\Listeners\Article;
 
-use App\ACL\ArticleAccess;
 use App\ArticleCollaborator;
 use App\Events\ArticleWasSaved;
 
 class HandleCollaborators
 {
-    use ArticleAccess;
-
     public function handle(ArticleWasSaved $event)
     {
         $article = $event->article->fresh();

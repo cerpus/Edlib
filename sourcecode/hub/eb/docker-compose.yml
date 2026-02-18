@@ -1,0 +1,72 @@
+services:
+  hub:
+    image: edlib:php-latest
+    depends_on:
+      hub-startup: { condition: service_completed_successfully }
+    env_file:
+      - .env
+    environment:
+      - HTTPS=1
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    healthcheck:
+      test: [CMD, nc, -z, localhost, "9000"]
+    platform: linux/amd64
+
+  hub-cron:
+    image: edlib:php-latest
+    command: [php, artisan, "schedule:work"]
+    depends_on:
+      hub-startup: { condition: service_completed_successfully }
+    env_file:
+      - .env
+    environment:
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    platform: linux/amd64
+
+  hub-startup:
+    image: edlib:php-latest
+    command: [startup.sh]
+    env_file:
+      - .env
+    environment:
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    platform: linux/amd64
+
+  hub-web:
+    image: edlib:web-latest
+    depends_on:
+      hub: { condition: service_healthy }
+    env_file:
+      - .env
+    volumes:
+      - "${EB_LOG_BASE_DIR}/hub-web:/var/log/nginx"
+    environment:
+      PHP_FPM_HOST: hub:9000
+    platform: linux/amd64
+    ports:
+      - 80:80
+      - 443:443
+
+  hub-worker:
+    image: edlib:php-latest
+    command: [php, artisan, "queue:work"]
+    depends_on:
+      hub-startup: { condition: service_completed_successfully }
+    environment:
+      - NIGHTWATCH_INGEST_URI=nightwatch-agent:2407
+    env_file:
+      - .env
+    platform: linux/amd64
+
+  nightwatch-agent:
+    image: laravelphp/nightwatch-agent:latest
+    healthcheck:
+      test: php nightwatch-status
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    env_file:
+      - .env
+    platform: linux/amd64

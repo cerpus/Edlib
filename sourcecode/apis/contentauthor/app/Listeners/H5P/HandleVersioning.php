@@ -2,23 +2,16 @@
 
 namespace App\Listeners\H5P;
 
+use App\Content;
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
-use App\Libraries\Versioning\VersionableObject;
 use App\Listeners\AbstractHandleVersioning;
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
 
 class HandleVersioning extends AbstractHandleVersioning
 {
-    protected $versionClient;
     protected $h5p;
     protected $event;
-
-    public function __construct(VersionClient $versionClient)
-    {
-        $this->versionClient = $versionClient;
-    }
 
     public function handle(H5PWasSaved $event)
     {
@@ -32,29 +25,20 @@ class HandleVersioning extends AbstractHandleVersioning
     {
         if (!empty($id)) {
             $h5p = H5PContent::find($id);
-            /** @var VersionClient $versionClient */
-            $versionClient = app(VersionClient::class);
 
             if (is_object($h5p)) {
-                if (!empty($h5p->version_id)) {
-                    return $h5p->version_id;
-                }
-
-                // Does not have version, ergo we are just beginning versioning, create  a new version for this id
-                $versionData = new VersionData();
-                $versionData->setUserId($h5p->user_id)
-                    ->setExternalReference($h5p->id)
-                    ->setExternalSystem(config('app.site-name'))
-                    ->setExternalUrl(route('h5p.show', $h5p->id))
-                    ->setVersionPurpose(VersionData::CREATE);
-
-                $version = $versionClient->createVersion($versionData);
-                if (is_object($version)) {
-                    $h5p->version_id = $version->getId();
+                if (empty($h5p->version_id)) {
+                    $version = ContentVersion::create([
+                        'user_id' => $h5p->user_id,
+                        'content_id' => $h5p->id,
+                        'content_type' => Content::TYPE_H5P,
+                        'version_purpose' => ContentVersion::PURPOSE_CREATE,
+                    ]);
+                    $h5p->version_id = $version->id;
                     $h5p->save();
-
-                    return $h5p->version_id;
                 }
+
+                return $h5p->version_id;
             }
         }
 
@@ -69,10 +53,5 @@ class HandleVersioning extends AbstractHandleVersioning
         } else {
             return null;
         }
-    }
-
-    protected function getExternalUrl(VersionableObject $object)
-    {
-        return route('h5p.show', $object->getId());
     }
 }

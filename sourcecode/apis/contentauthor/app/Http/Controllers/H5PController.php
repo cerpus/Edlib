@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\AuditLog;
+use App\CollaboratorContext;
+use App\ContentLanguageLink;
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
-use App\Events\ResourceSaved;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PFile;
 use App\H5PLibrary;
+use App\H5PResult;
 use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\H5PStorageRequest;
 use App\Jobs\H5PFilesUpload;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
 use App\Libraries\DataObjects\H5PStateDataObject;
-use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
@@ -29,17 +31,17 @@ use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5PProgress;
 use App\Libraries\H5P\H5PViewConfig;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PAudioInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
+use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Lti\Lti;
+use App\Lti\LtiRequest;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
-use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
+use Illuminate\Cache\Repository as CacheRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -47,25 +49,25 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Iso639p3;
 use MatthiasMullie\Minify\CSS;
+use Ramsey\Uuid\Uuid;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Throwable;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function app;
+use function config;
 use function request;
 
 class H5PController extends Controller
 {
-    use LtiTrait;
     use ReturnToCore;
 
     private string $viewDataCacheName = 'viewData-';
-
-    private bool $sendEmail = true;
 
     public function __construct(
         private Lti $lti,
@@ -74,18 +76,10 @@ class H5PController extends Controller
     ) {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
-        $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
     }
 
-    public function index(): View
-    {
-        $title = "Viewing H5P content";
-        return view('h5p.index', ['title' => $title, 'message' => trans('h5p-editor.need-id')]);
-    }
-
-    public function doShow($id, $context, $preview = false): View
+    public function show($id): View
     {
         $ltiRequest = $this->lti->getRequest(request());
         $styles = [];
@@ -95,21 +89,18 @@ class H5PController extends Controller
             Session::flash(SessionKeys::EXT_CSS_URL, $style);
         }
         $h5pContent = H5PContent::findOrFail($id);
-        if (!$h5pContent->canShow($preview)) {
-            return view('layouts.draft-resource', compact('styles'));
-        }
 
         $viewConfig = (app(H5PViewConfig::class))
             ->setUserId(Session::get('authId', false))
             ->setUserUsername(Session::get('userName', false))
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
-            ->setPreview($preview)
-            ->setContext($context)
-            ->setEmbedId($ltiRequest?->getExtEmbedId())
-            ->setResourceLinkTitle($ltiRequest?->getResourceLinkTitle())
+            ->setPreview($ltiRequest?->isPreview() ?? false)
+            ->setContext($ltiRequest?->generateContextKey() ?? '')
+            ->setEmbedCode($ltiRequest?->getEmbedCode() ?? '')
+            ->setEmbedResizeCode($ltiRequest?->getEmbedResizeCode() ?? '')
             ->loadContent($id)
-            ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
+            ->setAlterParameterSettings(new H5PAlterParametersSettingsDataObject(useImageWidth: $h5pContent->library->includeImageWidth()));
 
         $h5pView = $this->h5p->createView($viewConfig);
         $content = $viewConfig->getContent();
@@ -120,25 +111,13 @@ class H5PController extends Controller
             'id' => $id,
             'title' => $content['title'],
             'language' => $content['language'],
-            'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
             'config' => $settings,
             'jsScripts' => $h5pView->getScripts(),
             'styles' => $styles,
             'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
-            'inDraftState' => !$h5pContent->isActuallyPublished(),
-            'preview' => $preview,
+            'preview' => $ltiRequest?->isPreview() ?? false,
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @throws Exception
-     */
-    public function show(int $id): View
-    {
-        return $this->doShow($id, null);
     }
 
     /**
@@ -148,7 +127,7 @@ class H5PController extends Controller
     {
         Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
 
-        $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
+        $language = Session::get('locale') ?? config("h5p.default-resource-language");
         try {
             $language = Iso639p3::code($language);
         } catch (Exception) {
@@ -183,31 +162,30 @@ class H5PController extends Controller
             }
         }
 
+        $ltiRequest = $this->lti->getRequest(request());
+
         $editorSetup = H5PEditorConfigObject::create([
-            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-            'canPublish' => true,
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'autoTranslateTo' => $adapter->autoTranslateTo(),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            'hideNewVariant' => true,
             'adapterName' => config('feature.allow-mode-switch') === true ? $adapter->getAdapterName() : null,
             'adapterList' => $adapter::getAllAdapters(),
             'h5pLanguage' => Iso639p3::code2letters($language),
             'creatorName' => Session::get("name"),
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
+            'enableUnsavedWarning' => $ltiRequest?->getEnableUnsavedWarning() ?? config('feature.enable-unsaved-warning'),
         ]);
 
         $state = H5PStateDataObject::create($displayOptions + [
-                'library' => $contenttype,
-                'license' => License::getDefaultLicense(),
-                'isPublished' => false,
-                'share' => config('h5p.defaultShareSetting'),
-                'language_iso_639_3' => $language,
-                'redirectToken' => $request->get('redirectToken'),
-                'route' => route('h5p.store'),
-                '_method' => "POST",
-            ])->toJson();
+            'library' => $contenttype,
+            'license' => License::getDefaultLicense(),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
+            'isShared' => $ltiRequest?->getShared() ?? false,
+            'language_iso_639_3' => $language,
+            'redirectToken' => $request->get('redirectToken'),
+            'route' => route('h5p.store'),
+            '_method' => "POST",
+        ])->toJson();
 
         return view(
             'h5p.create',
@@ -220,7 +198,7 @@ class H5PController extends Controller
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
                 'configJs' => $adapter->getConfigJs(),
-            ]
+            ],
         );
     }
 
@@ -235,23 +213,22 @@ class H5PController extends Controller
 
         /** @var H5PContent $h5pContent */
         $h5pContent = H5PContent::with(['library', 'ndlaMapper', 'metadata'])->find($id);
-        $ownerName = $h5pContent->getOwnerName($h5pContent->user_id);
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $contentLanguage = $this->getTargetLanguage($h5pContent->language_iso_639_3);
-        $isNewLanguageVariant = $adapter->autoTranslateTo() !== null && $contentLanguage === $adapter->autoTranslateTo() && $h5pContent->language_iso_639_3 !== $adapter->autoTranslateTo();
-        $h5pLanguage = $this->getTargetLanguage($h5pContent->metadata->default_language ?? null);
+        $contentLanguage = $h5pContent->language_iso_639_3;
+        $h5pLanguage = $h5pContent->metadata->default_language ?? null;
         if (!is_null($h5pLanguage)) {
             $h5pLanguage = Iso639p3::code2letters($h5pLanguage);
         }
+        $redirectToken = $request->input('redirectToken');
 
         $editorConfig = (app(H5PEditConfig::class))
             ->setUserId(Session::get('authId', false))
             ->setUserUsername(Session::get('userName', false))
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
-            ->setRedirectToken($request->input('redirectToken'))
+            ->setRedirectToken($redirectToken)
             ->setLanguage(LtiToH5PLanguage::convert(Session::get('locale')))
             ->loadContent($id);
 
@@ -262,7 +239,7 @@ class H5PController extends Controller
             Log::error(__METHOD__ . ": H5P $id is empty. UserId: " . Session::get('authId', 'not-logged-in-user'), [
                 'user' => Session::get('authId', 'not-logged-in-user'),
                 'url' => request()->url(),
-                'request' => request()->all()
+                'request' => request()->all(),
             ]);
             abort(404, 'Resource not found');
         }
@@ -274,22 +251,23 @@ class H5PController extends Controller
             'metadata' => $content['metadata'],
         ]);
 
-        $params = $adapter->alterParameters($params, H5PAlterParametersSettingsDataObject::create(['useImageWidth' => false]));
+        $params = $adapter->alterParameters($params, new H5PAlterParametersSettingsDataObject(useImageWidth: false));
 
         $library = $h5pContent->library;
         $settings = [];
         $scripts = $h5pView->getScripts(false);
 
+        /** @var LtiRequest|null $ltiRequest */
+        $ltiRequest = Session::get('lti_requests.' . $redirectToken);
+
         $editorSetup = H5PEditorConfigObject::create([
-            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-            'canPublish' => $h5pContent->canPublish($request),
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'autoTranslateTo' => $adapter->autoTranslateTo(),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
-            'pulseUrl' => config('feature.content-locking') ? route('lock.status', ['id' => $id]) : null,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
+            'enableUnsavedWarning' => $ltiRequest?->getEnableUnsavedWarning() ?? config('feature.enable-unsaved-warning'),
+            'supportedTranslations' => app()->make(TranslationServiceInterface::class)->getSupportedLanguages(),
         ]);
 
         if ($h5pContent->canList($request)) {
@@ -307,26 +285,12 @@ class H5PController extends Controller
         $displayOptions['download'] = $displayOptions['export'];
 
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
-            'id' => (string)$content['id'],
+            'id' => (string) $content['id'],
             'createdAt' => $h5pContent->created_at->toIso8601String(),
             'type' => $library->getTitleAndVersionString(),
             'maxScore' => $library->supportsMaxScore() ? $h5pContent->max_score : null,
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
-
-        if ($h5pContent->canUpdateOriginalResource(Session::get('authId', false))) {
-            if (($locked = $h5pContent->hasLock())) {
-                $editUrl = $h5pContent->getEditUrl();
-                $pollUrl = route('lock.status', $id);
-                $editorSetup->setLockedProperties(LockedDataObject::create([
-                    'pollUrl' => $pollUrl,
-                    'editor' => $locked->getEditor(),
-                    'editUrl' => $editUrl,
-                ]));
-            } else {
-                $h5pContent->lock();
-            }
-        }
 
         $state = H5PStateDataObject::create($displayOptions + [
             'id' => $h5pContent->id,
@@ -334,12 +298,11 @@ class H5PController extends Controller
             'libraryid' => $h5pContent->library_id,
             'parameters' => $params,
             'language_iso_639_3' => $contentLanguage,
-            'isNewLanguageVariant' => $isNewLanguageVariant,
             'title' => $h5pContent->title,
             'license' => $h5pContent->license ?: License::getDefaultLicense(),
-            'isPublished' => $h5pContent->isPublished(),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $h5pContent->isDraft(),
-            'share' => !$h5pContent->isListed() ? 'private' : 'share',
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('h5p.update', ['h5p' => $id]),
             'max_score' => $h5pContent->max_score,
@@ -361,14 +324,14 @@ class H5PController extends Controller
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
                 'configJs' => $adapter->getConfigJs(),
-            ]
+            ],
         );
     }
 
     private function getVersionPurpose(Request $request, H5PContent $h5p, $authId): string
     {
         if ($request->get("isNewLanguageVariant", false)) {
-            return VersionData::TRANSLATION;
+            return ContentVersion::PURPOSE_TRANSLATION;
         }
 
         if (!$h5p->canUpdateOriginalResource($authId)) {
@@ -376,16 +339,10 @@ class H5PController extends Controller
                 throw new AccessDeniedHttpException('Cannot copy this resource');
             }
 
-            return VersionData::COPY;
+            return ContentVersion::PURPOSE_COPY;
         }
 
-        return VersionData::UPDATE;
-    }
-
-    private function getTargetLanguage(?string $language)
-    {
-        return $this->lti->getRequest(request())?->getExtTranslationLanguage()
-            ?? $language;
+        return ContentVersion::PURPOSE_UPDATE;
     }
 
     /**
@@ -399,8 +356,6 @@ class H5PController extends Controller
         $versionPurpose = $this->getVersionPurpose($request, $h5p, $authId);
         [$oldContent, $content, $newH5pContent] = $this->performUpdate($request, $h5p, $authId, $versionPurpose);
 
-        //
-        $this->sendCollaboratorInviteEmails($newH5pContent, $h5p);
         Cache::forget($this->viewDataCacheName . $content['id']);
         if ($oldContent['library']['name'] !== $content['library']['machineName']) {
             // Remove old progresses
@@ -410,13 +365,12 @@ class H5PController extends Controller
 
         $core->fs->deleteExport(sprintf("%s-%d.h5p", $h5p->slug, $h5p->id));
 
-        $h5p->unlock();
-
-        event(new ResourceSaved($newH5pContent->getEdlibDataObject()));
-
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
-                $newH5pContent->toLtiContent(),
+                $newH5pContent->toLtiContent(
+                    published: $request->validated('isPublished'),
+                    shared: $request->validated('isShared'),
+                ),
                 $request->input('redirectToken'),
             ),
         ];
@@ -426,60 +380,11 @@ class H5PController extends Controller
                 return $file->state === H5PFile::FILE_CLONEFILE;
             });
         if ($filesToProcess->isNotEmpty()) {
-            H5PFilesUpload::dispatch($content['id'])->onQueue("ca-multimedia");
+            H5PFilesUpload::dispatch($content['id']);
             $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => $request->header('X-Request-Id')]);
         }
 
         return response()->json($responseValues, Response::HTTP_OK);
-    }
-
-    private function sendCollaboratorInviteEmails($newContent, $oldContent)
-    {
-        if ($this->sendEmail === true && $newContent->id !== $oldContent->id) {
-            $oldCollaborators = $oldContent->collaborators ? $oldContent->collaborators->pluck('email')->toArray() : [];
-            $newContent->collaborators
-                ->pluck('email')// All emails in new article
-                ->filter(function ($newCollaborator) use ($oldCollaborators) {
-                    //Remove emails that exist as collaborators in the old article
-                    return !in_array($newCollaborator, $oldCollaborators) && Session::get("email") !== $newCollaborator;
-                })->each(function ($collaborator) use ($newContent) {
-                    if ($collaborator) {// Send mails to the new additions
-                        $mailData = new stdClass();
-                        $mailData->emailTo = $collaborator;
-                        $mailData->inviterName = Session::get('name');
-                        $mailData->contentTitle = $newContent->title;
-                        $mailData->originSystemName = Session::get('originalSystem', 'edLib');
-                        $mailData->emailTitle = trans(
-                            'emails/collaboration-invite.email-title',
-                            ['originSystemName' => $mailData->originSystemName]
-                        );
-
-                        $loginUrl = 'https://edstep.com/';
-                        $emailFrom = 'no-reply@edlib.com';
-                        switch (mb_strtolower(Session::get('originalSystem'))) {
-                            case 'edstep':
-                                $loginUrl = 'https://edstep.com/';
-                                $emailFrom = 'no-reply@edstep.com';
-                                break;
-                            case 'learnplayground':
-                                $loginUrl = 'https://learnplayground.com/';
-                                $emailFrom = 'no-reply@learnplayground.com';
-                                break;
-                        }
-                        $mailData->loginUrl = $loginUrl;
-                        $mailData->emailFrom = $emailFrom;
-
-                        Mail::send(
-                            'emails.collaboration-invite',
-                            ['mailData' => $mailData],
-                            function ($m) use ($mailData) {
-                                $m->from($mailData->emailFrom, $mailData->originSystemName);
-                                $m->to($mailData->emailTo)->subject($mailData->emailTitle);
-                            }
-                        );
-                    }
-                });
-        }
     }
 
     public static function addAuthorToParameters($paramsString)
@@ -515,23 +420,27 @@ class H5PController extends Controller
     public function store(H5PStorageRequest $request): Response|JsonResponse
     {
         $request->merge([
-            "parameters" => self::addAuthorToParameters($request->get("parameters"))
+            "parameters" => self::addAuthorToParameters($request->get("parameters")),
         ]);
 
         $content = $this->persistContent($request, Session::get('authId'));
 
         Cache::forget($this->viewDataCacheName . $content->id);
 
-        event(new ResourceSaved($content->getEdlibDataObject()));
-
         $responseValues = [
-            'url' => $this->getRedirectToCoreUrl($content->toLtiContent(), $request->input('redirectToken')),
+            'url' => $this->getRedirectToCoreUrl(
+                $content->toLtiContent(
+                    published: $request->validated('isPublished'),
+                    shared: $request->validated('isShared'),
+                ),
+                $request->input('redirectToken'),
+            ),
         ];
 
         /** @var Collection $filesToProcess */
         $filesToProcess = H5PFile::ofFileUploadFromContent($content->id)->get();
         if ($filesToProcess->isNotEmpty()) {
-            H5PFilesUpload::dispatch($content['id'])->onQueue("ca-multimedia");
+            H5PFilesUpload::dispatch($content['id']);
             $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => $request->header('X-Request-Id')]);
         }
         return response()->json($responseValues, Response::HTTP_CREATED);
@@ -547,29 +456,12 @@ class H5PController extends Controller
 
         $this->store_content_shares(
             $content['id'],
-            $request->filled("col-emails") ? $request->request->get("col-emails") : ""
+            $request->filled("col-emails") ? $request->request->get("col-emails") : "",
         );
 
-        $this->store_content_is_private($newH5pContent, $request);
-
-        $theOldContent = $this->getEmptyOldContent();
-
-        event(new H5PWasSaved($newH5pContent, $request, VersionData::CREATE));
-
-        $this->sendCollaboratorInviteEmails($newH5pContent, $theOldContent);
+        event(new H5PWasSaved($newH5pContent, $request, ContentVersion::PURPOSE_CREATE));
 
         return $newH5pContent;
-    }
-
-    /**
-     * Store whenever or not content is private.
-     */
-    private function store_content_is_private(H5PContent $content, $request)
-    {
-        $isPrivate = mb_strtoupper($request->get("share", "private")) === 'PRIVATE';
-
-        $content->is_private = $isPrivate;
-        $content->save();
     }
 
     /**
@@ -607,7 +499,7 @@ class H5PController extends Controller
         $sql = 'UPDATE h5p_contents SET license=:license WHERE id=:id';
         $params = [
             ':id' => $id,
-            ':license' => $request->get('license')
+            ':license' => $request->get('license'),
         ];
         $statement = $db->prepare($sql);
         $statement->execute($params);
@@ -632,17 +524,6 @@ class H5PController extends Controller
     }
 
     /**
-     * @return stdClass
-     */
-    protected function getEmptyOldContent()
-    {
-        $theOldContent = new stdClass();
-        $theOldContent->id = null;
-        $theOldContent->collaborators = collect([]);
-        return $theOldContent;
-    }
-
-    /**
      * Get content shares for h5p resource
      */
     private function get_content_shares(int $id): string
@@ -663,14 +544,6 @@ class H5PController extends Controller
         } else {
             return '';
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(int $id): void
-    {
-        //
     }
 
     public function ajaxLoading(Request $request, AjaxRequest $ajaxRequest): object|array|string|null
@@ -705,7 +578,7 @@ class H5PController extends Controller
         $core = resolve(H5PCore::class);
         $oldContent = $core->loadContent($h5pContent->id);
 
-        if ($versionPurpose === VersionData::COPY || $versionPurpose === VersionData::TRANSLATION) {
+        if ($versionPurpose === ContentVersion::PURPOSE_COPY || $versionPurpose === ContentVersion::PURPOSE_TRANSLATION) {
             $oldContent['user_id'] = null;
             if (!$request->input("license", false)) {
                 $request->merge(["license" => $h5pContent->getContentLicense()]);
@@ -717,7 +590,7 @@ class H5PController extends Controller
         }
         if (!$request->filled('col-emails')) {
             $request->request->add([
-                'col-emails' => implode(',', $h5pContent->collaborators->pluck('email')->toArray())
+                'col-emails' => implode(',', $h5pContent->collaborators->pluck('email')->toArray()),
             ]);
         }
 
@@ -731,13 +604,12 @@ class H5PController extends Controller
 
         // If user is the original owner of the resource
         if ($newH5pContent->isOwner($authId)) {
-            if (in_array($versionPurpose, [VersionData::UPDATE, VersionData::UPGRADE])) {
+            if (in_array($versionPurpose, [ContentVersion::PURPOSE_UPDATE, ContentVersion::PURPOSE_UPGRADE])) {
                 $this->store_content_shares($content['id'], $request->filled("col-emails") ? $request->request->get("col-emails") : "");
             }
 
-            $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
-        } elseif ($versionPurpose === VersionData::UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
+        } elseif ($versionPurpose === ContentVersion::PURPOSE_UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
             $emails = $h5pContent->collaborators->pluck('email')->toArray();
             $currentUserEmail = Session::get('email', "noemail");
             if ($currentUserEmail !== "noemail" && !in_array($currentUserEmail, $emails)) {
@@ -745,13 +617,12 @@ class H5PController extends Controller
             }
             $collaborators = implode(',', $emails);
 
-            // TODO Update license and privacy based on the old h5p
+            // TODO Update license based on the old h5p
 
-            $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
             $this->store_content_shares($content['id'], $collaborators);
         }
-        return [$oldContent, $content, $newH5pContent];
+        return [$oldContent, $content, $newH5pContent->fresh()];
     }
 
     public function downloadContent(H5PContent $h5p, H5PExport $export, H5PCore $core, H5PCerpusStorage $storage)
@@ -771,27 +642,6 @@ class H5PController extends Controller
         return response(trans('h5p-editor.could-not-find-content'), 404);
     }
 
-    public function browseImages(Request $request)
-    {
-        /** @var H5PImageAdapterInterface $imageAdapter */
-        $imageAdapter = app(H5PImageAdapterInterface::class);
-        return $imageAdapter->findImages([
-            'page' => $request->get('page'),
-            'searchString' => $request->get('searchstring'),
-            'language' => $request->get('language'),
-            'fallback' => 'true',
-        ]);
-    }
-
-    public function getImage(Request $request, $imageId)
-    {
-        /** @var H5PImageAdapterInterface $imageAdapter */
-        $imageAdapter = app(H5PImageAdapterInterface::class);
-        return $imageAdapter->getImage($imageId, [
-            'language' => $request->get('language'),
-        ]);
-    }
-
     public function browseVideos(Request $request)
     {
         /** @var H5PVideoInterface $videodapter */
@@ -809,37 +659,173 @@ class H5PController extends Controller
         return $videoAdapter->getVideo($videoId);
     }
 
-    public function getCopyright(H5PContent $h5p)
+    public function getCopyright(H5PContent $h5p, H5PCopyright $copyright, CacheRepository $cache)
     {
-        $copyrights = (resolve(H5PCopyright::class))->getCopyrights($h5p);
+        $copyrights = $cache->rememberForever($h5p->getCopyrightCacheKey(), fn() => $copyright->getCopyrights($h5p));
+
         if (empty($copyrights)) {
             return response('No copyright found', Response::HTTP_NOT_FOUND);
         }
+
         return response()->json($copyrights);
     }
 
-    public function getInfo(H5PContent $h5p, H5PInfo $h5PInfo)
+    public function getInfo(H5PContent $h5p, H5PInfo $h5pInfo, CacheRepository $cache)
     {
-        $information = $h5PInfo->getInformation($h5p);
+        $information = $cache->rememberForever($h5p->getInfoCacheKey(), fn() => $h5pInfo->getInformation($h5p));
+
         return response()->json($information);
     }
 
-    public function browseAudios(Request $request)
+    public function destroy(Request $request)
     {
-        /** @var H5PAudioInterface $audioAdapter */
-        $audioAdapter = app(H5PAudioInterface::class);
-        return $audioAdapter->findAudio([
-            'query' => $request->get('query'),
-            'fallback' => 'true',
-        ]);
-    }
+        $runId = Uuid::uuid4()->toString(); // A unique id to use in the audit log
+        $userId = $request->json('user.id');
+        $userName = $request->json('user.name');
+        $urls = $request->json('resources');
 
-    public function getAudio(Request $request, $audioId)
-    {
-        /** @var H5PAudioInterface $audioAdapter */
-        $audioAdapter = app(H5PAudioInterface::class);
-        return $audioAdapter->getAudio($audioId, [
-            'language' => $request->get('language'),
+        AuditLog::log(
+            'Permanent delete',
+            json_encode([
+                'runId' => $runId,
+                'receivedUrls' => $urls,
+                'status' => 'Request received',
+            ]),
+            $userId,
+            $userName
+        );
+
+        $resources = []; // The LTI launch URLs that are connected to the content that will be deleted in Hub
+        $shared = []; // The LTI launch URLs that are used by other content in the Hub
+
+        // Extract the resource id from the LTI launch urls
+        array_walk($urls['delete'], function ($resource) use (&$resources) {
+            $route = Route::getRoutes()->match(request()->create($resource, 'POST'));
+            if ($route && $route->getName() === 'h5p.ltishow') {
+                $resources[$route->parameter('id')] = $resource;
+            }
+        });
+        array_walk($urls['shared'], function ($resource) use (&$shared) {
+            $route = Route::getRoutes()->match(request()->create($resource, 'POST'));
+            if ($route && $route->getName() === 'h5p.ltishow') {
+                $shared[$route->parameter('id')] = $resource;
+            }
+        });
+        // We want to start with the newest/latest content
+        krsort($resources, SORT_NUMERIC);
+
+        /** @var \Illuminate\Database\Eloquent\Collection<H5PContent> $resourcesContent */
+        $resourcesContent = H5PContent::find(array_keys($resources));
+
+        $deleted = [];
+        $kept = [];
+        try {
+            // Delete resource data from the top-down. If a version has child nodes they will be moved to the parent version.
+            DB::transaction(function () use ($resourcesContent, $resources, $shared, &$deleted, &$kept) {
+                $storage = app(H5PCerpusStorage::class);
+
+                foreach ($resources as $contentId => $resource) {
+                    Log::info(sprintf('Destroy: Processing content %s', $contentId));
+                    /** @var ?H5PContent $content */
+                    $content = $resourcesContent->find($contentId);
+                    if ($content !== null) {
+                        $versions = ContentVersion::where('content_id', $contentId)->where('content_type', 'h5p')->get();
+                        $isShared = array_key_exists($contentId, $shared);
+                        if (!$isShared && $versions->count() > 1) {
+                            // This content have more than one version, but it was not flagged as shared by Hub.
+                            // It's either an update using the same content id, a new branch, or both. We cannot
+                            // trust our own versioning because Hub does not inform when e.g. creating a copy. If
+                            // we trust Hub versioning, we can delete it. But, then we have to check all child
+                            // content and possibly re-connect, rewriting history for other content.
+                            // We flag content as shared and leave all versions. This will either create content and
+                            // versions that have no connection to anything, or ensure that other content have
+                            // correct history.
+                            Log::info(sprintf('Destroy: Flagging content %s as shared, more than one version found', $contentId), [$versions->pluck('content_id', 'id')->toArray()]);
+                            $isShared = true;
+                        }
+
+                        if ($isShared) {
+                            Log::info(sprintf('Destroy: Skipping shared content %s', $contentId));
+                            $kept[] = $resource;
+                        } else {
+                            $version = $versions->first();
+                            $children = $version->nextVersions;
+                            if ($children->count() > 0) {
+                                $parent = $version->previousVersion;
+                                foreach ($children as $child) {
+                                    Log::info(sprintf('Destroy: Moving child version %s (%s) to parent %s (%s)', $child->id, $child->content_id, $version->parent_id, $parent?->content_id));
+                                    $child->parent_id = $version->parent_id;
+                                    $child->saveQuietly(); // Don't trigger events, it will connect child to the latest version
+                                }
+                            }
+                            Log::info(sprintf('Destroy: Deleting content %s, version %s, and related data', $contentId, $version->id ?? 'null'));
+                            $content->contentVideos()->delete();
+                            $content->contentUserData()->delete();
+                            $content->metadata()->delete();
+                            $content->contentLibraries()->delete();
+                            $content->language()->delete();
+
+                            H5PResult::where('content_id', $contentId)->delete();
+                            ContentLanguageLink::where('main_content_id', $content->id)->orWhere('link_content_id', $content->id)->delete();
+                            CollaboratorContext::where('content_id', $content->id)->delete();
+                            DB::table('cerpus_contents_shares')->where('h5p_id', $content->id)->delete();
+
+                            // The bulk exclution list
+                            if (method_exists($content, 'exclutions')) {
+                                $content->exclutions()->delete();
+                            }
+
+                            // File operation cannot be rolled back, but it's just a cache
+                            if ($storage->hasExport($content->getExportFilename())) {
+                                $storage->deleteExport($content->getExportFilename());
+                            }
+
+                            $version->delete();
+                            $content->delete();
+                            $deleted[] = $resource;
+                        }
+                    } else {
+                        Log::info(sprintf('Destroy: Content %s was not found', $contentId));
+                    }
+                }
+            });
+            $success = true;
+            Log::info('Destroy: Done');
+            AuditLog::log(
+                'Permanent delete',
+                json_encode([
+                    'runId' => $runId,
+                    'success' => true,
+                    'deleted' => $deleted,
+                    'kept' => $kept,
+                ]),
+                $userId,
+                $userName
+            );
+        } catch (Throwable $e) {
+            $success = false;
+            Log::error(sprintf('Destroy: %s exception (%s) %s', get_class($e), $e->getCode(), $e->getMessage()));
+            AuditLog::log(
+                'Permanent delete',
+                json_encode([
+                    'runId' => $runId,
+                    'success' => false,
+                    'error' => [
+                        'type' => get_class($e),
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                    ],
+                ]),
+                $userId,
+                $userName
+            );
+        }
+
+        return response()->json([
+            'resources' => array_values($resources),
+            'deleted' => $deleted,
+            'kept' => $kept,
+            'success' => $success,
         ]);
     }
 }

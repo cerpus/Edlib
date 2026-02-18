@@ -1,0 +1,21 @@
+.content-card {
+    --bs-card-cap-color: var(--bs-body-color);
+    --bs-card-height: 225px;
+
+    min-width: 250px;
+
+    &-preview-badge {
+        border-radius: 0 0 0 10px;
+        background-color: var(--bs-card-cap-bg);
+        color: var(--bs-card-cap-color) !important;
+    }
+
+    &-header {
+        min-height: ($line-height-lg * 2.5) + rem;
+        padding-bottom: 0;
+    }
+
+    &-header-updated {
+        font-size: #{$sub-sup-font-size};
+    }
+}

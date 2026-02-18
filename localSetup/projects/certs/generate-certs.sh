@@ -8,7 +8,9 @@ DOMAINS="\
 DNS:localhost, \
 DNS:${EDLIB_ROOT_DOMAIN:-edlib.test}, \
 DNS:*.${EDLIB_ROOT_DOMAIN:-edlib.test}, \
-DNS:npm.components.${EDLIB_ROOT_DOMAIN:-edlib.test} \
+DNS:api.edlib.com, \
+DNS:www.edlib.com, \
+DNS:core.cerpus-course.com \
 "
 
 mkdir -p "$CA_DIR" "$CERTS_DIR"

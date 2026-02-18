@@ -20,6 +20,16 @@
     <script>
         var gameObject = {!!$gameSettings!!};
         var language = '{{$language}}';
+
+        // The 'hello' message is in the millionaire.js
+        window.addEventListener('message', e => {
+            if (window.parent && window.location !== window.parent.location && e.data?.action === 'hello') {
+                window.parent.postMessage({
+                    action: 'resize',
+                    scrollHeight: 480,
+                }, '*');
+            }
+        });
     </script>
     @foreach( $scripts as $js)
 <script src="{{$js}}"></script>

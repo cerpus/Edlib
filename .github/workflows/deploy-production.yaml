@@ -1,0 +1,48 @@
+name: "Deploy to production"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy (tag, branch, or commit SHA)"
+        required: true
+        type: string
+
+jobs:
+  resolve_version:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    outputs:
+      commitSha: ${{ steps.resolve.outputs.commitSha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+
+      - name: Resolve ref to commit SHA
+        id: resolve
+        run: |
+          sha=$(git rev-parse HEAD)
+          echo "Resolved ref '${{ inputs.ref }}' to commit SHA: $sha"
+          echo "commitSha=$sha" >> $GITHUB_OUTPUT
+
+  deploy_ndla_prod:
+    name: Deploy NDLA prod
+    needs: resolve_version
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.resolve_version.outputs.commitSha }}
+      environment: ndla_prod
+    secrets: inherit
+
+  deploy_prod:
+    name: Deploy prod
+    needs: resolve_version
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.resolve_version.outputs.commitSha }}
+      environment: prod
+    secrets: inherit
+

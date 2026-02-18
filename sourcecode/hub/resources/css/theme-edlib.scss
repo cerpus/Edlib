@@ -1,0 +1,183 @@
+[data-bs-theme="edlib"] {
+    --bs-body-color: #{$gray-700}; //Default text color
+    --bs-border-color: #{$gray-400}; //Default border color for input, buttons, etc
+    --logo-color: rgba(0, 0, 0, 0.75);
+    --bs-highlight-bg: #e7f2ed;
+
+    $component-active-color: var(--bs-body-color);
+    $component-active-bg: $green-100;
+    $edlib-input-box-shadow: 0 0 0 0.25rem rgba($green-300, $focus-ring-opacity);
+
+    // Primary button
+    .btn-primary {
+        @include button-variant($green-100, $gray-400, $gray-900, $green-200, $green-100, $gray-900);
+    }
+
+    .btn-outline-primary {
+        @include button-outline-variant($green-500, $gray-900, $green-200, $green-100, $gray-900);
+    }
+
+    // Secondary button
+    .btn-secondary {
+        @include button-variant($white, $gray-400, $gray-900, $gray-200, $gray-400, $gray-900);
+    }
+
+    .text-bg-primary {
+        color: var(--bs-body-color) !important;
+        background-color: $green-100 !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #{$green-100};
+        color:  var(--bs-body-color);
+    }
+
+    .accordion-button:focus {
+        box-shadow: $edlib-input-box-shadow;
+    }
+
+    .accordion-button:hover {
+        background-color: #{$green-200};
+        border-color: #{$green-100};
+        color: #{$gray-900};
+    }
+
+    // Card
+    .content-card {
+        background-color: $white;
+        --bs-card-cap-bg: #{$gray-100};
+        --bs-card-cap-color: #{$gray-700};
+
+        .content-card-header {
+            color: var(--bs-body-color);
+        }
+    }
+
+    // Content layout list
+    .content-list-item {
+        .card-footer {
+            background-color: var(--bs-body-bg);
+        }
+    }
+
+    // Select input
+    .form-select {
+        &:focus {
+            border-color: $green-100;
+            box-shadow: $edlib-input-box-shadow;
+        }
+    }
+
+    // Checkbox
+    .form-check-input {
+        &:focus {
+            border-color: #86b7fe;
+            box-shadow: $edlib-input-box-shadow;
+        }
+
+        &:checked {
+            background-color: $green-500;
+        }
+    }
+
+    // Focused input
+    .form-control:focus {
+        box-shadow: $edlib-input-box-shadow;
+        border-color: $green-100;
+    }
+
+    .pagination {
+        --bs-pagination-active-bg: #{$green-100};
+        --bs-pagination-active-border-color: #{$green-200};
+        --bs-pagination-active-color: var(--bs-body-color);
+        --bs-pagination-color: var(--bs-body-color);
+        --bs-pagination-focus-box-shadow: #{$edlib-input-box-shadow};
+        --bs-pagination-hover-color: var(--bs-body-color);
+        --bs-pagination-focus-color: var(--bs-body-color)
+    }
+
+    .dropdown-item {
+        --bs-dropdown-link-active-bg: #{$green-500};
+    }
+
+    .filter-badge {
+        color: var(--bs-body-color);
+        background: $white;
+        border-color: var(--bs-border-color);
+
+        &.filter-focus:hover, &.filter-focus:focus-visible {
+            outline: none;
+            box-shadow: $edlib-input-box-shadow;
+        }
+
+        &.filter-selected {
+            color: $component-active-color;
+            background: $component-active-bg;
+        }
+    }
+
+    .spinner-border {
+        color: $green-400;
+    }
+
+    .filter-button {
+        .filter-button-count {
+            background-color: $component-active-bg;
+            color: $component-active-color;
+        }
+    }
+
+    .choices {
+        .choices__list--multiple {
+            .choices__item {
+                background-color: $component-active-bg;
+                color: $component-active-color;
+                border-color: $green-500;
+
+                .choices__button {
+                    background-image: $choices-icon-cross-inverse;
+                    border-color: $green-500;
+                }
+            }
+        }
+
+        .choices__list--dropdown {
+            height: 0;
+
+            &.is-active {
+                height: auto;
+                box-shadow: $edlib-input-box-shadow;
+            }
+        }
+
+        &.is-focused,
+        &.is-open {
+            .choices__inner {
+                border-color: $green-100;
+                box-shadow: $edlib-input-box-shadow;
+            }
+        }
+
+        .is-selected {
+            color: $component-active-color;
+            background-color: $component-active-bg;
+        }
+    }
+
+    .lti-tool-image {
+        &.empty {
+            background-color: #A3CBBB;
+        }
+    }
+
+    // Underline for menu items in contrast mode
+    @media (forced-colors: active) {
+        .nav-underline .nav-link {
+            border-bottom: none;
+
+            &.active {
+                border-bottom: var(--bs-nav-underline-border-width) solid currentColor;
+            }
+        }
+    }
+}

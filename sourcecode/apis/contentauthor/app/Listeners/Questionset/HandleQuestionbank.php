@@ -2,7 +2,6 @@
 
 namespace App\Listeners\Questionset;
 
-use App\ACL\ArticleAccess;
 use App\Events\QuestionsetWasSaved;
 use Cerpus\QuestionBankClient\DataObjects\AnswerDataObject;
 use Cerpus\QuestionBankClient\DataObjects\MetadataDataObject;
@@ -12,8 +11,6 @@ use Cerpus\QuestionBankClient\QuestionBankClient;
 
 class HandleQuestionbank
 {
-    use ArticleAccess;
-
     protected $questionset;
     protected $tags;
 
@@ -57,7 +54,7 @@ class HandleQuestionbank
             $questionDataObject = QuestionDataObject::create([
                 'id' => $question->external_reference,
                 'text' => $question->question_text,
-                'questionSetId' => $this->questionset->external_reference
+                'questionSetId' => $this->questionset->external_reference,
             ]);
             $metadata = MetadataDataObject::create();
             if (!empty($this->tags)) {

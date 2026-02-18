@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class UnknownH5PPackageException extends \Exception
-{
-}
+class UnknownH5PPackageException extends \Exception {}

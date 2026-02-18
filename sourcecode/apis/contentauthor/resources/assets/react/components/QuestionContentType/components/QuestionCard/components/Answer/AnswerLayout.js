@@ -3,7 +3,7 @@ import './Answer.scss';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Input from '@material-ui/core/Input';
-import {FormattedMessage, useIntl} from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import Toggle from '../Toggle';
 import { ImageContainer } from '../Image';
@@ -11,6 +11,7 @@ import RichEditor from '../../../../../RichEditor';
 import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';
 import { useEditorSetupContext } from '../../../../../../contexts/EditorSetupContext';
 import AddIcon from '@material-ui/icons/Add';
+import clsx from 'clsx';
 
 const AnswerLayout = props => {
     const {
@@ -30,6 +31,8 @@ const AnswerLayout = props => {
         maxRows,
         multiline,
         richText,
+        warningAtLength,
+        warningMessage,
     } = props;
     const { editorLanguage } = useEditorSetupContext();
     let inputType;
@@ -71,7 +74,7 @@ const AnswerLayout = props => {
     }
 
     return (
-        <div className={'answerCard ' + additionalClass}>
+        <div className={clsx('answerCard', additionalClass)}>
             {title && (
                 <div className="answerTitle">{title}</div>
             )}
@@ -85,12 +88,21 @@ const AnswerLayout = props => {
                  <AddIcon />
              </button>
             )}
-            <div className="answerContainer">
+            <div className={clsx(
+                'answerContainer',
+                {
+                    'withDeleteBtn': canDelete === true && typeof deleteAnswer === 'function',
+                }
+            )}>
                 {inputType}
+                {(onAnswerChange && warningMessage && warningAtLength && answerText.length > warningAtLength) ?
+                    warningMessage:
+                    null
+                }
                 {useImage === true && onImageChange && (
                     <ImageContainer
                         onChange={onImageChange}
-                        readOnly={onImageChange === null}
+                        readOnly={false}
                         image={image}
                     />
                 )}
@@ -98,8 +110,8 @@ const AnswerLayout = props => {
                     <Toggle
                         onToggle={onToggle}
                         isCorrect={isCorrect}
-                        rightLabel={<FormattedMessage id="ANSWER.LABEL_CORRECT" />}
-                        leftLabel={<FormattedMessage id="ANSWER.LABEL_WRONG" />}
+                        rightLabel={formatMessage({id: 'ANSWER.LABEL_CORRECT'})}
+                        leftLabel={formatMessage({id: 'ANSWER.LABEL_WRONG'})}
                     />
                 )}
             </div>
@@ -125,6 +137,8 @@ AnswerLayout.propTypes = {
     maxRows: PropTypes.number,
     multiline: PropTypes.bool,
     richText: PropTypes.bool,
+    warningAtLength: PropTypes.number,
+    warningMessage: PropTypes.node,
 };
 
 AnswerLayout.defaultProps = {
@@ -144,6 +158,8 @@ AnswerLayout.defaultProps = {
     maxRows: 4,
     multiline: true,
     richText: true,
+    warningAtLength: null,
+    warningMessage: null,
 };
 
 export {

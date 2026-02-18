@@ -2,7 +2,7 @@
 
 namespace App\Libraries\H5P;
 
-use App\Events\ResourceSaved;
+use App\AuditLog;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PContent;
 use App\H5PContentsMetadata;
@@ -29,8 +29,7 @@ class H5PLibraryAdmin
         private H5PFrameworkInterface $framework,
         private H5PStorage $storage,
         private readonly LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     /**
      * Handles uploading of an .h5p file.
@@ -80,13 +79,14 @@ class H5PLibraryAdmin
         $out->token = csrf_token();
 
         $params = $request->post('params');
+        $updated = [];
         if ($params !== null) {
             if (!$request->filled('libraryId')) {
                 throw new BadRequestHttpException("Missing library to update to");
             }
 
             collect(json_decode($params))
-                ->each(function ($param, $id) use ($request) {
+                ->each(function ($param, $id) use ($request, &$updated) {
                     $params = json_decode($param);
                     if (isset($params->params)) {
                         $param = json_encode($params->params);
@@ -98,18 +98,36 @@ class H5PLibraryAdmin
                     if ($content->save() !== true) {
                         throw new \Exception("Update failed");
                     }
-
+                    $updated[] = $id;
                     if (isset($params->metadata)) {
-                        $metadata = \H5PMetadata::toDBArray((array)$params->metadata);
+                        $metadata = \H5PMetadata::toDBArray((array) $params->metadata);
                         unset($metadata['title']);
                         /** @var H5PContentsMetadata $H5PContentMetadata */
                         $H5PContentMetadata = H5PContentsMetadata::firstOrNew([
-                            'content_id' => $id
+                            'content_id' => $id,
                         ]);
                         $H5PContentMetadata->fill($metadata);
                         $H5PContentMetadata->save();
                     }
                 });
+        }
+
+        if (count($updated) > 0) {
+            $toLib = H5PLibrary::find($request->get('libraryId'));
+            AuditLog::log(
+                'Bulk update of content library version',
+                json_encode([
+                    'fromLibrary' => [
+                        'id' => $library->id,
+                        'name' => $library->getLibraryString(true),
+                    ],
+                    'toLibrary' => [
+                        'id' => $toLib->id,
+                        'name' => $toLib->getLibraryString(true),
+                    ],
+                    'contentIds' => $updated,
+                ])
+            );
         }
 
         $out->left = $library->contents()->count() - count($out->skipped);
@@ -173,7 +191,6 @@ class H5PLibraryAdmin
                     if ($content->save() !== true) {
                         throw new \Exception("Setting of score failed");
                     }
-                    event(new ResourceSaved($content->getEdlibDataObject()));
                 });
         }
 
@@ -199,12 +216,12 @@ class H5PLibraryAdmin
             $out->params = $contents
                 ->map(function ($content) {
                     return [
-                            'id' => $content->id,
-                            'library' => $content->library->getLibraryString(),
-                            'libraryName' => $content->library->name,
-                            'libraryId' => $content->library_id,
-                            'params' => $content->parameters,
-                        ];
+                        'id' => $content->id,
+                        'library' => $content->library->getLibraryString(),
+                        'libraryName' => $content->library->name,
+                        'libraryId' => $content->library_id,
+                        'params' => $content->parameters,
+                    ];
                 })
                 ->toArray();
         }
@@ -230,23 +247,24 @@ class H5PLibraryAdmin
             throw new \Exception('Error, invalid library!');
         }
 
-        $library = (object)[
+        $library = (object) [
             'name' => $library_parts[1],
-            'version' => (object)[
+            'version' => (object) [
                 'major' => $library_parts[2],
-                'minor' => $library_parts[3]
-            ]
+                'minor' => $library_parts[3],
+            ],
         ];
         $library->semantics = $core->loadLibrarySemantics($library->name, $library->version->major, $library->version->minor);
         if ($library->semantics === null) {
             throw new \Exception('Error, could not library semantics!');
         }
 
-
         if (isset($dev_lib)) {
-            $upgrades_script_path = $upgrades_script_url = $dev_lib['path'] . '/upgrades.js';
+            $upgrades_script_path = $dev_lib['path'] . '/upgrades.js';
         } else {
-            $upgrades_script_path = $core->fs->getUpgradeScript($library->name, $library->version->major, $library->version->minor);
+            $lib = $core->h5pF->loadLibrary($library->name, $library->version->major, $library->version->minor);
+            $libraryName = H5PCore::libraryToFolderName($lib);
+            $upgrades_script_path = $core->fs->getUpgradeScript($libraryName, $library->version->major, $library->version->minor);
         }
 
         if (!empty($upgrades_script_path)) {

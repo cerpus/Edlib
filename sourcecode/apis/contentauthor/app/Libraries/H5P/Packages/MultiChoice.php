@@ -34,13 +34,13 @@ class MultiChoice extends H5PBase
         if (!empty($data['answers'])) {
             $semantics->answers = collect($data['answers'])
                 ->map(function ($answer) {
-                    $answer = (array)$answer;
+                    $answer = (array) $answer;
                     return [
                         'correct' => $answer['correct'],
-                        'tipsAndFeedback' => (object)[
+                        'tipsAndFeedback' => (object) [
                             'tip' => "",
                             'chosenFeedback' => "",
-                            'notChosenFeedback' => ""
+                            'notChosenFeedback' => "",
                         ],
                         'text' => nl2br($answer['text']),
                     ];

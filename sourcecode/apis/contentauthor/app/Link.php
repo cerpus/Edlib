@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Libraries\Versioning\VersionableObject;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,19 +20,19 @@ use function route;
  * @property string $owner_id
  * @property int $deleted_at
  * @property string $link_text
- * @property string $metadata
+ * @property ?string $metadata
  *
  * @property Collection<Collaborator> $collaborators
  *
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class Link extends Content implements VersionableObject
 {
     use HasFactory;
     use HasUuids;
 
-    public string $editRouteName = 'link.edit';
+    public string $editRouteName = 'link.edit'; // note: doesn't work anymore
 
     public function givesScore(): int
     {
@@ -39,7 +40,7 @@ class Link extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<ArticleCollaborator>
+     * @return HasMany<ArticleCollaborator, $this>
      */
     public function collaborators(): HasMany
     {
@@ -101,11 +102,6 @@ class Link extends Content implements VersionableObject
     public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
-    }
-
-    public function getIsPrivateAttribute(): false
-    {
-        return false; // Defaults to public / listed
     }
 
     public function getUrl(): string

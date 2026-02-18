@@ -31,7 +31,7 @@ class H5PConfigAbstractTest extends TestCase
             [
                 app(H5PAdapterInterface::class),
                 $this->h5pCore,
-            ]
+            ],
         );
     }
 

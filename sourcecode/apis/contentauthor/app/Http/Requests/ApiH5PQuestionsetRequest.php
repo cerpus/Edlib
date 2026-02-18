@@ -25,8 +25,6 @@ class ApiH5PQuestionsetRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'sharing' => 'required|boolean',
-            'published' => 'sometimes|boolean',
             'license' => 'required',
             'authId' => 'required',
             'questions' => 'required|array',

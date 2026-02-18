@@ -14,7 +14,7 @@ class AdminConfig implements ConfigInterface
     private $id;
 
     public function __construct(
-        private H5PCore $core
+        private H5PCore $core,
     ) {
         $this->h5pCore = $core;
         $this->fileStorage = $core->fs;
@@ -84,12 +84,15 @@ class AdminConfig implements ConfigInterface
             'containerSelector' => '#h5p-admin-container',
             'libraryInfo' => [
                 'message' => sprintf('You are about to upgrade %s(version %s.%s). Please select upgrade version.', $library->title, $library->majorVersion, $library->minorVersion),
-                'inProgress' => 'Upgrading to %ver...', $library->title,
-                'error' => 'An error occurred while processing parameters:', $library->title,
-                'errorData' => 'Could not load data for library %lib.', $library->title,
-                'errorContent' => 'Could not upgrade content %id:', $library->title,
-                'errorScript' => 'Could not load upgrades script for %lib.', $library->title,
-                'errorParamsBroken' => 'Parameters are broken.', $library->title,
+                'inProgress' => 'Upgrading to %ver...',
+                'error' => 'An error occurred while processing parameters:',
+                'errorData' => 'Could not load data for library %lib.',
+                'errorContent' => 'Could not upgrade content %id:',
+                'errorLibrary' => 'Missing required library %lib.',
+                'errorScript' => 'Could not load upgrades script for %lib.',
+                'errorParamsBroken' => 'Parameters are broken.',
+                'errorTooHighVersion' => 'Parameters contain %used while only %supported or earlier are supported.',
+                'errorNotSupported' => 'Parameters contain %used which is not supported.',
                 'done' => 'You have successfully upgraded ' . $library->title,
                 'library' => [
                     'name' => $library->name,
@@ -102,8 +105,8 @@ class AdminConfig implements ConfigInterface
                 'contents' => $contents,
                 'buttonLabel' => 'Upgrade', $library->title,
                 'total' => $contents,
-                'token' => csrf_token()
-            ]
+                'token' => csrf_token(),
+            ],
         ];
         return $settings;
     }

@@ -37,14 +37,11 @@ class Framework implements \H5PFrameworkInterface, Result
     /** @var array<string> */
     private array $infoMessages = [];
 
-    private $adminUrl;
-
     public function __construct(
         private ClientInterface $httpClient,
         private PDO $db,
-        private Filesystem $disk
-    ) {
-    }
+        private Filesystem $disk,
+    ) {}
 
     // Implements result Interface
     public function handleResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context)
@@ -85,7 +82,7 @@ class Framework implements \H5PFrameworkInterface, Result
             ':opened' => $opened,
             ':finished' => $finished,
             ':time' => $time,
-            ':context' => $context
+            ':context' => $context,
         ];
 
         $stmt = $this->db->prepare($sql);
@@ -108,7 +105,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $sql = "select id from h5p_results where user_id=:userId and content_id=:contentId ";
         $params = [
             ':userId' => $userId,
-            ':contentId' => $contentId
+            ':contentId' => $contentId,
         ];
         $this->getContextSql($sql, $params, $context);
 
@@ -117,20 +114,14 @@ class Framework implements \H5PFrameworkInterface, Result
     }
 
     /**
-     * Returns info for the current platform
-     *
-     * @return array
-     *   An associative array containing:
-     *   - name: The name of the plattform, for instance "Wordpress"
-     *   - version: The version of the pattform, for instance "4.0"
-     *   - h5pVersion: The version of the H5P plugin/module
+     * @inheritDoc
      */
-    public function getPlatformInfo()
+    public function getPlatformInfo(): array
     {
         return [
             "name" => "H5PComposer",
             "version" => "0.1",
-            "h5pVersion" => "1.5"
+            "h5pVersion" => implode('.', H5PCore::$coreApi),
         ];
     }
 
@@ -142,7 +133,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $fullData = false,
         $headers = [],
         $files = [],
-        $method = 'POST'
+        $method = 'POST',
     ): string|array|null {
         $method = $data ? 'POST' : 'GET';
         $options = [RequestOptions::FORM_PARAMS => $data];
@@ -166,7 +157,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
                 return $response->getBody()->getContents();
             })
-            ->otherwise(fn ($e) => $e instanceof GuzzleException ? null : throw $e)
+            ->otherwise(fn($e) => $e instanceof GuzzleException ? null : throw $e)
             ->wait();
     }
 
@@ -193,9 +184,19 @@ class Framework implements \H5PFrameworkInterface, Result
         $this->errorMessages[] = $message;
     }
 
+    public function clearErrorMessages(): void
+    {
+        $this->errorMessages = [];
+    }
+
     public function setInfoMessage($message): void
     {
         $this->infoMessages[] = $message;
+    }
+
+    public function clearInfoMessages(): void
+    {
+        $this->infoMessages = [];
     }
 
     public function getMessages($type): array
@@ -291,59 +292,15 @@ class Framework implements \H5PFrameworkInterface, Result
     }
 
     /**
-     * Saving the unsupported library list
-     *
-     * @param array
-     *   A list of unsupported libraries. Each list entry contains:
-     *   - name: MachineName for the library
-     *   - downloadUrl: URL to a location a new version of the library may be downloaded from
-     *   - currentVersion: The unsupported version of the library installed on the system.
-     *     This is an associative array containing:
-     *     - major: The major version of the library
-     *     - minor: The minor version of the library
-     *     - patch: The patch version of the library
-     * TODO: Check if Drupal impl has something here.
-     */
-    public function setUnsupportedLibraries($libraries)
-    {
-    }
-
-    /**
-     * Returns unsupported libraries
-     *
-     * @return array
-     *   A list of unsupported libraries. Each entry contains an associative array with:
-     *   - name: MachineName for the library
-     *   - downloadUrl: URL to a location a new version of the library may be downloaded from
-     *   - currentVersion: The unsupported version of the library installed on the system.
-     *     This is an associative array containing:
-     *     - major: The major version of the library
-     *     - minor: The minor version of the library
-     *     - patch: The patch version of the library
-     * TODO: Check if Drupal impl has something here.
-     */
-    public function getUnsupportedLibraries()
-    {
-    }
-
-
-    /**
      * Returns the URL to the library admin page
      *
      * @return string
      *   URL to admin page
-     * TODO: Check if Drupal impl has something here.
      */
-    public function getAdminUrl()
+    public function getAdminUrl(): string
     {
-    }
-
-    /**
-     * Set the URL to the library admin page
-     */
-    public function setAdminUrl($url)
-    {
-        $this->adminUrl = $url;
+        // Not used in CA
+        return '';
     }
 
     /**
@@ -370,21 +327,7 @@ class Framework implements \H5PFrameworkInterface, Result
             return false;
         }
 
-        return (int)$library->id;
-        /*
-         * // The following code sometimes crashes(!!!?) when reached through an import. The Eloquent version seems to be stable.
-         * // Laravel log: "Error SQLSTATE[HY000]: General error: 2006 MySQL server has gone away" (Very rude I feel...)
-         * // MySQL error log: 2019-06-25T08:18:18.872848Z 332 [Note] Aborted connection 332 to db: 'content-author' user: 'root' host: 'localhost' (Got an error reading communication packets)
-
-        $sql = "select id from h5p_libraries where name=? and major_version=? and minor_version=?";
-        $statment = $this->db->prepare($sql);
-        $statment->execute([$machineName, $majorVersion, $minorVersion]);
-        $id = $statment->fetchColumn();
-        if ($id === false) {
-            return false;
-        }
-        return (int)$id;
-        */
+        return (int) $library->id;
     }
 
     /**
@@ -418,30 +361,30 @@ class Framework implements \H5PFrameworkInterface, Result
      * @return bool
      *   TRUE if the library is a patched version of an existing library
      *   FALSE otherwise
-     * TODO: Implement this for real....
      */
     public function isPatchedLibrary($library): bool
     {
+        $operator = $this->isInDevMode() ? '<=' : '<';
+
         return H5PLibrary::fromLibrary([
             $library['machineName'],
             $library['majorVersion'],
-            $library['minorVersion']
+            $library['minorVersion'],
         ])
-            ->where('patch_version', "<", $library['patchVersion'])
+            ->where('patch_version', $operator, $library['patchVersion'])
             ->exists();
     }
 
     /**
      * Is H5P in development mode?
      *
-     * @return boolean
+     * @return bool
      *  TRUE if H5P development mode is active
      *  FALSE otherwise
-     * TODO: Implement this for real....
      */
-    public function isInDevMode()
+    public function isInDevMode(): bool
     {
-        return false;
+        return config('h5p.developmentMode', false);
     }
 
     /**
@@ -454,7 +397,7 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function mayUpdateLibraries()
     {
-        return \Session::get("isAdmin", false) || Request::is('admin/*') || Request::is("api/v1/h5p/import");
+        return \Session::get("isAdmin", false) || Request::is('admin/*');
     }
 
     /**
@@ -485,7 +428,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
         /** @var H5PLibrary $h5pLibrary */
         $h5pLibrary = H5PLibrary::updateOrCreate([
-            'id' => !$new ? $libraryData['libraryId'] : null
+            'id' => !$new ? $libraryData['libraryId'] : null,
         ], [
             'name' => $libraryData['machineName'],
             'title' => $libraryData['title'],
@@ -514,7 +457,7 @@ class Framework implements \H5PFrameworkInterface, Result
                 $h5pLibrary->languages()->create([
                     'library_id' => $libraryData['libraryId'],
                     'language_code' => $languageCode,
-                    'translation' => $translation
+                    'translation' => $translation,
                 ]);
             }
         }
@@ -538,7 +481,7 @@ class Framework implements \H5PFrameworkInterface, Result
     {
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $metadataRaw = (array)$content['metadata'] ?? [];
+        $metadataRaw = (array) $content['metadata'] ?? [];
         $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
 
         $H5PContent = H5PContent::make();
@@ -548,12 +491,10 @@ class Framework implements \H5PFrameworkInterface, Result
         $H5PContent->library_id = $content['library']['libraryId'];
         $H5PContent->embed_type = $content['embed_type'];
         $H5PContent->disable = $content['disable'];
-        $H5PContent->max_score = !is_null($content['max_score']) ? (int)$content['max_score'] : null;
+        $H5PContent->max_score = !is_null($content['max_score']) ? (int) $content['max_score'] : null;
         $H5PContent->slug = !empty($content['slug']) ? $content['slug'] : '';
         $H5PContent->user_id = $content['user_id'];
         $H5PContent->content_create_mode = $adapter->getAdapterName();
-        $H5PContent->is_published = $content['is_published'] ?? !$adapter->isUserPublishEnabled();
-        $H5PContent->is_private = (bool) ($content['is_private'] ?? true);
         $H5PContent->is_draft =  $content['is_draft'] ?? 1;
         $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
 
@@ -586,7 +527,7 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function updateContent($content, $contentMainId = null)
     {
-        $metadataRaw = (array)$content['metadata'];
+        $metadataRaw = (array) $content['metadata'];
         $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
 
         $H5PContent = H5PContent::find($content['id']);
@@ -597,8 +538,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $H5PContent->embed_type = $content['embed_type'];
         $H5PContent->disable = $content['disable'];
         $H5PContent->slug = $content['slug'];
-        $H5PContent->max_score = (int)$content['max_score'];
-        $H5PContent->is_published = $content['is_published'];
+        $H5PContent->max_score = (int) $content['max_score'];
         $H5PContent->is_draft = $content['is_draft'];
         $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
 
@@ -608,7 +548,7 @@ class Framework implements \H5PFrameworkInterface, Result
         if (!empty($metadata)) {
             /** @var H5PContentsMetadata $H5PContentMetadata */
             $H5PContentMetadata = H5PContentsMetadata::firstOrNew([
-                'content_id' => $H5PContent->id
+                'content_id' => $H5PContent->id,
             ]);
             $H5PContentMetadata->fill($metadata);
             $H5PContentMetadata->save();
@@ -750,7 +690,7 @@ class Framework implements \H5PFrameworkInterface, Result
             if (!empty($dependency['library']['dropLibraryCss'])) {
                 $dropLibraryCssList = array_merge(
                     $dropLibraryCssList,
-                    explode(', ', $dependency['library']['dropLibraryCss'])
+                    explode(', ', $dependency['library']['dropLibraryCss']),
                 );
             }
         }
@@ -764,7 +704,7 @@ class Framework implements \H5PFrameworkInterface, Result
                 ':library_id' => $dependency['library']['libraryId'],
                 ':dependency_type' => $dependency['type'],
                 ':weight' => $dependency['weight'],
-                ':drop_css' => $dropCss
+                ':drop_css' => $dropCss,
             ];
             $dependencyStmt->execute($params);
         }
@@ -903,18 +843,14 @@ class Framework implements \H5PFrameworkInterface, Result
      * TODO: Implement this for real
      * TODO: Check Drupal source for what is supposed to happen, WP does not support this.
      */
-    public function lockDependencyStorage()
-    {
-    }
+    public function lockDependencyStorage() {}
 
     /**
      * Stops an atomic operation against the dependency storage
      * TODO: Implement this for real....
      * TODO: Check Drupal source for what is supposed to happen, WP does not support this.
      */
-    public function unlockDependencyStorage()
-    {
-    }
+    public function unlockDependencyStorage() {}
 
     public function deleteLibrary($library): void
     {
@@ -1100,7 +1036,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $content->fill($fields);
         if ($content->isDirty([
             'filtered',
-            'slug'
+            'slug',
         ])) {
             return $content->save();
         }
@@ -1175,15 +1111,16 @@ class Framework implements \H5PFrameworkInterface, Result
         return $all;
     }
 
-    public function getLibraryStats($type)
+    public function getLibraryStats($type): array
     {
-        // TODO: implement this
+        // Sending usage stats to h5p.org hub is disabled
         return [];
     }
 
-    public function getNumAuthors()
+    public function getNumAuthors(): int
     {
-        // TODO: Implement getNumAuthors() method.
+        // Sending usage stats to h5p.org hub is disabled
+        return 0;
     }
 
     public function saveCachedAssets($key, $libraries)
@@ -1191,7 +1128,7 @@ class Framework implements \H5PFrameworkInterface, Result
         foreach ($libraries as $library) {
             H5PLibrariesCachedAssets::create([
                 'hash' => $key,
-                'library_id' => $library['id']
+                'library_id' => $library['id'],
             ]);
         }
     }
@@ -1205,45 +1142,19 @@ class Framework implements \H5PFrameworkInterface, Result
         return $cachedAssets->pluck('hash')->toArray();
     }
 
-
     /**
      * Get the amount of content items associated to a library
-     * @return array
      */
-    public function getLibraryContentCount()
+    public function getLibraryContentCount(): array
     {
-        $libraries = H5PLibrary::all()
-            ->filter(function ($library) {
-                return $library->runnable != "0" && $library->contents()->count() > 0;
-            })
-            ->transform(function ($library) {
-                $item = new \stdClass();
-                $item->key = sprintf(
-                    "%s %s.%s",
-                    $library->name,
-                    $library->major_version,
-                    $library->minor_version
-                );
-                $item->count = $library->contents()->count();
-
-                return $item;
-            });
-
-        $libraryCount = [];
-        foreach ($libraries as $library) {
-            $libraryCount[$library->key] = $library->count;
-        }
-
-        return $libraryCount;
+        // Sending usage stats to h5p.org hub is disabled
+        return [];
     }
 
     /**
      * Will trigger after the export file is created.
      */
-    public function afterExportCreated($content, $filename)
-    {
-        // TODO: Implement afterExportCreated() method.
-    }
+    public function afterExportCreated($content, $filename) {}
 
     public function hasPermission($permission, $id = null)
     {
@@ -1274,7 +1185,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $path = implode("/", [
             'libraries',
             $libraryFolderName,
-            $fileName
+            $fileName,
         ]);
 
         return $storageInterface->getFileUrl($path);
@@ -1312,6 +1223,8 @@ class Framework implements \H5PFrameworkInterface, Result
                     'keywords' => !empty($type->keywords) ? json_encode($type->keywords) : '',
                     'categories' => json_encode($type->categories ?? []),
                     'owner' => $type->owner,
+                    'created_at' => $type->createdAt,
+                    'updated_at' => $type->updatedAt,
                 ]);
             }
         });
@@ -1371,5 +1284,10 @@ class Framework implements \H5PFrameworkInterface, Result
     {
         // H5P Content Hub is not in use
         return true;
+    }
+
+    public function resetHubOrganizationData()
+    {
+        // H5P Content Hub is not in use
     }
 }

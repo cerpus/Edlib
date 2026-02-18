@@ -118,13 +118,13 @@ class H5PCopyright
         $copyrightValues = $values['copyright'];
         $copyright = [];
         foreach ([
-                     'title' => 'title',
-                     'license' => 'license',
-                     'licenseVersion' => 'version',
-                     'authors' => 'author',
-                     'source' => 'source',
-                     'years' => 'year',
-                 ] as $index => $field) {
+            'title' => 'title',
+            'license' => 'license',
+            'licenseVersion' => 'version',
+            'authors' => 'author',
+            'source' => 'source',
+            'years' => 'year',
+        ] as $index => $field) {
             if (!array_key_exists($field, $copyrightValues)) {
                 continue;
             }
@@ -174,23 +174,23 @@ class H5PCopyright
         $metadata = $values['metadata'];
         $copyright = [];
         foreach ([
-                     'title',
-                     'authors',
-                     'source',
-                     'yearFrom',
-                     'yearTo',
-                     'license',
-                     'licenseVersion',
-                     'licenseExtra',
-                     'contentType'
-                 ] as $field) {
+            'title',
+            'authors',
+            'source',
+            'yearFrom',
+            'yearTo',
+            'license',
+            'licenseVersion',
+            'licenseExtra',
+            'contentType',
+        ] as $field) {
             if (!array_key_exists($field, $metadata)) {
                 continue;
             }
             $copyright[$field] = $metadata[$field];
         }
 
-        if (!empty($values['params']) && !empty($values['params']['file']) && $values['params']['contentName'] === 'Image') {
+        if (!empty($values['params']) && !empty($values['params']['file']) && isset($values['params']['contentName']) && $values['params']['contentName'] === 'Image') {
             $copyright['thumbnail'] = $this->storage->getContentPath($this->h5pContent->id, $values['params']['file']['path']);
         }
         $copyrightDataObject = H5PCopyrightDataObject::create($copyright);

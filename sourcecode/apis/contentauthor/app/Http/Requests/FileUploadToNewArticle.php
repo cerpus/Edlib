@@ -2,22 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\ACL\ArticleAccess;
+use Illuminate\Foundation\Http\FormRequest;
 
-class FileUploadToNewArticle extends Request
+class FileUploadToNewArticle extends FormRequest
 {
-    use ArticleAccess;
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return $this->canCreate();
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *

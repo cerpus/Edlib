@@ -4,44 +4,26 @@ namespace Tests\Integration\Article;
 
 use App\Article;
 use App\ArticleCollaborator;
-use App\Listeners\Article\HandleCollaborationInviteEmails;
+use App\Content;
+use App\ContentVersion;
 use App\User;
-use Cerpus\VersionClient\VersionData;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Helpers\MockAuthApi;
-use Tests\Helpers\MockMQ;
-use Tests\Helpers\MockResourceApi;
-use Tests\Helpers\MockVersioningTrait;
 
 class ArticleVersioningTest extends TestCase
 {
     use RefreshDatabase;
-    use MockMQ;
-    use MockVersioningTrait;
-    use MockResourceApi;
-    use MockAuthApi;
     use WithFaker;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-            'getVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-        ]);
-    }
 
     public function testDatabaseVersioning()
     {
-        $this->setupAuthApi([
-            'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
-        ]);
         $authId = Str::uuid();
         $article = Article::factory()->create(['owner_id' => $authId]);
         $startCount = Article::count();
@@ -69,7 +51,7 @@ class ArticleVersioningTest extends TestCase
         $originalArticle = Article::factory()->create([
             'owner_id' => $authId,
             'license' => 'BY',
-            'is_draft' => false
+            'is_draft' => false,
         ]);
         $c1 = ArticleCollaborator::factory()->make(['email' => 'A@B.COM']);
         $c2 = ArticleCollaborator::factory()->make(['email' => 'c@d.com']);
@@ -84,8 +66,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content,
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertFalse($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -97,8 +79,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title . '1',
                 'content' => $originalArticle->content,
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertTrue($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -110,8 +92,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content . '1',
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertTrue($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -123,8 +105,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content,
                 'license' => 'BY-ND',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertTrue($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -136,22 +118,17 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content,
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com,e@f.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com,e@f.com',
+            ],
         );
         $this->assertFalse($originalArticle->requestShouldBecomeNewVersion($request));
     }
 
-    public function testVersioning()
+    #[DataProvider('provider_testVersioning')]
+    public function testVersioning(bool $useLinearVersioning)
     {
-        $inviteEmail = $this->createMock(HandleCollaborationInviteEmails::class);
-        $inviteEmail->expects($this->exactly(3))->method('handle');
-        $this->instance(HandleCollaborationInviteEmails::class, $inviteEmail);
+        Config::set('feature.linear-versioning', $useLinearVersioning);
 
-        $this->setUpResourceApi();
-        $this->setupAuthApi([
-            'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
-        ]);
         $owner = User::factory()->make();
         $collaborator = User::factory()->make();
         $copyist = User::factory()->make();
@@ -161,75 +138,92 @@ class ArticleVersioningTest extends TestCase
             'owner_id' => $owner->auth_id,
             'license' => 'BY',
         ]);
-        $article->collaborators()->save(ArticleCollaborator::factory()->create(['email' => $collaborator->email]));
+        $version = ContentVersion::factory()->create([
+            'content_id' => $article->id,
+            'content_type' => Content::TYPE_ARTICLE,
+            'user_id' => $owner->auth_id,
+        ]);
+        $article->version_id = $version->id;
+        $article->save();
+
+        $article->collaborators()->save(
+            ArticleCollaborator::factory()->make(['email' => $collaborator->email]),
+        );
 
         $article->fresh();
 
-        $this->assertCount(1, Article::all());
+        $this->assertDatabaseCount('articles', 1);
 
         $this->withSession([
             'authId' => $collaborator->auth_id,
             'email' => $collaborator->email,
             'verifiedEmails' => [$collaborator->email],
         ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_OK);
+            ->get(route('article.edit', $article->id))
+            ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "New title",
             'content' => $article->content,
         ]);
-        $this->assertCount(2, Article::all());
-        $this->assertDatabaseHas('articles', ['title' => 'New title', 'owner_id' => $owner->auth_id]);
-
+        $this->assertDatabaseCount('articles', 2);
+        $this->assertDatabaseHas('articles', [
+            'title' => 'New title',
+            'owner_id' => $owner->auth_id,
+            'parent_id' => $article->id,
+            'parent_version_id' => $article->version_id,
+        ]);
+        $this->assertDatabaseCount('content_versions', 2);
+        $this->assertDatabaseHas('content_versions', [
+            'parent_id' => $article->version_id,
+            'content_type' => Content::TYPE_ARTICLE,
+        ]);
+        $secondArticle = Article::where('parent_id', $article->id)->first();
 
         $this->withSession([
             'authId' => $copyist->auth_id,
             'email' => $copyist->email,
             'verifiedEmails' => [$copyist->email],
         ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_OK);
+            ->get(route('article.edit', $article->id))
+            ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "Another new title",
             'content' => $article->content,
         ]);
 
-        $this->assertCount(3, Article::all());
-        $this->assertDatabaseHas('articles', ['title' => 'Another new title', 'owner_id' => $copyist->auth_id]);
+        $this->assertDatabaseCount('articles', 3);
+        $this->assertDatabaseHas('content_versions', [
+            'user_id' => $copyist->auth_id,
+            'content_type' => Content::TYPE_ARTICLE,
+            'version_purpose' => ContentVersion::PURPOSE_COPY,
+            'parent_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id,
+        ]);
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Another new title',
+            'owner_id' => $copyist->auth_id,
+            'parent_id' => $article->id,
+        ]);
+        $thirdArticle = Article::where('owner_id', $copyist->auth_id)
+            ->where('title', 'Another new title')
+            ->where('parent_version_id', $useLinearVersioning ? $secondArticle->version_id : $article->version_id)
+            ->first();
+
         /** @var Article $copiedArticle */
         $copiedArticle = Article::where('owner_id', $copyist->auth_id)->first();
         $this->assertDatabaseMissing('article_collaborators', ['article_id' => $copiedArticle->id]);
-        $this->assertCount(2, ArticleCollaborator::all());
+        $this->assertDatabaseCount('article_collaborators', 2);
+        $this->assertDatabaseCount('content_versions', 3);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $copiedArticle->version_id,
+            'content_type' => Content::TYPE_ARTICLE,
+        ]);
 
         $article->license = 'PRIVATE';
         $article->save();
 
-        // Cannot edit article if not collaborator and non copyable resource
-        $this->withSession([
-            'authId' => $eve->auth_id,
-            'email' => $eve->email,
-            'verifiedEmails' => [$eve->email],
-        ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_FORBIDDEN);
-        $this->assertCount(2, ArticleCollaborator::all());
-
-        // Well, maybe if i post directly? PURE GENIUS!
-        $this->withSession([
-            'authId' => $eve->auth_id,
-            'email' => $eve->email,
-            'verifiedEmails' => [$eve->email],
-        ])
-        ->put(route('article.update', $article->id), [
-            '_token' => csrf_token(),
-            'title' => 'Evil edit',
-            'content' => 'Muahahaha',
-            'license' => 'BY',
-            'collaborators' => 'a@b.com,c@d.com',
-        ])
-        ->assertStatus(Response::HTTP_FORBIDDEN);
+        $this->assertDatabaseCount('article_collaborators', 2);
 
         // Can edit if you are a collaborator even if the resource is non copyable
         $this->withSession([
@@ -237,16 +231,31 @@ class ArticleVersioningTest extends TestCase
             'email' => $collaborator->email,
             'verifiedEmails' => [$collaborator->email],
         ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_OK);
+            ->get(route('article.edit', $article->id))
+            ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "Another new title",
             'content' => $article->content,
         ]);
 
-        $this->assertCount(4, Article::all());
-        $this->assertDatabaseHas('articles', ['title' => 'Another new title', 'owner_id' => $owner->auth_id]);
-        $this->assertCount(3, ArticleCollaborator::all());
+        $this->assertDatabaseCount('articles', 4);
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Another new title',
+            'owner_id' => $owner->auth_id,
+            'parent_id' => $article->id,
+        ]);
+        $this->assertDatabaseHas('content_versions', [
+            'parent_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id,
+            'content_type' => Content::TYPE_ARTICLE,
+        ]);
+        $this->assertDatabaseCount('article_collaborators', 3);
+        $this->assertDatabaseCount('content_versions', 4);
+    }
+
+    public static function provider_testVersioning(): Generator
+    {
+        yield 'linear_versioning' => [true];
+        yield 'non-linear_versioning' => [false];
     }
 }

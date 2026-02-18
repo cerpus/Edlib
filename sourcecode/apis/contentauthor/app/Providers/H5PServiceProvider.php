@@ -2,23 +2,28 @@
 
 namespace App\Providers;
 
-use App\Libraries\ContentAuthorStorage;
+use App\Console\Libraries\CliH5pFramework;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\H5P\Adapters\NDLAH5PAdapter;
-use App\Libraries\H5P\Audio\NDLAAudioBrowser;
+use App\Libraries\H5P\Audio\NdlaAudioAdapter;
+use App\Libraries\H5P\Audio\NdlaAudioClient;
+use App\Libraries\H5P\Audio\NullAudioAdapter;
 use App\Libraries\H5P\EditorAjax;
 use App\Libraries\H5P\EditorStorage;
 use App\Libraries\H5P\Framework;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5pPresave;
-use App\Libraries\H5P\Image\NDLAContentBrowser;
+use App\Libraries\H5P\Image\NdlaImageAdapter;
+use App\Libraries\H5P\Image\NdlaImageClient;
+use App\Libraries\H5P\Image\NullImageAdapter;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
+use App\Libraries\H5P\TranslationServices\NullTranslationAdapter;
 use App\Libraries\H5P\TranslationServices\NynorobotAdapter;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
@@ -51,15 +56,15 @@ class H5PServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-    }
+    public function boot() {}
 
     public function provides()
     {
         return [
             H5PFileStorage::class,
             H5PAdapterInterface::class,
+            H5PAudioInterface::class,
+            H5PImageInterface::class,
             H5PVideoInterface::class,
             H5PLibraryAdmin::class,
             H5peditorStorage::class,
@@ -76,65 +81,57 @@ class H5PServiceProvider extends ServiceProvider
         $this->app
             ->when(H5pPresave::class)
             ->needs(Cloud::class)
-            ->give(fn () => Storage::disk('h5p-presave'));
+            ->give(fn() => Storage::disk('h5p-presave'));
 
-        $this->app->bind(H5PVideoInterface::class, function () {
-            $adapter = $this->app->make(H5PAdapterInterface::class)->getAdapterName();
-
-            return match (strtolower($adapter)) {
-                'ndla' => $this->app->make(NDLAVideoAdapter::class),
-                default => $this->app->make(NullVideoAdapter::class),
-            };
+        $this->app->bind(H5PVideoInterface::class, match (config('h5p.video.adapter')) {
+            'ndla' => NDLAVideoAdapter::class,
+            default => NullVideoAdapter::class,
         });
 
         $this->app->when(NDLAVideoAdapter::class)
             ->needs(Client::class)
-            ->give(fn () => Oauth2Client::getClient(OauthSetup::create([
-                'authUrl' => config('h5p.video.authUrl'),
-                'coreUrl' => config('h5p.video.url'),
-                'key' => config('h5p.video.key'),
-                'secret' => config('h5p.video.secret'),
+            ->give(fn() => Oauth2Client::getClient(OauthSetup::create([
+                'authUrl' => config('ndla.video.authUrl'),
+                'coreUrl' => config('ndla.video.url'),
+                'key' => config('ndla.video.key'),
+                'secret' => config('ndla.video.secret'),
             ])));
 
         $this->app->when(NDLAVideoAdapter::class)
             ->needs('$accountId')
-            ->giveConfig('h5p.video.accountId');
+            ->giveConfig('ndla.video.accountId');
 
-        $this->app->when(NDLAContentBrowser::class)
-            ->needs(Client::class)
-            ->give(fn () => new Client([
-                'base_uri' => config('h5p.image.url'),
-            ]));
-
-        $this->app->bind(H5PImageAdapterInterface::class, function () {
-            $adapter = $this->app->make(H5PAdapterInterface::class);
-
-            return match (strtolower($adapter->getAdapterName())) {
-                'ndla' => $this->app->make(NDLAContentBrowser::class),
-                default => null,
-            };
+        $this->app->bind(H5PImageInterface::class, match (config('h5p.image.adapter')) {
+            'ndla' => NdlaImageAdapter::class,
+            default => NullImageAdapter::class,
         });
 
-        $this->app->when(NDLAAudioBrowser::class)
-            ->needs(Client::class)
-            ->give(fn () => new Client([
-                'base_uri' => config('h5p.audio.url') ?: config('h5p.image.url'),
-            ]));
+        $this->app->when(NdlaImageAdapter::class)
+            ->needs('$url')
+            ->giveConfig('ndla.image.url');
 
-        $this->app->bind(H5PAudioInterface::class, function () {
-            $adapter = $this->app->make(H5PAdapterInterface::class);
+        $this->app->bind(NdlaImageClient::class, fn() => new NdlaImageClient([
+            'base_uri' => config('ndla.image.url'),
+        ]));
 
-            return match (strtolower($adapter->getAdapterName())) {
-                'ndla' => $this->app->make(NDLAAudioBrowser::class),
-                default => null, // none supported at the moment
-            };
+        $this->app->bind(H5PAudioInterface::class, match (config('h5p.audio.adapter')) {
+            'ndla' => NdlaAudioAdapter::class,
+            default => NullAudioAdapter::class,
         });
+
+        $this->app->when(NdlaAudioAdapter::class)
+            ->needs('$url')
+            ->giveConfig('ndla.audio.url');
+
+        $this->app->bind(NdlaAudioClient::class, fn() => new NdlaAudioClient([
+            'base_uri' => config('ndla.audio.url'),
+        ]));
 
         $this->app->bind(H5PCerpusStorage::class);
         $this->app->bind(H5PFileStorage::class, H5PCerpusStorage::class);
         $this->app->bind(CerpusStorageInterface::class, H5PCerpusStorage::class);
 
-        $this->app->singletonIf('H5PFilesystem', fn () => Storage::disk());
+        $this->app->singletonIf('H5PFilesystem', fn() => Storage::disk());
 
         $this->app->bind(NynorskrobotenAdapter::class, function () {
             $client = new Client([
@@ -160,44 +157,43 @@ class H5PServiceProvider extends ServiceProvider
             ->needs('$style')
             ->giveConfig('services.nynorobot.style');
 
-        $this->app->bind(TranslationServiceInterface::class, match (config('h5p.nynorskAdapter')) {
+        $this->app->bind(TranslationServiceInterface::class, match (config('h5p.translator')) {
             'nynorskroboten' => NynorskrobotenAdapter::class,
             'nynorobot' => NynorobotAdapter::class,
-            default => throw new \Exception('Unknown nynorsk adapter'),
+            default => NullTranslationAdapter::class,
         });
 
         $this->app->bind(H5PAdapterInterface::class, function () {
             $adapterTarget = strtolower(Session::get('adapterMode', config('h5p.h5pAdapter')));
-            switch ($adapterTarget) {
-                case 'ndla':
-                    $adapter = new NDLAH5PAdapter();
-                    break;
-                case 'cerpus':
-                default:
-                    $adapter = new CerpusH5PAdapter();
-                    break;
-            }
+            $adapter = match ($adapterTarget) {
+                'ndla' => $this->app->make(NDLAH5PAdapter::class),
+                default => $this->app->make(CerpusH5PAdapter::class),
+            };
             if (Session::has('adapterMode')) {
                 $adapter->overrideAdapterSettings();
             }
             return $adapter;
         });
 
-        $this->app->singletonIf(H5peditorStorage::class, function ($app) {
-            /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            return new EditorStorage(resolve(H5PCore::class), $contentAuthorStorage);
-        });
+        $this->app->singletonIf(H5peditorStorage::class, EditorStorage::class);
 
         $this->app->singletonIf(H5PFrameworkInterface::class, function () {
             $pdoConnection = DB::connection()->getPdo();
-            /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $this->app->make(ContentAuthorStorage::class);
+
+            // H5P Editor preforms permission checks when installing/updating libraries, so we override
+            // the permission functions in a CLI version of the Framework
+            if ($this->app->runningInConsole() && !$this->app->runningUnitTests()) {
+                return new CliH5pFramework(
+                    new Client(),
+                    $pdoConnection,
+                    Storage::disk('h5pTmp'),
+                );
+            }
 
             return new Framework(
                 new Client(),
                 $pdoConnection,
-                $contentAuthorStorage->getH5pTmpDisk(),
+                Storage::disk('h5pTmp'),
             );
         });
 
@@ -205,8 +201,7 @@ class H5PServiceProvider extends ServiceProvider
             /** @var App $app */
             /** @var CerpusStorageInterface|H5PFileStorage $fileStorage */
             $fileStorage = $app->make(H5PFileStorage::class);
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, $contentAuthorStorage->getAssetsBaseUrl());
+            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, Storage::disk()->url(''));
             $core->aggregateAssets = true;
 
             $app->instance(H5PCore::class, $core);
@@ -216,6 +211,16 @@ class H5PServiceProvider extends ServiceProvider
         $this->app->when(\App\Libraries\H5P\H5PExport::class)
             ->needs('$convertMediaToLocal')
             ->giveConfig('feature.export_h5p_with_local_files');
+
+        $this->app->tag([
+            H5PAudioInterface::class,
+            H5PImageInterface::class,
+            H5PVideoInterface::class,
+        ], 'external-providers');
+
+        $this->app->when(\App\Libraries\H5P\H5PExport::class)
+            ->needs('$externalProviders')
+            ->giveTagged('external-providers');
 
         $this->app->bind(H5PExport::class, function ($app) {
             /** @var App $app */

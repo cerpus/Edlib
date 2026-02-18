@@ -8,5 +8,6 @@ interface VersionableObject
     public function getOwnerId(): string;
     public function setParentVersionId(string $parentVersionId): bool;
     public function setVersionId(string $versionId);
+    public function getContentType(bool $withSubType = false);
     public function save();
 }
