@@ -31,6 +31,12 @@
                 {{ trans('messages.admins') }}
             </a>
         </li>
+
+        <li>
+            <a href="{{ route('admin.content-exclusions.index') }}">
+                Content exclusions
+            </a>
+        </li>
     </ul>
 
     <h3>{{ trans('messages.danger-zone') }}</h3>

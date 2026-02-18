@@ -319,6 +319,14 @@ class Content extends Model
     }
 
     /**
+     * @return HasMany<ContentExclusion, $this>
+     */
+    public function exclusions(): HasMany
+    {
+        return $this->hasMany(ContentExclusion::class);
+    }
+
+    /**
      * @return HasMany<ContentLock, $this>
      */
     public function locks(): HasMany

@@ -112,7 +112,12 @@ class AdminH5PDetailsController extends Controller
             'usedBy' => H5PLibraryLibrary::where('required_library_id', $library->id)->get(),
             'info' => $validator->h5pF->getMessages('info'),
             'error' => $validator->h5pF->getMessages('error'),
-            'languages' => H5PLibraryLanguage::select('language_code')->where('library_id', $library->id)->pluck('language_code'),
+            'languages' => H5PLibraryLanguage::select('language_code')
+                ->where('library_id', $library->id)
+                ->pluck('language_code')
+                ->push('en') // Allow refresh of 'en' texts in content, 'en' is usually the key/default text and not in a separate file
+                ->unique() // but just in case it is
+                ->sort(),
         ]);
     }
 
@@ -343,13 +348,14 @@ class AdminH5PDetailsController extends Controller
         $content = $version->getContent();
 
         if (!empty($content)) {
+            /** @var ?H5PLibrary $library */
             $library = $content->library;
             return [
                 'title' => $content->title,
                 'license' => $content->license,
                 'language' => $content->language_iso_639_3,
-                'library_id' => $library->id,
-                'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
+                'library_id' => $library->id ?? null,
+                'library' => $library?->getLibraryString(true) ?? null,
             ];
         }
 

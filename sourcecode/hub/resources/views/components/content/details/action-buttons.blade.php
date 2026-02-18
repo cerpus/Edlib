@@ -69,6 +69,20 @@
     </button>
 @endcan
 
+@can('admin')
+    <button
+        class="btn btn-outline-warning d-flex gap-2 text-nowrap"
+        hx-get="{{ route('admin.content-exclusions.dialog', [$content]) }}"
+        hx-target="#modal-container"
+        hx-swap="beforeend"
+        data-modal="true"
+        title="Exclude content"
+    >
+        <x-icon name="slash-circle" />
+        <span class="visually-hidden">Exclude</span>
+    </button>
+@endcan
+
 @cannot('delete', $content)
     @if($activeLock)
         {{ trans('messages.the-lock-is-held-by-since', ['name' => $activeLock?->user->name ?? 'unknown', 'datetime' => $activeLock?->created_at ?? '?' ]) }}

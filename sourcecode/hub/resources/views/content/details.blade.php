@@ -87,6 +87,21 @@
                             ></time>
                         </td>
                     </tr>
+                    @can('admin')
+                        @if($content->exclusions->isNotEmpty())
+                            <tr>
+                                <th scope="row">Exclusions</th>
+                                <td>
+                                    @foreach($content->exclusions as $exclusion)
+                                        <span class="badge text-bg-warning">{{ match($exclusion->exclude_from) {
+                                            'library_translation_update' => 'Translation update',
+                                            default => $exclusion->exclude_from,
+                                        } }}</span>
+                                    @endforeach
+                                </td>
+                            </tr>
+                        @endif
+                    @endcan
                 </tbody>
             </table>
             <table class="table table-sm table-striped caption-top">

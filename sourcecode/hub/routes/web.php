@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminsController;
+use App\Http\Controllers\Admin\ContentExclusionController;
 use App\Http\Controllers\Admin\ContextController;
 use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
@@ -326,6 +327,26 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
 
     Route::post('/attach-context-to-contents')
         ->uses([ContextController::class, 'performAttachToContents']);
+
+    Route::prefix('/content-exclusions')->group(function () {
+        Route::get('', [ContentExclusionController::class, 'index'])
+            ->name('admin.content-exclusions.index');
+        Route::get('/search', [ContentExclusionController::class, 'search'])
+            ->name('admin.content-exclusions.search');
+        Route::post('', [ContentExclusionController::class, 'add'])
+            ->name('admin.content-exclusions.add');
+        Route::delete('', [ContentExclusionController::class, 'delete'])
+            ->name('admin.content-exclusions.delete');
+        Route::get('/{content}/dialog', [ContentExclusionController::class, 'exclusionDialog'])
+            ->name('admin.content-exclusions.dialog')
+            ->whereUlid('content');
+        Route::post('/{content}', [ContentExclusionController::class, 'addOne'])
+            ->name('admin.content-exclusions.add-one')
+            ->whereUlid('content');
+        Route::delete('/{content}', [ContentExclusionController::class, 'removeOne'])
+            ->name('admin.content-exclusions.remove-one')
+            ->whereUlid('content');
+    });
 
     Route::can('handle_deleted', 'content')->prefix('/deleted')->group(function () {
         Route::get('/content')
