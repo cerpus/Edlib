@@ -7,6 +7,7 @@ export default defineConfig({
         host: true,
         port: 80,
         strictPort: true,
+        allowedHosts: true,
         hmr: {
             host: 'hub-vite-hmr.edlib.test',
             clientPort: '443',

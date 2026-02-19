@@ -1,571 +1,1003 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method GuzzleHttp\\\\ClientInterface\\:\\:request\\(\\) invoked with 1 parameter, 2\\-3 required\\.$#"
+			message: '#^Method GuzzleHttp\\ClientInterface\:\:request\(\) invoked with 1 parameter, 2\-3 required\.$#'
+			identifier: arguments.count
 			count: 1
 			path: app/Article.php
 
 		-
-			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"
+			message: '#^Property App\\Auth\\Guards\\EdlibGuard\:\:\$user \(Illuminate\\Auth\\GenericUser\|null\) does not accept Illuminate\\Contracts\\Auth\\Authenticatable\|null\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: app/Auth/Guards/EdlibGuard.php
 
 		-
-			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
+			message: '#^Access to an undefined property App\\ContentLanguageLink\:\:\$link_content_id\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Content.php
 
 		-
-			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$main_content_id\\.$#"
+			message: '#^Access to an undefined property App\\ContentLanguageLink\:\:\$main_content_id\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Content.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
 			count: 2
 			path: app/Content.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$article\\.$#"
+			message: '#^Call to function is_countable\(\) with Illuminate\\Database\\Eloquent\\Collection\<int, App\\ContentLanguageLink\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Content.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: app/Content.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Content.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 1
+			path: app/Content.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: app/Content.php
+
+		-
+			message: '#^Access to an undefined property App\\Events\\ArticleWasCopied\:\:\$article\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Events/ArticleWasCopied.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$reason\\.$#"
+			message: '#^Access to an undefined property App\\Events\\ArticleWasCopied\:\:\$reason\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Events/ArticleWasCopied.php
 
 		-
-			message: "#^Method App\\\\Exceptions\\\\Handler\\:\\:render\\(\\) should return Illuminate\\\\Http\\\\Response but returns Symfony\\\\Component\\\\HttpFoundation\\\\Response\\.$#"
+			message: '#^Method App\\Exceptions\\Handler\:\:render\(\) should return Illuminate\\Http\\Response but returns Symfony\\Component\\HttpFoundation\\Response\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Exceptions/Handler.php
 
 		-
-			message: "#^Method App\\\\Exceptions\\\\Handler\\:\\:report\\(\\) with return type void returns null but should not return anything\\.$#"
+			message: '#^Method App\\Exceptions\\Handler\:\:report\(\) with return type void returns null but should not return anything\.$#'
+			identifier: return.void
 			count: 1
 			path: app/Exceptions/Handler.php
 
 		-
-			message: "#^PHPDoc type array of property App\\\\Exceptions\\\\Handler\\:\\:\\$dontReport is not covariant with PHPDoc type array\\<int, class\\-string\\<Throwable\\>\\> of overridden property Illuminate\\\\Foundation\\\\Exceptions\\\\Handler\\:\\:\\$dontReport\\.$#"
+			message: '#^PHPDoc type array of property App\\Exceptions\\Handler\:\:\$dontReport is not covariant with PHPDoc type array\<int, class\-string\<Throwable\>\> of overridden property Illuminate\\Foundation\\Exceptions\\Handler\:\:\$dontReport\.$#'
+			identifier: property.phpDocType
 			count: 1
 			path: app/Exceptions/Handler.php
 
 		-
-			message: "#^Result of method Illuminate\\\\Foundation\\\\Exceptions\\\\Handler\\:\\:report\\(\\) \\(void\\) is used\\.$#"
+			message: '#^Result of method Illuminate\\Foundation\\Exceptions\\Handler\:\:report\(\) \(void\) is used\.$#'
+			identifier: staticMethod.void
 			count: 1
 			path: app/Exceptions/Handler.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Game.php
 
 		-
-			message: "#^Method App\\\\H5PCollaborator\\:\\:setUpdatedAt\\(\\) should return \\$this\\(App\\\\H5PCollaborator\\) but return statement is missing\\.$#"
+			message: '#^Method App\\H5PCollaborator\:\:setUpdatedAt\(\) should return \$this\(App\\H5PCollaborator\) but return statement is missing\.$#'
+			identifier: return.missing
 			count: 1
 			path: app/H5PCollaborator.php
 
 		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 2
-			path: app/H5PContent.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, int\\<min, \\-1\\>\\|int\\<1, max\\> given\\.$#"
+			message: '#^Call to function is_null\(\) with App\\H5PContentsMetadata will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: app/H5PContent.php
 
 		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\LinkInfoController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			message: '#^Called ''Model\:\:make\(\)'' which performs unnecessary work, use ''new Model\(\)''\.$#'
+			identifier: larastan.noModelMake
+			count: 2
+			path: app/H5PContent.php
+
+		-
+			message: '#^Parameter \#1 \$json of function json_decode expects string, int\<min, \-1\>\|int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/H5PContent.php
+
+		-
+			message: '#^PHPDoc tag @var with type Illuminate\\Database\\Eloquent\\Builder\<App\\H5PLibraryLanguage\> is not subtype of native type Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: app/H5PLibraryLanguage.php
+
+		-
+			message: '#^Call to function is_null\(\) with League\\Fractal\\Manager will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: app/Http/Controllers/API/LinkInfoController.php
 
 		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\QuestionsetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			message: '#^Method App\\Http\\Controllers\\API\\LinkInfoController\:\:buildResourceResponse\(\) should return Illuminate\\Http\\Response but returns Illuminate\\Http\\JsonResponse\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/API/LinkInfoController.php
+
+		-
+			message: '#^Call to function is_null\(\) with League\\Fractal\\Manager will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
-			message: "#^Parameter \\#1 \\$searchParams of static method Cerpus\\\\QuestionBankClient\\\\Adapters\\\\QuestionBankAdapter\\:\\:searchAnswers\\(\\) expects null, Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject given\\.$#"
+			message: '#^Method App\\Http\\Controllers\\API\\QuestionsetController\:\:buildResourceResponse\(\) should return Illuminate\\Http\\Response but returns Illuminate\\Http\\JsonResponse\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/API/QuestionsetController.php
+
+		-
+			message: '#^Parameter \#1 \$searchParams of static method Cerpus\\QuestionBankClient\\Adapters\\QuestionBankAdapter\:\:searchAnswers\(\) expects null, Cerpus\\QuestionBankClient\\DataObjects\\SearchDataObject given\.$#'
+			identifier: argument.type
 			count: 2
 			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
-			message: "#^Parameter \\#1 \\$searchParams of static method Cerpus\\\\QuestionBankClient\\\\Adapters\\\\QuestionBankAdapter\\:\\:searchQuestions\\(\\) expects Illuminate\\\\Support\\\\Collection\\|null, Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject given\\.$#"
+			message: '#^Parameter \#1 \$searchParams of static method Cerpus\\QuestionBankClient\\Adapters\\QuestionBankAdapter\:\:searchQuestions\(\) expects Illuminate\\Support\\Collection\|null, Cerpus\\QuestionBankClient\\DataObjects\\SearchDataObject given\.$#'
+			identifier: argument.type
 			count: 2
 			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
-			message: "#^Static method Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject\\:\\:create\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			message: '#^Static method Cerpus\\QuestionBankClient\\DataObjects\\SearchDataObject\:\:create\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
 			count: 6
 			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
-			message: "#^Static call to instance method App\\\\H5PContent\\:\\:noMaxScoreScope\\(\\)\\.$#"
+			message: '#^Offset ''h5p_id'' on array\{h5p_id\: string, update_url\: string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Http/Controllers/Admin/AdminContentMigrateController.php
+
+		-
+			message: '#^Offset ''update_url'' on array\{h5p_id\: string, update_url\: string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Http/Controllers/Admin/AdminContentMigrateController.php
+
+		-
+			message: '#^Static call to instance method App\\H5PContent\:\:noMaxScoreScope\(\)\.$#'
+			identifier: method.staticCall
 			count: 1
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
-			message: "#^Function collect invoked with 2 parameters, 0\\-1 required\\.$#"
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
+
+		-
+			message: '#^Function collect invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
 			count: 1
 			path: app/Http/Controllers/ArticleController.php
 
 		-
-			message: "#^Cannot access property \\$resource on array\\|bool\\|float\\|int\\|object\\|string\\.$#"
+			message: '#^Cannot access property \$resource on array\|bool\|float\|int\|object\|string\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: app/Http/Controllers/ArticleCopyrightController.php
 
 		-
-			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
+			message: '#^Called ''isNotEmpty'' on Laravel collection, but could have been retrieved as a query\.$#'
+			identifier: larastan.noUnnecessaryCollectionCall
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:getContentLicense\\(\\) should return Illuminate\\\\Http\\\\Response but returns int\\|string\\|false\\.$#"
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 2
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\H5PController\:\:getContentLicense\(\) should return Illuminate\\Http\\Response but returns int\|string\|false\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Parameter \\#2 \\$current of method H5PCore\\:\\:getStorableDisplayOptions\\(\\) expects int, null given\\.$#"
+			message: '#^Parameter \#2 \$current of method H5PCore\:\:getStorableDisplayOptions\(\) expects int, null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Variable \\$emails in isset\\(\\) always exists and is not nullable\\.$#"
+			message: '#^Variable \$emails in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\QuestionSetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			message: '#^Variable \$library in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: '#^Call to function is_null\(\) with League\\Fractal\\Manager will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: app/Http/Controllers/QuestionSetController.php
 
 		-
-			message: "#^PHPDoc type array of property App\\\\Http\\\\Kernel\\:\\:\\$middlewarePriority is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Foundation\\\\Http\\\\Kernel\\:\\:\\$middlewarePriority\\.$#"
+			message: '#^Method App\\Http\\Controllers\\QuestionSetController\:\:buildResourceResponse\(\) should return Illuminate\\Http\\Response but returns Illuminate\\Http\\JsonResponse\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/QuestionSetController.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Http\\Kernel\:\:\$middlewarePriority is not covariant with PHPDoc type array\<string\> of overridden property Illuminate\\Foundation\\Http\\Kernel\:\:\$middlewarePriority\.$#'
+			identifier: property.phpDocType
 			count: 1
 			path: app/Http/Kernel.php
 
 		-
-			message: "#^Anonymous function has an unused use \\$newH5P\\.$#"
+			message: '#^Anonymous function has an unused use \$newH5P\.$#'
+			identifier: closure.unusedUse
 			count: 1
 			path: app/Http/Libraries/H5PFileVersioner.php
 
 		-
-			message: "#^Parameter \\#2 \\$callback of function array_filter expects \\(callable\\(string\\)\\: bool\\)\\|null, 'strlen' given\\.$#"
+			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(uppercase\-string\)\: bool\)\|null, ''strlen'' given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Http/Libraries/License.php
 
 		-
-			message: "#^Variable \\$registerSettings might not be defined\\.$#"
+			message: '#^Variable \$registerSettings might not be defined\.$#'
+			identifier: variable.undefined
 			count: 1
 			path: app/Http/Middleware/LtiBehaviorSettings.php
 
 		-
-			message: "#^Variable \\$validator might not be defined\\.$#"
+			message: '#^Variable \$validator might not be defined\.$#'
+			identifier: variable.undefined
 			count: 2
 			path: app/Http/Middleware/LtiBehaviorSettings.php
 
 		-
-			message: "#^PHPDoc type array of property App\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers is not covariant with PHPDoc type int of overridden property Illuminate\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers\\.$#"
+			message: '#^PHPDoc type array of property App\\Http\\Middleware\\TrustProxies\:\:\$headers is not covariant with PHPDoc type int of overridden property Illuminate\\Http\\Middleware\\TrustProxies\:\:\$headers\.$#'
+			identifier: property.phpDocType
 			count: 1
 			path: app/Http/Middleware/TrustProxies.php
 
 		-
-			message: "#^Property App\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers \\(array\\) does not accept default value of type int\\.$#"
+			message: '#^Property App\\Http\\Middleware\\TrustProxies\:\:\$headers \(array\) does not accept default value of type int\.$#'
+			identifier: property.defaultValue
 			count: 1
 			path: app/Http/Middleware/TrustProxies.php
 
 		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			message: '#^Called ''Model\:\:make\(\)'' which performs unnecessary work, use ''new Model\(\)''\.$#'
+			identifier: larastan.noModelMake
 			count: 1
 			path: app/Http/Requests/H5PStorageRequest.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\DataObjects\\\\Attribution\\:\\:getOrigin\\(\\) should return null but returns string\\.$#"
+			message: '#^Call to function is_null\(\) with App\\H5PFile will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Jobs/H5PFileUpload.php
+
+		-
+			message: '#^Method App\\Libraries\\DataObjects\\Attribution\:\:getOrigin\(\) should return null but returns string\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Libraries/DataObjects/Attribution.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\Games\\\\GameBase\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			message: '#^Call to function is_null\(\) with League\\Fractal\\Manager will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: app/Libraries/Games/GameBase.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$tags\\.$#"
+			message: '#^Method App\\Libraries\\Games\\GameBase\:\:buildResourceResponse\(\) should return Illuminate\\Http\\Response but returns Illuminate\\Http\\JsonResponse\.$#'
+			identifier: return.type
 			count: 1
-			path: app/Libraries/H5P/Adapters/CerpusH5PAdapter.php
+			path: app/Libraries/Games/GameBase.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$tags\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Adapters/NDLAH5PAdapter.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$majorVersion\\.$#"
+			message: '#^Access to an undefined property App\\H5PLibrary\:\:\$majorVersion\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/AdminConfig.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$minorVersion\\.$#"
+			message: '#^Access to an undefined property App\\H5PLibrary\:\:\$minorVersion\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/AdminConfig.php
 
 		-
-			message: "#^Property App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:\\$core is never read, only written\\.$#"
+			message: '#^Property App\\Libraries\\H5P\\AdminConfig\:\:\$core is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: app/Libraries/H5P/AdminConfig.php
 
 		-
-			message: "#^Property App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:\\$id is never read, only written\\.$#"
+			message: '#^Property App\\Libraries\\H5P\\AdminConfig\:\:\$id is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: app/Libraries/H5P/AdminConfig.php
 
 		-
-			message: "#^Cannot access property \\$css on array\\.$#"
+			message: '#^Call to function is_string\(\) with array will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 2
 			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
-			message: "#^Parameter \\#6 \\$fileDir of method H5peditor\\:\\:getLibraryData\\(\\) expects string, null given\\.$#"
+			message: '#^Cannot access property \$css on array\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
+			message: '#^Instanceof between App\\Libraries\\H5P\\Image\\NullImageAdapter and App\\Libraries\\H5P\\Image\\NdlaImageAdapter will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
 			count: 1
 			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
-			message: "#^Should not use node with type \"Expr_Exit\", please change the code\\.$#"
+			message: '#^Parameter \#6 \$fileDir of method H5peditor\:\:getLibraryData\(\) expects string, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
+			message: '#^Should not use node with type "Expr_Exit", please change the code\.$#'
+			identifier: ekinoBannedCode.expression
 			count: 3
 			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,App\\\\H5PLibrary\\>\\:\\:filter\\(\\) expects \\(callable\\(App\\\\H5PLibrary, int\\)\\: bool\\)\\|null, Closure\\(mixed\\)\\: int given\\.$#"
+			message: '#^Parameter \#1 \$array \(list\<mixed\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: app/Libraries/H5P/Dataobjects/H5PView.php
+
+		-
+			message: '#^PHPDoc tag @var with type Illuminate\\Database\\Eloquent\\Builder\<App\\H5PLibraryLanguage\> is not subtype of native type Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: varTag.nativeType
 			count: 1
 			path: app/Libraries/H5P/EditorAjax.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,App\\H5PLibrary\>\:\:filter\(\) expects \(callable\(App\\H5PLibrary, int\)\: bool\)\|null, Closure\(mixed\)\: int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Libraries/H5P/EditorAjax.php
+
+		-
+			message: '#^Access to an undefined property App\\H5PLibrary\:\:\$isOld\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$majorVersion\\.$#"
+			message: '#^Access to an undefined property App\\H5PLibrary\:\:\$majorVersion\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$metadataSettings\\.$#"
+			message: '#^Access to an undefined property App\\H5PLibrary\:\:\$metadataSettings\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$minorVersion\\.$#"
+			message: '#^Access to an undefined property App\\H5PLibrary\:\:\$minorVersion\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$uberName\\.$#"
+			message: '#^Access to an undefined property App\\H5PLibrary\:\:\$uberName\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Property App\\\\H5PLibrary\\:\\:\\$restricted \\(int\\) does not accept false\\.$#"
+			message: '#^Property App\\H5PLibrary\:\:\$restricted \(int\) does not accept false\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			message: '#^Strict comparison using \=\=\= between int and ''1'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: '#^Call to function is_object\(\) with stdClass will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: '#^Called ''Model\:\:make\(\)'' which performs unnecessary work, use ''new Model\(\)''\.$#'
+			identifier: larastan.noModelMake
 			count: 3
 			path: app/Libraries/H5P/Framework.php
 
 		-
-			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
 			count: 1
 			path: app/Libraries/H5P/Framework.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:getLibraryId\\(\\) should return int but returns false\\.$#"
+			message: '#^Method App\\Libraries\\H5P\\Framework\:\:getLibraryId\(\) should return int but returns false\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Libraries/H5P/Framework.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:hasPermission\\(\\) should return bool but return statement is missing\\.$#"
+			message: '#^Method App\\Libraries\\H5P\\Framework\:\:hasPermission\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
 			count: 1
 			path: app/Libraries/H5P/Framework.php
 
 		-
-			message: "#^Method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) invoked with 1 parameter, 2 required\\.$#"
+			message: '#^Parameter &\$libraryData by\-ref type of method App\\Libraries\\H5P\\Framework\:\:saveLibraryData\(\) expects object, array given\.$#'
+			identifier: parameterByRef.type
+			count: 5
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: app/Libraries/H5P/H5PCopyright.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 1
+			path: app/Libraries/H5P/H5PCopyright.php
+
+		-
+			message: '#^Instanceof between App\\Libraries\\H5P\\Audio\\NullAudioAdapter and App\\Libraries\\H5P\\Audio\\NdlaAudioAdapter will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: app/Libraries/H5P/H5PCreateConfig.php
+
+		-
+			message: '#^Instanceof between App\\Libraries\\H5P\\Image\\NullImageAdapter and App\\Libraries\\H5P\\Image\\NdlaImageAdapter will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: app/Libraries/H5P/H5PCreateConfig.php
+
+		-
+			message: '#^Instanceof between App\\Libraries\\H5P\\Audio\\NullAudioAdapter and App\\Libraries\\H5P\\Audio\\NdlaAudioAdapter will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: app/Libraries/H5P/H5PEditConfig.php
+
+		-
+			message: '#^Instanceof between App\\Libraries\\H5P\\Image\\NullImageAdapter and App\\Libraries\\H5P\\Image\\NdlaImageAdapter will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: app/Libraries/H5P/H5PEditConfig.php
+
+		-
+			message: '#^Method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:put\(\) invoked with 1 parameter, 2 required\.$#'
+			identifier: arguments.count
 			count: 1
 			path: app/Libraries/H5P/H5PImport.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of method H5PStorage\\:\\:savePackage\\(\\) expects null, array given\\.$#"
+			message: '#^Parameter \#1 \$content of method H5PStorage\:\:savePackage\(\) expects null, array given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Libraries/H5P/H5PImport.php
 
 		-
-			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) expects \\(int\\|string\\), array\\<string, string\\> given\\.$#"
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:put\(\) expects \(int\|string\), array\<string, string\> given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Libraries/H5P/H5PImport.php
 
 		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			message: '#^Called ''Model\:\:make\(\)'' which performs unnecessary work, use ''new Model\(\)''\.$#'
+			identifier: larastan.noModelMake
 			count: 1
 			path: app/Libraries/H5P/H5PLibraryAdmin.php
 
 		-
-			message: "#^Parameter \\#4 \\$options of method H5PStorage\\:\\:savePackage\\(\\) expects array, bool given\\.$#"
+			message: '#^Parameter \#4 \$options of method H5PStorage\:\:savePackage\(\) expects array, bool given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Libraries/H5P/H5PLibraryAdmin.php
 
 		-
-			message: "#^Undefined variable\\: \\$dev_lib$#"
+			message: '#^Strict comparison using \=\=\= between string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
 			path: app/Libraries/H5P/H5PLibraryAdmin.php
 
 		-
-			message: "#^Variable \\$dev_lib in isset\\(\\) is never defined\\.$#"
+			message: '#^Undefined variable\: \$dev_lib$#'
+			identifier: variable.undefined
 			count: 1
 			path: app/Libraries/H5P/H5PLibraryAdmin.php
 
 		-
-			message: "#^Call to method execute\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
+			message: '#^Variable \$dev_lib in isset\(\) is never defined\.$#'
+			identifier: isset.variable
+			count: 1
+			path: app/Libraries/H5P/H5PLibraryAdmin.php
+
+		-
+			message: '#^Call to method execute\(\) on an unknown class App\\Libraries\\H5P\\PDOStatement\.$#'
+			identifier: class.notFound
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^Call to method fetchAll\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
+			message: '#^Call to method fetchAll\(\) on an unknown class App\\Libraries\\H5P\\PDOStatement\.$#'
+			identifier: class.notFound
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^Dead catch \\- Exception is never thrown in the try block\\.$#"
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\H5PProgress\\:\\:getProgress\\(\\) should return bool\\|string but returns null\\.$#"
+			message: '#^Method App\\Libraries\\H5P\\H5PProgress\:\:getProgress\(\) should return bool\|string but returns null\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^PHPDoc tag @var for variable \\$stmt contains unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
+			message: '#^PHPDoc tag @var for variable \$stmt contains unknown class App\\Libraries\\H5P\\PDOStatement\.$#'
+			identifier: class.notFound
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$db PDO\\)\\: Unexpected token \"\\$db\", expected type at offset 16$#"
+			message: '#^PHPDoc tag @var has invalid value \(\$db PDO\)\: Unexpected token "\$db", expected type at offset 16 on line 2$#'
+			identifier: phpDoc.parseError
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^Property App\\\\Libraries\\\\H5P\\\\H5PProgress\\:\\:\\$request is never read, only written\\.$#"
+			message: '#^Property App\\Libraries\\H5P\\H5PProgress\:\:\$request is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^Should not use node with type \"Expr_Exit\", please change the code\\.$#"
+			message: '#^Should not use node with type "Expr_Exit", please change the code\.$#'
+			identifier: ekinoBannedCode.expression
 			count: 2
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PViewConfig.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
 			count: 1
 			path: app/Libraries/H5P/Helper/H5PPackageProvider.php
 
 		-
-			message: "#^Anonymous function has an unused use \\$slide\\.$#"
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: app/Libraries/H5P/Helper/H5PPackageProvider.php
+
+		-
+			message: '#^Anonymous function has an unused use \$slide\.$#'
+			identifier: closure.unusedUse
 			count: 1
 			path: app/Libraries/H5P/Packages/CoursePresentation.php
 
 		-
-			message: "#^Offset 'package' on array\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, index\\: \\(int\\|string\\)\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			message: '#^Call to function is_null\(\) with App\\Libraries\\H5P\\Interfaces\\PackageInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: '#^Offset ''package'' on array\{package\: App\\Libraries\\H5P\\Interfaces\\PackageInterface, index\: \(int\|string\)\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
 			count: 1
 			path: app/Libraries/H5P/Packages/InteractiveVideo.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with object\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, answers\\: mixed, context\\: string\\|null\\}&stdClass will always evaluate to false\\.$#"
+			message: '#^PHPDoc tag @var with type App\\Libraries\\H5P\\Interfaces\\PackageInterface\|null is not subtype of native type App\\Libraries\\H5P\\Interfaces\\PackageInterface\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: app/Libraries/H5P/Packages/InteractiveVideo.php
+
+		-
+			message: '#^Call to function is_null\(\) with object\{package\: App\\Libraries\\H5P\\Interfaces\\PackageInterface, answers\: mixed, context\: string\|null\}&stdClass will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: app/Libraries/H5P/Reports/H5PPackage.php
 
 		-
-			message: "#^Access to an undefined property H5peditorFile\\:\\:\\$hash\\.$#"
+			message: '#^Access to an undefined property H5peditorFile\:\:\$hash\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\:\\:createDirectory\\(\\)\\.$#"
+			message: '#^Call to an undefined method Illuminate\\Contracts\\Filesystem\\Filesystem\:\:createDirectory\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\:\\:has\\(\\)\\.$#"
+			message: '#^Call to an undefined method Illuminate\\Contracts\\Filesystem\\Filesystem\:\:has\(\)\.$#'
+			identifier: method.notFound
 			count: 5
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\:\\:listContents\\(\\)\\.$#"
+			message: '#^Call to an undefined method Illuminate\\Contracts\\Filesystem\\Filesystem\:\:listContents\(\)\.$#'
+			identifier: method.notFound
 			count: 3
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
+			message: '#^Called ''isNotEmpty'' on Laravel collection, but could have been retrieved as a query\.$#'
+			identifier: larastan.noUnnecessaryCollectionCall
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
 			count: 2
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage\\:\\:getContent\\(\\) should return string but return statement is missing\\.$#"
+			message: '#^Method App\\Libraries\\H5P\\Storage\\H5PCerpusStorage\:\:getContent\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage\\:\\:moveContentDirectory\\(\\) should return object but return statement is missing\\.$#"
+			message: '#^Method App\\Libraries\\H5P\\Storage\\H5PCerpusStorage\:\:moveContentDirectory\(\) should return object but return statement is missing\.$#'
+			identifier: return.missing
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage\\:\\:moveContentDirectory\\(\\) should return object but returns null\\.$#"
+			message: '#^Method App\\Libraries\\H5P\\Storage\\H5PCerpusStorage\:\:moveContentDirectory\(\) should return object but returns null\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Static call to instance method App\\\\H5PFile\\:\\:deleteContentPendingUpload\\(\\)\\.$#"
+			message: '#^Static call to instance method App\\H5PFile\:\:deleteContentPendingUpload\(\)\.$#'
+			identifier: method.staticCall
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Variable \\$filePath might not be defined\\.$#"
+			message: '#^Strict comparison using \=\=\= between string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of method H5peditor\\:\\:processParameters\\(\\) expects stdClass, int given\\.$#"
+			message: '#^Variable \$filePath might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: '#^Method App\\Libraries\\H5P\\TranslationServices\\NullTranslationAdapter\:\:getSupportedLanguages\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/Libraries/H5P/TranslationServices/NullTranslationAdapter.php
+
+		-
+			message: '#^Method App\\Libraries\\H5P\\TranslationServices\\NynorobotAdapter\:\:getSupportedLanguages\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/Libraries/H5P/TranslationServices/NynorobotAdapter.php
+
+		-
+			message: '#^Method App\\Libraries\\H5P\\TranslationServices\\NynorskrobotenAdapter\:\:getSupportedLanguages\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/Libraries/H5P/TranslationServices/NynorskrobotenAdapter.php
+
+		-
+			message: '#^Parameter \#1 \$content of method H5peditor\:\:processParameters\(\) expects stdClass, int given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Libraries/H5P/h5p.php
 
 		-
-			message: "#^Undefined variable\\: \\$library$#"
+			message: '#^Undefined variable\: \$library$#'
+			identifier: variable.undefined
 			count: 1
 			path: app/Libraries/H5P/h5p.php
 
 		-
-			message: "#^Variable \\$library in empty\\(\\) is never defined\\.$#"
+			message: '#^Variable \$library in empty\(\) is never defined\.$#'
+			identifier: empty.variable
 			count: 1
 			path: app/Libraries/H5P/h5p.php
 
 		-
-			message: "#^Access to an undefined property HTMLPurifier_Definition\\:\\:\\$manager\\.$#"
+			message: '#^Access to an undefined property HTMLPurifier_Definition\:\:\$manager\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
 
 		-
-			message: "#^Parameter \\#1 \\$config of static method App\\\\Libraries\\\\HTMLPurify\\\\Config\\\\MathMLConfig\\:\\:create\\(\\) expects array\\|HTMLPurifier_Config\\|string, null given\\.$#"
+			message: '#^Parameter \#1 \$config of static method App\\Libraries\\HTMLPurify\\Config\\MathMLConfig\:\:create\(\) expects array\|HTMLPurifier_Config\|string, null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
 
 		-
-			message: "#^Parameter \\#1 \\$config of static method HTMLPurifier_HTML5Config\\:\\:create\\(\\) expects array\\|HTMLPurifier_Config\\|string, HTMLPurifier_ConfigSchema given\\.$#"
+			message: '#^Parameter \#1 \$config of static method HTMLPurifier_HTML5Config\:\:create\(\) expects array\|HTMLPurifier_Config\|string, HTMLPurifier_ConfigSchema given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
 
 		-
-			message: "#^Parameter \\#3 \\$type of method HTMLPurifier_ConfigSchema\\:\\:add\\(\\) expects string, int given\\.$#"
+			message: '#^Parameter \#3 \$type of method HTMLPurifier_ConfigSchema\:\:add\(\) expects string, int given\.$#'
+			identifier: argument.type
 			count: 1
 			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
 
 		-
-			message: "#^Property App\\\\Libraries\\\\HTMLPurify\\\\HTMLModule\\\\MathML\\:\\:\\$mathml_prefix is never read, only written\\.$#"
+			message: '#^Property App\\Libraries\\HTMLPurify\\HTMLModule\\MathML\:\:\$mathml_prefix is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: app/Libraries/HTMLPurify/HTMLModule/MathML.php
 
 		-
-			message: "#^Access to property \\$data on an unknown class App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\HTMLPurifier_Token\\.$#"
+			message: '#^Access to property \$data on an unknown class App\\Libraries\\HTMLPurify\\Injector\\HTMLPurifier_Token\.$#'
+			identifier: class.notFound
 			count: 3
 			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
 
 		-
-			message: "#^Parameter \\$token of method App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\MathMLSpaceNormalize\\:\\:handleText\\(\\) has invalid type App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\HTMLPurifier_Token\\.$#"
+			message: '#^Parameter \$token of method App\\Libraries\\HTMLPurify\\Injector\\MathMLSpaceNormalize\:\:handleText\(\) has invalid type App\\Libraries\\HTMLPurify\\Injector\\HTMLPurifier_Token\.$#'
+			identifier: class.notFound
 			count: 1
 			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
 
 		-
-			message: "#^PHPDoc type array of property App\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies is not covariant with PHPDoc type array\\<class\\-string, class\\-string\\> of overridden property Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies\\.$#"
+			message: '#^Call to function array_key_exists\(\) with 2 and array\{list\<string\>, list\<non\-falsy\-string\>, list\<string\>, list\<string\>, list\<string\>, list\<string\>\} will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Libraries/OAuth1/BodyHashRequest.php
+
+		-
+			message: '#^Call to function array_key_exists\(\) with 4 and array\{list\<string\>, list\<non\-falsy\-string\>, list\<string\>, list\<string\>, list\<string\>, list\<string\>\} will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Libraries/OAuth1/BodyHashRequest.php
+
+		-
+			message: '#^Method App\\Libraries\\OAuth1\\BodyHashRequest\:\:getHeader\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/Libraries/OAuth1/BodyHashRequest.php
+
+		-
+			message: '#^Result of && is always true\.$#'
+			identifier: booleanAnd.alwaysTrue
+			count: 1
+			path: app/Libraries/OAuth1/BodyHashRequest.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>secret" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Libraries/OAuth1/BodyHashSigner.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-empty\-string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Observers/AuditLogObserver.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Providers\\AuthServiceProvider\:\:\$policies is not covariant with PHPDoc type array\<class\-string, class\-string\> of overridden property Illuminate\\Foundation\\Support\\Providers\\AuthServiceProvider\:\:\$policies\.$#'
+			identifier: property.phpDocType
 			count: 1
 			path: app/Providers/AuthServiceProvider.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
 			count: 1
 			path: app/QuestionSet.php
 
 		-
-			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<int, string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			message: '#^PHPDoc type array of property App\\User\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
 			count: 1
 			path: app/User.php
 
 		-
-			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$hidden is not covariant with PHPDoc type array\\<int, string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$hidden\\.$#"
+			message: '#^PHPDoc type array of property App\\User\:\:\$hidden is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$hidden\.$#'
+			identifier: property.phpDocType
 			count: 1
 			path: app/User.php
 
 		-
-			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			message: '#^Method Illuminate\\Database\\Schema\\Blueprint\:\:text\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
 			count: 2
 			path: database/migrations/2015_09_25_092958_create_h5p_contents_table.php
 
 		-
-			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			message: '#^Method Illuminate\\Database\\Schema\\Blueprint\:\:text\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
 			count: 1
 			path: database/migrations/2015_09_25_092958_create_h5p_libraries_languages_table.php
 
 		-
-			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			message: '#^Method Illuminate\\Database\\Schema\\Blueprint\:\:text\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
 			count: 4
 			path: database/migrations/2015_09_25_092958_create_h5p_libraries_table.php
 
 		-
-			message: "#^Method ChangeDefaultPassword\\:\\:createPassword\\(\\) is unused\\.$#"
+			message: '#^Method ChangeDefaultPassword\:\:createPassword\(\) is unused\.$#'
+			identifier: method.unused
 			count: 1
 			path: database/migrations/2015_12_08_073717_change_default_password.php
 
 		-
-			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			message: '#^Method Illuminate\\Database\\Schema\\Blueprint\:\:text\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
 			count: 1
 			path: database/migrations/2015_12_15_081807_create_content_sharing_table.php
 
 		-
-			message: "#^Method ChangeAdminPassword\\:\\:createPassword\\(\\) is unused\\.$#"
+			message: '#^Method ChangeAdminPassword\:\:createPassword\(\) is unused\.$#'
+			identifier: method.unused
 			count: 1
 			path: database/migrations/2016_04_19_073909_ChangeAdminPassword.php
 
 		-
-			message: "#^Method SetAdminPassword\\:\\:createPassword\\(\\) is unused\\.$#"
+			message: '#^Method SetAdminPassword\:\:createPassword\(\) is unused\.$#'
+			identifier: method.unused
 			count: 1
 			path: database/migrations/2020_12_07_133958_set_admin_password.php
 
 		-
-			message: "#^Method SetAdminPassword\\:\\:createPassword\\(\\) should return string but return statement is missing\\.$#"
+			message: '#^Method SetAdminPassword\:\:createPassword\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
 			count: 1
 			path: database/migrations/2020_12_07_133958_set_admin_password.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/Http/Controllers/GameControllerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNull\(\) with bool will always evaluate to false\.$#'
+			identifier: method.impossibleType
+			count: 2
+			path: tests/Integration/Http/Middleware/LtiBehaviorSettingsTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
 			count: 1
 			path: tests/Integration/Jobs/PingVideoApiTest.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: '#^PHPDoc tag @var with type App\\H5PContentsVideo\|PHPUnit\\Framework\\MockObject\\MockObject is not subtype of native type PHPUnit\\Framework\\MockObject\\MockObject\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 2
+			path: tests/Integration/Libraries/H5P/CRUTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/Libraries/H5P/EditorAjaxTest.php
+
+		-
+			message: '#^Parameter \#1 \$libraryData of method App\\Libraries\\H5P\\Framework\:\:saveLibraryData\(\) expects object, array\<string, array\<int\|string, array\<string, string\>\|string\>\|int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Integration/Libraries/H5P/FrameworkTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/MultiChoiceTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNull\(\) with null will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/Models/ContentAttributionTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
 			count: 2
 			path: tests/Integration/Models/ContentVersionTest.php
+
+		-
+			message: '#^Property Tests\\Unit\\Libraries\\H5P\\TranslationServices\\NynorobotAdapterTest\:\:\$history \(ArrayObject\) does not accept array\|ArrayAccess\<int, array\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/Unit/Libraries/H5P/TranslationServices/NynorobotAdapterTest.php

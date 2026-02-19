@@ -2,24 +2,22 @@
 
 namespace App\Transformers;
 
-use Embed\Adapters\Adapter;
+use Embed\Extractor;
 use League\Fractal\TransformerAbstract;
 
 class LinkMetadataTransformer extends TransformerAbstract
 {
-    public function transform(Adapter $embed): array
+    public function transform(Extractor $embed): array
     {
         return [
-            'title' => $embed->getTitle(),
-            'image' => $embed->getImage(),
-            'tags' => $embed->getTags(),
-            'description' => $embed->getDescription(),
-            'images' => $embed->getImages(),
-            'type' => $embed->getType(),
-            'url' => $embed->getUrl(),
-            'code' => $embed->getCode(),
-            'providerName' => $embed->getProviderName(),
-            'providerUrl' => $embed->getProviderUrl(),
+            'title' => $embed->title,
+            'image' => (string) $embed->image,
+            'tags' => $embed->keywords,
+            'description' => $embed->description,
+            'url' => (string) $embed->url,
+            'code' => $embed->code?->html,
+            'providerName' => $embed->providerName,
+            'providerUrl' => (string) $embed->providerUrl,
         ];
     }
 }

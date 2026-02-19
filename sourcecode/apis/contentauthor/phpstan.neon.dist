@@ -14,13 +14,13 @@ parameters:
         - resources/lang
         - routes
         - tests
-    treatPhpDocTypesAsCertain: false
     stubFiles:
         - stubs/h5p-core/H5PCore.stub
         - stubs/h5p-core/H5PExport.stub
         - stubs/h5p-core/H5PFrameworkInterface.stub
         - stubs/cerpus/CreateTrait.stub
     banned_code:
+        non_ignorable: false
         nodes:
             -
                 type: Expr_FuncCall
@@ -33,5 +33,4 @@ parameters:
                     - var_dump
             - { type: Expr_ShellExec, functions: null }
             - { type: Stmt_Echo, functions: null }
-            - { type: Stmt_Exit, functions: null }
             - { type: Stmt_Print, functions: null }

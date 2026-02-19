@@ -48,7 +48,7 @@ services:
     working_dir: /srv/www/hub
 
   hub-vite:
-    image: node:18-alpine
+    image: node:20-alpine
     command: [sh, -c, 'npm ci && npm run dev']
     environment:
       - SCARF_ANALYTICS=false

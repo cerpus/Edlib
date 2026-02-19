@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Traits\FractalTransformer;
 use App\Transformers\LinkMetadataTransformer;
 use Embed\Embed;
-use Embed\Exceptions\InvalidUrlException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Psr\Http\Client\RequestExceptionInterface;
 
 class LinkInfoController extends Controller
 {
@@ -22,10 +22,10 @@ class LinkInfoController extends Controller
                 $url = "http://" . $url;
             }
             try {
-                $embed = Embed::create($url);
+                $embed = (new Embed())->get($url);
                 $request->session()->put('linksUrl', $rawUrl);
                 return $this->buildItemResponse($embed, new LinkMetadataTransformer());
-            } catch (InvalidUrlException $exception) {
+            } catch (RequestExceptionInterface $exception) {
                 return response()->json([
                     'code' => Response::HTTP_BAD_REQUEST,
                     'message' => 'Invalid url',
