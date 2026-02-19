@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Lti\Oauth1;
 
 use App\Models\LtiPlatform;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
-use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use App\EdlibResourceKit\Oauth1\Credentials;
+use App\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 
 final readonly class LtiPlatformCredentialStore implements CredentialStoreInterface
 {

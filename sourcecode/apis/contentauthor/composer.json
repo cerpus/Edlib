@@ -38,7 +38,7 @@
         "predis/predis": "^2.0",
         "ramsey/uuid": "^4.7.6",
         "spatie/laravel-ignition": "^2.9",
-        "symfony/cache": "^6.4.16",
+        "symfony/cache": "^7.0",
         "xemlock/htmlpurifier-html5": "^0.1.11"
     },
     "require-dev": {
@@ -48,12 +48,10 @@
         "larastan/larastan": "^3",
         "mockery/mockery": "^1.6",
         "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^11.5",
-        "symfony/css-selector": "^4.4.44"
+        "phpunit/phpunit": "^12.0",
+        "symfony/css-selector": "^7.0"
     },
-    "conflict": {
-        "ckeditor/ckeditor": ">=4.23"
-    },
+    "conflict": {},
     "autoload": {
         "classmap": [
             "database/seeds",
@@ -87,6 +85,12 @@
         "sort-packages": true,
         "allow-plugins": {
             "php-http/discovery": true
+        },
+        "audit": {
+            "ignore": [
+                "PKSA-y2cr-5h3j-g3ys",
+                "PKSA-pg71-gz29-h5sq"
+            ]
         }
     }
 }

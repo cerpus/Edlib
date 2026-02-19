@@ -6,8 +6,6 @@
         "ext-dom": "*",
         "ext-intl": "*",
         "ext-pdo": "*",
-        "cerpus/edlib-resource-kit": "^0.8.x-dev",
-        "cerpus/edlib-resource-kit-laravel": "^0.8.x-dev",
         "firebase/php-jwt": "^7.0",
         "guzzlehttp/guzzle": "^7.9.2",
         "http-interop/http-factory-guzzle": "^1.2",
@@ -39,7 +37,7 @@
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.5.0",
         "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^11.4.4",
+        "phpunit/phpunit": "^12.0",
         "spatie/laravel-ignition": "^2.8"
     },
     "autoload": {

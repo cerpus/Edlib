@@ -7,7 +7,7 @@ namespace App\Models;
 use App\Enums\LtiToolEditMode;
 use App\Enums\LtiVersion;
 use BadMethodCallException;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use App\EdlibResourceKit\Oauth1\Credentials;
 use Database\Factories\LtiToolFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

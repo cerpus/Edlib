@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lti;
 
-use Cerpus\EdlibResourceKit\Oauth1\Request;
+use App\EdlibResourceKit\Oauth1\Request;
 
 class LtiLaunch
 {

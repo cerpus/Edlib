@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Lti;
 
-use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
-use Cerpus\EdlibResourceKit\Oauth1\Request;
-use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
+use App\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
+use App\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
+use App\EdlibResourceKit\Oauth1\Credentials;
+use App\EdlibResourceKit\Oauth1\Request;
+use App\EdlibResourceKit\Oauth1\SignerInterface;
 
 use const JSON_THROW_ON_ERROR;
 

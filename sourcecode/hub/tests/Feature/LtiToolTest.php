@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\LtiPlatform;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
-use Cerpus\EdlibResourceKit\Oauth1\Request;
-use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
+use App\EdlibResourceKit\Oauth1\Credentials;
+use App\EdlibResourceKit\Oauth1\Request;
+use App\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

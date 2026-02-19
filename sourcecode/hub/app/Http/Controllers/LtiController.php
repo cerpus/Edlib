@@ -10,8 +10,8 @@ use App\Lti\LtiLaunch;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
-use Cerpus\EdlibResourceKit\Oauth1\Signer;
+use App\EdlibResourceKit\Oauth1\Credentials;
+use App\EdlibResourceKit\Oauth1\Signer;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -89,7 +89,7 @@ final readonly class LtiController
         $ltiRequest = null;
 
         if ($request->isMethod('POST')) {
-            $ltiRequest = new \Cerpus\EdlibResourceKit\Oauth1\Request(
+            $ltiRequest = new \App\EdlibResourceKit\Oauth1\Request(
                 'POST',
                 $request->validated('launch_url'),
                 $request->getParameters(),

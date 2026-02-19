@@ -10,7 +10,7 @@ use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
 use App\Models\LtiToolExtra;
-use Cerpus\EdlibResourceKit\Oauth1\Signer;
+use App\EdlibResourceKit\Oauth1\Signer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -144,7 +144,7 @@ final class AdminController extends Controller
             ],
             'resources' => $resourceUrls,
         ], JSON_THROW_ON_ERROR);
-        $deleteRequest = new \Cerpus\EdlibResourceKit\Oauth1\Request('DELETE', $url, [
+        $deleteRequest = new \App\EdlibResourceKit\Oauth1\Request('DELETE', $url, [
             'oauth_body_hash' => base64_encode(sha1($json, true)),
         ]);
 

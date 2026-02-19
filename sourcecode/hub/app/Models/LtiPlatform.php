@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Enums\ContentRole;
 use App\Events\LtiPlatformDeleting;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use App\EdlibResourceKit\Oauth1\Credentials;
 use Database\Factories\LtiPlatformFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

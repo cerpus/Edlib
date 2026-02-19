@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\LtiSample;
 
 use App\Models\LtiPlatform;
-use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
-use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
+use App\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use App\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

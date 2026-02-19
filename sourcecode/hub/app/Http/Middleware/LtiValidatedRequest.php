@@ -6,9 +6,9 @@ namespace App\Http\Middleware;
 
 use App\Lti\Oauth1\LtiPlatformCredentialStore;
 use App\Models\LtiTool;
-use Cerpus\EdlibResourceKit\Oauth1\Exception\ValidationException;
-use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
-use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
+use App\EdlibResourceKit\Oauth1\Exception\ValidationException;
+use App\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use App\EdlibResourceKit\Oauth1\ValidatorInterface;
 use Closure;
 use Illuminate\Http\Request;
 use LogicException;
