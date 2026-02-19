@@ -62,11 +62,7 @@ jobs:
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run PHPStan
-        run: |
-          sourcecode/apis/contentauthor/vendor/bin/phpstan analyse \
-            --configuration=sourcecode/apis/contentauthor/phpstan.neon.dist \
-            --memory-limit=512M
-        working-directory: ${{ github.workspace }}
+        run: vendor/bin/phpstan analyse --memory-limit=512M
 
   test:
     if: "!inputs.deploy"

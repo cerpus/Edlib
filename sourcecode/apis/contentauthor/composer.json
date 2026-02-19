@@ -16,13 +16,13 @@
         "ext-zip": "*",
         "cerpus/cerpushelper": "^2.3",
         "cerpus/edlib-resource-kit": "^0.8.x-dev",
-        "cerpus/edlib-resource-kit-laravel": "^0.8.x-dev",
+        "cerpus/edlib-resource-kit-laravel": "^0.9.x-dev",
         "cerpus/imageservice-client": "^2.3",
         "cerpus/questionbank-client": "^2.4",
         "ckeditor/ckeditor": "^4.22.1",
         "daniel-km/simple-iso-639-3": "^0.1.3",
         "embed/embed": "^3.4.18",
-        "firebase/php-jwt": "^6.10.2",
+        "firebase/php-jwt": "^7.0",
         "guzzlehttp/guzzle": "^7.9.2",
         "h5p/h5p-core": "dev-master#b5f527e140c17da2792283d369f621e9b3f969ff",
         "h5p/h5p-editor": "dev-master#f3a60ec2bdbe410cb2b11e8f8cb4cf206c41364b",
@@ -51,9 +51,7 @@
         "phpunit/phpunit": "^11.5",
         "symfony/css-selector": "^4.4.44"
     },
-    "conflict": {
-        "ckeditor/ckeditor": ">=4.23"
-    },
+    "conflict": {},
     "autoload": {
         "classmap": [
             "database/seeds",
@@ -87,6 +85,11 @@
         "sort-packages": true,
         "allow-plugins": {
             "php-http/discovery": true
+        },
+        "audit": {
+            "ignore": [
+                "PKSA-pg71-gz29-h5sq"
+            ]
         }
     }
 }

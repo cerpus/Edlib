@@ -15,6 +15,15 @@ parameters:
         - routes
         - tests
     treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # Larastan resolves these container bindings locally but not in CI
+        -
+            message: '#^Call to an undefined method H5PFrameworkInterface::handleResult\(\)\.$#'
+            path: app/Libraries/H5P/H5PProgress.php
+            reportUnmatched: false
+        -
+            message: '#^Parameter \#2 \$clientCredentials of method Cerpus\\EdlibResourceKit\\Oauth1\\Signer(Interface)?::sign\(\) expects Cerpus\\EdlibResourceKit\\Oauth1\\Credentials, Cerpus\\EdlibResourceKit\\Oauth1\\CredentialStoreInterface given\.$#'
+            reportUnmatched: false
     stubFiles:
         - stubs/h5p-core/H5PCore.stub
         - stubs/h5p-core/H5PExport.stub
