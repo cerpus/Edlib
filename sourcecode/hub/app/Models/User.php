@@ -62,7 +62,7 @@ class User extends Model implements AuthenticatableContract
     ];
 
     /**
-     * @var array<string, string>
+     * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
         'saved' => UserSaved::class,
