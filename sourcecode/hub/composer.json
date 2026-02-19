@@ -9,7 +9,7 @@
         "firebase/php-jwt": "^7.0",
         "guzzlehttp/guzzle": "^7.9.2",
         "http-interop/http-factory-guzzle": "^1.2",
-        "laravel/framework": "^11.34.2",
+        "laravel/framework": "^12.0",
         "laravel/nightwatch": "^1.19",
         "laravel/scout": "^10.11.8",
         "laravel/socialite": "^5.16",
