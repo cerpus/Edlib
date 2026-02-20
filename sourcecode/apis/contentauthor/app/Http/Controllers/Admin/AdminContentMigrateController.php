@@ -58,24 +58,27 @@ class AdminContentMigrateController extends Controller
             $leaves = $this->getLeaves();
             $routePrefix = route('h5p.ltishow', '') . '/';
 
+            // Extract H5P IDs from the leaf launch URLs
+            $leafsByH5pId = collect($leaves)
+                ->keyBy(function (array $leaf) use ($routePrefix) {
+                    $url = $leaf['lti_launch_url'];
+                    if (!str_starts_with($url, $routePrefix)) {
+                        return null;
+                    }
+                    $h5pId = substr($url, strlen($routePrefix));
+                    return is_numeric($h5pId) ? (int) $h5pId : null;
+                })
+                ->forget('');
+
+            // Single query to fetch all matching H5P content
+            $h5pContents = H5PContent::where('library_id', $fromLibrary->id)
+                ->whereIn('id', $leafsByH5pId->keys())
+                ->get()
+                ->keyBy('id');
+
             // Build list of Hub resources with their CA content
-            $items = collect($leaves)->map(function (array $leaf) use ($routePrefix, $fromLibrary) {
-                $url = $leaf['lti_launch_url'];
-                if (!str_starts_with($url, $routePrefix)) {
-                    return null;
-                }
-                $h5pId = substr($url, strlen($routePrefix));
-                if (!is_numeric($h5pId)) {
-                    return null;
-                }
-
-                $h5pContent = H5PContent::where('id', (int) $h5pId)
-                    ->where('library_id', $fromLibrary->id)
-                    ->first();
-
-                if ($h5pContent === null) {
-                    return null;
-                }
+            $items = $h5pContents->map(function (H5PContent $h5pContent) use ($leafsByH5pId) {
+                $leaf = $leafsByH5pId[$h5pContent->id];
 
                 return (object) [
                     'h5p_id' => $h5pContent->id,
@@ -83,7 +86,7 @@ class AdminContentMigrateController extends Controller
                     'hub_content_id' => $leaf['content_id'],
                     'update_url' => $leaf['update_url'],
                 ];
-            })->filter()->values();
+            })->values();
 
             $count = $items->count();
             $contents = $items->slice($pageSize * ($page - 1), $pageSize)->values();
