@@ -27,6 +27,7 @@ final readonly class LtiAdminAccess
         }
 
         Auth::guard('sso')->login(new GenericUser([
+            'id' => $ltiRequest->getUserId(),
             'name' => $ltiRequest->getUserFullName(),
             'roles' => ['superadmin'],
         ]));

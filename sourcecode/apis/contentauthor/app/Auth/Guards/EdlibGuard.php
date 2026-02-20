@@ -28,7 +28,7 @@ class EdlibGuard implements StatefulGuard
         return !$this->check();
     }
 
-    public function id(): ?int
+    public function id(): int|string|null
     {
         $user = $this->user();
         return $user->id ?? null;
