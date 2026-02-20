@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.edit-lti-platform') }}</x-slot:title>
 
+    <x-admin.back-link />
+
     <x-admin.lti-platforms.form
         action="{{ route('admin.lti-platforms.update', [$platform]) }}"
         method="PATCH"

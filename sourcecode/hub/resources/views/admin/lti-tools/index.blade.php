@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>LTI tools</x-slot:title>
 
+    <x-admin.back-link />
+
     <p><a href="{{ route('admin.lti-tools.add') }}" class="btn btn-outline-primary">Add LTI tool</a></p>
 
     <div class="d-flex flex-column gap-3">

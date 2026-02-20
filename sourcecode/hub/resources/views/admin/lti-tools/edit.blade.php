@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>Edit LTI tool</x-slot:title>
 
+    <x-admin.back-link />
+
     <x-admin.lti-tools.form
         :action="route('admin.lti-tools.update', [$tool])"
         method="PATCH"

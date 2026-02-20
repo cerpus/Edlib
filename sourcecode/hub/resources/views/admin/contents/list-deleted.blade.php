@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.deleted-contents') }}</x-slot:title>
 
+    <x-admin.back-link />
+
     {{ $contents->links() }}
 
     <table class="table table-responsive-lg table-striped">

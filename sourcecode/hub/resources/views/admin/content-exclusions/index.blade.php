@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>Content exclusions</x-slot:title>
 
+    <x-admin.back-link />
+
     <ul class="nav nav-tabs mb-3" role="tablist">
         <li class="nav-item" role="presentation">
             <button

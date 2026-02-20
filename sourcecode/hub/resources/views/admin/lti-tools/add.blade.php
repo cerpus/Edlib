@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>Add LTI tool</x-slot:title>
 
+    <x-admin.back-link />
+
     <x-admin.lti-tools.form :action="route('admin.lti-tools.store')">
         <x-slot:button>
             <x-form.button class="btn-primary">{{ trans('messages.add') }}</x-form.button>

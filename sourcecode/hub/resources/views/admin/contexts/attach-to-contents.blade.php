@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.attach-context-to-contents') }}</x-slot:title>
 
+    <x-admin.back-link />
+
     <p class="alert alert-danger">{{ trans('messages.attach-context-to-contents-warning') }}</p>
 
     <x-form action="" method="POST">

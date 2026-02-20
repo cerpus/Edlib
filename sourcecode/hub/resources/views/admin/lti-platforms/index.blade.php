@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.manage-lti-platforms') }}</x-slot:title>
 
+    <x-admin.back-link />
+
     <p class="alert alert-info">{{ trans('messages.lti-platforms-description', ['site' => config('app.name')]) }}</p>
 
     @if ($createdPlatform)

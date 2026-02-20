@@ -60,6 +60,7 @@
             <main class="h-100 d-flex flex-column">
                 @unless ($noHeader)
                     <header @class(['container-md' => $expand])>
+                        {{ $aboveTitle ?? '' }}
                         <h1 class="fs-2">{{ $title }}</h1>
                     </header>
                 @endunless

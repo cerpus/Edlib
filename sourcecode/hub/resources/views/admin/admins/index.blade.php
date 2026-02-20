@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.admins') }}</x-slot:title>
 
+    <x-admin.back-link />
+
     <table class="table table-borderless table-striped">
         <thead>
         </thead>

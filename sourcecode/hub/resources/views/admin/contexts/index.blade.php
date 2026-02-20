@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>Contexts</x-slot:title>
 
+    <x-admin.back-link />
+
     <p class="alert alert-info">{{ trans('messages.context-help') }}</p>
 
     @if (count($contexts) > 0)

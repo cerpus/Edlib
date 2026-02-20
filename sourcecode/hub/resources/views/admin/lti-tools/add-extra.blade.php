@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.add-extra-endpoint-for', ['tool' => $tool->name]) }}</x-slot:title>
 
+    <x-admin.back-link />
+
     <x-form :action="route('admin.lti-tools.store-extra', [$tool])" method="POST">
         <x-form.field name="name" :label="trans('messages.name')" />
 

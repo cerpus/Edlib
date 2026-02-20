@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.contexts-for-lti-platform', ['platform' => $platform->name]) }}</x-slot:title>
 
-    <p><a href="{{ route('admin.lti-platforms.index') }}">Back to LTI platforms</a></p>
+    <x-admin.back-link />
 
     @if (count($platform->contexts) > 0)
         <ul>
