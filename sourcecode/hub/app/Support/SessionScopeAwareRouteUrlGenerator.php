@@ -14,6 +14,9 @@ use function array_key_exists;
  */
 final class SessionScopeAwareRouteUrlGenerator extends RouteUrlGenerator
 {
+    /**
+     * @param array<string, string>|string $parameters
+     */
     public function to($route, $parameters = [], $absolute = false): string
     {
         $parameters = Arr::wrap($parameters);
