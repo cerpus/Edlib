@@ -21,6 +21,7 @@ final class SessionScopeAwareRouteUrlGenerator extends RouteUrlGenerator
         $sessionScope = app()->make(SessionScope::class);
 
         if (
+            is_array($parameters) &&
             !array_key_exists(SessionScope::TOKEN_PARAM, $parameters) &&
             $sessionScope->isScoped($this->request)
         ) {
