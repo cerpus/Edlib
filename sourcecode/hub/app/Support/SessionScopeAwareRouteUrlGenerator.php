@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Support;
 
 use Illuminate\Routing\RouteUrlGenerator;
+use Illuminate\Support\Arr;
 
 use function array_key_exists;
 
@@ -13,15 +14,13 @@ use function array_key_exists;
  */
 final class SessionScopeAwareRouteUrlGenerator extends RouteUrlGenerator
 {
-    /**
-     * @param array<string, string> $parameters
-     */
     public function to($route, $parameters = [], $absolute = false): string
     {
+        $parameters = Arr::wrap($parameters);
+
         $sessionScope = app()->make(SessionScope::class);
 
         if (
-            is_array($parameters) &&
             !array_key_exists(SessionScope::TOKEN_PARAM, $parameters) &&
             $sessionScope->isScoped($this->request)
         ) {
