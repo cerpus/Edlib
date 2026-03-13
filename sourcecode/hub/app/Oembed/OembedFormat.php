@@ -16,9 +16,4 @@ enum OembedFormat: string
             self::Xml => 'text/xml; charset=UTF-8',
         };
     }
-
-    public static function values(): array
-    {
-        return array_column(self::cases(), 'value');
-    }
 }
