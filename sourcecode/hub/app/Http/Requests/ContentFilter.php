@@ -16,20 +16,20 @@ use Illuminate\Validation\Rule;
 use Laravel\Scout\Builder;
 use Override;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 use function abort;
 use function trans;
 
 class ContentFilter extends FormRequest
 {
-    /** @var Builder<Content>  */
+    /** @var Builder<Content> */
     private Builder $builder;
     private bool $forUser = false;
     private bool $languageChanged = false;
     private bool $queryChanged = false;
     private bool $typesChanged = false;
 
-    #[Override] protected function failedValidation(Validator $validator): never
+    #[Override]
+    protected function failedValidation(Validator $validator): never
     {
         abort(404);
     }
@@ -44,6 +44,7 @@ class ContentFilter extends FormRequest
             'language' => ['sometimes', 'string', 'max:100'],
             'sort' => ['sometimes', Rule::in('created', 'updated', 'views')],
             'type' => ['sometimes', 'array'],
+            'type.*' => ['string', 'max:255', 'regex:/^[a-zA-Z0-9._-]+$/'],
         ];
     }
 
@@ -89,15 +90,13 @@ class ContentFilter extends FormRequest
 
         return $options
             ->map(
-                fn(int $value, string $key) =>
-                $key === ''
-                ? trans('messages.filter-language-all')
-                : (locale_get_display_name($key, $displayLocale) ?: (locale_get_display_name($key, $fallBack) ?: $key)),
+                fn(int $value, string $key) => $key === ''
+                    ? trans('messages.filter-language-all')
+                    : (locale_get_display_name($key, $displayLocale) ?: (locale_get_display_name($key, $fallBack) ?: $key)),
             )
             ->when(
                 $withExpectedHits,
-                fn(Collection $items) =>
-                $items->map(fn(string $value, string $key) => sprintf('%s (%d)', $value, $options[$key] ?? 0)),
+                fn(Collection $items) => $items->map(fn(string $value, string $key) => sprintf('%s (%d)', $value, $options[$key] ?? 0)),
             )
             ->sort()
             ->toArray();
@@ -217,8 +216,7 @@ class ContentFilter extends FormRequest
                 count($this->getContentTypes()) > 0,
                 fn(Builder $query) => $query
                     ->whereIn('content_type', $this->getContentTypes()),
-            )
-        ;
+            );
 
         $this->builder = clone($query);
 
@@ -306,8 +304,6 @@ class ContentFilter extends FormRequest
      */
     private function attachModel(array $hits, bool $forUser, bool $showDrafts): Collection
     {
-        $hits = new Collection($hits);
-
         $eagerLoad = ['users'];
         if ($showDrafts) {
             $eagerLoad[] = 'latestVersion';
