@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class ContentFilterTest extends TestCase
 {
-    public function test_content_filter_validation_of_type()
+    public function test_content_filter_validation_of_type(): void
     {
         $request = new ContentFilter();
         $rules = $request->rules();
@@ -36,7 +36,7 @@ class ContentFilterTest extends TestCase
         $this->assertTrue($validator->fails());
     }
 
-    public function test_content_index_returns_404_on_failing_validation()
+    public function test_content_index_returns_404_on_failing_validation(): void
     {
         $response = $this->getJson(route('content.index', ['type' => 'string_value']));
         $response->assertStatus(404);
