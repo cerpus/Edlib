@@ -312,8 +312,13 @@ class ContentFilter extends FormRequest
             $eagerLoad[] = 'latestPublishedVersion';
         }
 
+        $hitIds = collect($hits)
+            ->pluck('id')
+            ->filter
+            ->all();
+
         /** @phpstan-ignore-next-line */
-        $contents = Content::whereIn('id', $hits->pluck('id'))
+        $contents = Content::whereIn('id', $hitIds)
             ->with($eagerLoad)
             ->withCount(['views'])
             ->get()
