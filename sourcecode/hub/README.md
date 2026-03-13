@@ -43,7 +43,7 @@ require an authenticated LTI launch.
 
 ## Useful resources
 
-* [Laravel 10 documentation](https://laravel.com/docs/10.x)
+* [Laravel 11 documentation](https://laravel.com/docs/11.x)
 * [Bootstrap 5.3 documentation](https://getbootstrap.com/docs/5.3/getting-started/introduction/)
 * [LTI 1.1 implementation guide](https://www.imsglobal.org/specs/ltiv1p1/implementation-guide)
 * [LTI 1.3 specification](http://www.imsglobal.org/spec/lti/v1p3/)
