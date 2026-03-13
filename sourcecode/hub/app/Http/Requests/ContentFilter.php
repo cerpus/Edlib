@@ -42,9 +42,9 @@ class ContentFilter extends FormRequest
         return [
             'q' => ['sometimes', 'string', 'max:300'],
             'language' => ['sometimes', 'string', 'max:100'],
-            'sort' => ['sometimes', Rule::in('created', 'updated', 'views')],
+            'sort' => ['sometimes', 'required', Rule::in('created', 'updated', 'views')],
             'type' => ['sometimes', 'array'],
-            'type.*' => ['string', 'max:255', 'regex:/^[a-zA-Z0-9._-]+$/'],
+            'type.*' => ['string', 'max:255', 'regex:/^[a-zA-Z0-9._+ ]+$/'],
         ];
     }
 

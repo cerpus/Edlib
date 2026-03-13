@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class ContentFilterTest extends TestCase
 {
-    public function test_content_filter_validation_of_type(): void
+    public function testContentFilterValidation(): void
     {
         $request = new ContentFilter();
         $rules = $request->rules();
@@ -16,8 +16,15 @@ class ContentFilterTest extends TestCase
         $validator = Validator::make([], $rules);
         $this->assertTrue($validator->passes());
 
-        $validator = Validator::make(['type' => ['H5P.DragText', 'H5P.Flashcards', 'text']], $rules);
+        // Type parameter
+        $validator = Validator::make(['type' => ['H5P.DragText', 'H5P.Flashcards', 'text', 'something else', 'something   different']], $rules);
         $this->assertTrue($validator->passes());
+
+        $validator = Validator::make(['type' => ["string\nvalue"]], $rules);
+        $this->assertTrue($validator->fails());
+
+        $validator = Validator::make(['type' => ["string\tvalue"]], $rules);
+        $this->assertTrue($validator->fails());
 
         $validator = Validator::make(['type' => 'string_value'], $rules);
         $this->assertTrue($validator->fails());
@@ -34,17 +41,30 @@ class ContentFilterTest extends TestCase
 
         $validator = Validator::make(['type' => ['Accordion\'"()&%<zzz><ScRiPt >w3af(9928)</ScRiPt>']], $rules);
         $this->assertTrue($validator->fails());
+
+        // Sort parameter
+        $validator = Validator::make(['sort' => ''], $rules);
+        $this->assertTrue($validator->fails());
+
+        $validator = Validator::make(['sort' => null], $rules);
+        $this->assertTrue($validator->fails());
+
+        $validator = Validator::make(['sort' => 'not valid'], $rules);
+        $this->assertTrue($validator->fails());
+
+        $validator = Validator::make(['sort' => ['updated']], $rules);
+        $this->assertTrue($validator->fails());
+
+        $validator = Validator::make(['sort' => 'created'], $rules);
+        $this->assertTrue($validator->passes());
     }
 
-    public function test_content_index_returns_404_on_failing_validation(): void
+    public function testContentIndexReturns404OnFailingValidation(): void
     {
         $response = $this->getJson(route('content.index', ['type' => 'string_value']));
         $response->assertStatus(404);
 
-        $response = $this->getJson(route('content.index', ['type' => ['""...".replace("z","o")"']]));
-        $response->assertStatus(404);
-
-        $response = $this->getJson(route('content.index', ['type' => ['Accordion\'"()&%<zzz><ScRiPt >w3af(9928)</ScRiPt>']]));
+        $response = $this->getJson(route('content.index', ['sort' => '']));
         $response->assertStatus(404);
     }
 }
