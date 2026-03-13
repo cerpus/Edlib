@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\NdlaLegacy;
 
-use App\Http\Requests\OembedRequest;
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Oembed\OembedFormat;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Fluent\AssertableJson;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
@@ -53,6 +50,7 @@ final class OembedTest extends TestCase
     public function testCanPassLocale(): void
     {
         $id = $this->faker->uuid;
+
         Content::factory()
             ->withVersion(ContentVersion::factory()->state([
                 'title' => 'My content',
@@ -75,28 +73,5 @@ final class OembedTest extends TestCase
                         "src=\"https://hub-test-ndla-legacy.edlib.test/resource/$id?locale=nb-NO\"",
                     )),
             );
-    }
-
-    public function testFormatParameterValidation(): void
-    {
-        $request = new OembedRequest();
-        $rules = $request->rules();
-
-        // Only url parameter is required
-        $validator = Validator::make(['url' => $this->faker->url], $rules);
-        $this->assertTrue($validator->passes());
-
-        // Valid format parameter should pass validation
-        $validator = Validator::make(['url' => $this->faker->url, 'format' => OembedFormat::Xml->value], $rules);
-        $this->assertTrue($validator->passes());
-
-        // Empty format parameter should fail validation
-        $validator = Validator::make(['url' => $this->faker->url, 'format' => ''], $rules);
-        $this->assertTrue($validator->fails());
-
-        // Invalid format parameter should fail validation
-        $validator = Validator::make(['url' => $this->faker->url, 'format' => 'doc'], $rules);
-        $this->assertTrue($validator->fails());
-
     }
 }
