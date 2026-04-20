@@ -6,9 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Libraries\H5P\Audio\NdlaAudioClient;
 use App\Libraries\H5P\Image\NdlaImageClient;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
 use function response;
 
 final readonly class NdlaContentController
@@ -33,14 +33,20 @@ final readonly class NdlaContentController
     public function getImage($imageId, Request $request): Response
     {
         $language = $request->input('language');
+        try {
+            $request = $this->imageClient->request('GET', '/image-api/v3/images/' . $imageId, [
+                'query' => [
+                    'language' => $language,
+                ],
+            ]);
+            $image = $request->getBody()->getContents();
 
-        $request = $this->imageClient->request('GET', '/image-api/v3/images/' . $imageId, [
-            'query' => [
-                'language' => $language,
-            ],
-        ]);
-        $image = $request->getBody()->getContents();
-
-        return response($image, 200, ['Content-Type' => 'application/json']);
+            return response($image, 200, ['Content-Type' => 'application/json']);
+        } catch (ClientException $e) {
+            match ($e->getCode()) {
+                Response::HTTP_NOT_FOUND => abort(Response::HTTP_NOT_FOUND),
+                default => throw $e,
+            };
+        }
     }
 }

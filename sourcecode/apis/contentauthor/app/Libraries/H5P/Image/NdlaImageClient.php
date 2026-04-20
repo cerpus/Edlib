@@ -20,6 +20,12 @@ class NdlaImageClient
         $this->client = new Client($config);
     }
 
+
+    /**
+     * @throws \GuzzleHttp\Exception\RequestException on HTTP request errors (4xx, 5xx responses)
+     * @throws \GuzzleHttp\Exception\ConnectException on network connection failures
+     * @throws \GuzzleHttp\Exception\TransferException on transfer errors
+     */
     public function request(string $method, $uri, array $options = []): ResponseInterface
     {
         return $this->client->request($method, $uri, $options);
