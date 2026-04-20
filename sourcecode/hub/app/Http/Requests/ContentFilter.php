@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use App\DataObjects\ContentDisplayItem;
 use App\Models\Content;
+use App\Rules\EnsureValidUtf8Encoding;
 use App\Support\SessionScope;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -40,7 +41,7 @@ class ContentFilter extends FormRequest
     public function rules(): array
     {
         return [
-            'q' => ['sometimes', 'string', 'max:300'],
+            'q' => ['sometimes', 'string', 'max:300', new EnsureValidUtf8Encoding],
             'language' => ['sometimes', 'string', 'max:100'],
             'sort' => ['sometimes', 'required', Rule::in('created', 'updated', 'views')],
             'type' => ['sometimes', 'array'],
