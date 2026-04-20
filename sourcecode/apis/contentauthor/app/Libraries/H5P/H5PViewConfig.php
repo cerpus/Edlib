@@ -159,12 +159,15 @@ class H5PViewConfig extends H5PConfigAbstract
         $this->assets['scripts'] = $assets['scripts'] ?? [];
         $this->assets['styles'] = $assets['styles'] ?? [];
 
+
         array_map(function ($type) {
             return array_map(function ($file) {
-                if (isset($file->url)) {
-                    $file->path = $file->url;
-                } elseif (!filter_var($file->path, FILTER_VALIDATE_URL)) {
-                    $file->path = $this->h5pCore->fs->getDisplayPath(false) . "/" . $file->path;
+                if(is_object($file)) {
+                    if (isset($file->url)) {
+                        $file->path = $file->url;
+                    } elseif (!filter_var($file?->path ?? '', FILTER_VALIDATE_URL)) {
+                        $file->path = $this->h5pCore->fs->getDisplayPath(false) . "/" . $file->path;
+                    }
                 }
                 return $file;
             }, $type);
