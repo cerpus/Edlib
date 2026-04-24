@@ -33,4 +33,18 @@ final class LtiToolExtraFactory extends Factory
     {
         return $this->state(['slug' => $slug]);
     }
+
+    public function name(string $name): self
+    {
+        return $this->state(['name' => $name]);
+    }
+
+    public function ltiLaunchUrl(string $ltiLaunchUrl): self
+    {
+        return $this->state(['lti_launch_url' => $ltiLaunchUrl]);
+    }
+
+    public function ltiTool(LtiTool $ltiTool): self {
+        return $this->for($ltiTool, 'tool');
+    }
 }
