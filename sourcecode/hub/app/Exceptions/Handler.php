@@ -7,6 +7,9 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Exception\SuspiciousOperationException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Throwable;
 
 use function array_filter;
 use function http_build_query;
@@ -48,6 +51,10 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
+        $this->renderable(function (SuspiciousOperationException $e) {
+            throw new BadRequestHttpException($e->getMessage(), $e);
+        });
+
         // Redirect to the LTI tool consumer in accordance with the LTI spec
         $this->renderable(function (LtiException $e, Request $request) {
             $ltiData = $request->attributes->get('lti');

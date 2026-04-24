@@ -110,6 +110,22 @@ final class LtiToolTest extends TestCase
             ->assertUnauthorized();
     }
 
+    public function testItemSelectionRequestsWithInvalidSignatureFormatsAreRejected(): void
+    {
+        $request = $this->oauthSigner->sign(
+            new Request('POST', 'https://hub-test.edlib.test/lti/dl', [
+                'content_item_return_url' => 'http://example.com/',
+                'lti_message_type' => 'ContentItemSelectionRequest',
+            ]),
+            new Credentials("it's a", "fake"),
+        );
+
+
+        $this->withCookie('_edlib_cookies', '1')
+            ->post('/lti/dl', $request->toArray())
+            ->assertUnauthorized();
+    }
+
     public function testReportsErrorsToToolConsumer(): void
     {
         $platform = LtiPlatform::factory()->create();

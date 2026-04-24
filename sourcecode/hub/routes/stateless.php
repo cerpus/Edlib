@@ -11,9 +11,10 @@ use App\Http\Controllers\LtiSample\PresentationController;
 use App\Http\Controllers\LtiSample\ResizeController;
 use App\Http\Controllers\OembedController;
 use App\Http\Middleware\LtiValidatedRequest;
+use App\Http\Middleware\RejectArrayLtiSignatures;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('signed')
+Route::middleware([RejectArrayLtiSignatures::class, 'signed'])
     ->get('/lti-launch')
     ->uses([LtiController::class, 'launch'])
     ->name('lti.launch');

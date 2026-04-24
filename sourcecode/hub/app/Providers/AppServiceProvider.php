@@ -28,6 +28,7 @@ use Laravel\Scout\Console\ImportCommand;
 use Laravel\Scout\Console\SyncIndexSettingsCommand;
 use Laravel\Telescope\Telescope;
 use Psr\Clock\ClockInterface;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
 use Random\Randomizer;
