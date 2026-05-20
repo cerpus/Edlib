@@ -156,7 +156,6 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
         }
 
         $fileName = $this->resolveFileName($imageProperties, $imageUrl);
-        $imageProperties->originalPath = $imageProperties->path;
         $imageProperties->path = config('ndla.image.cdnUrl') . '/' . $fileName . ($query ? '?' . http_build_query($query) : '');
     }
 
@@ -172,16 +171,18 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
 
     private function resolveFileName(object $imageProperties, array $imageUrl): string
     {
-        if (Str::contains($imageProperties->path, '/image-api/raw/id/')) {
+        if (Str::startsWith($imageUrl['path'], '/image-api/raw/id/')) {
             $imageClient = app(NdlaImageClient::class);
             $cacheKey = 'ndla_image_meta_' . $imageProperties->externalId;
             $imageMeta = Cache::remember($cacheKey, 3600, function () use ($imageClient, $imageProperties) {
                 return $imageClient->request('GET', '/image-api/v3/images/' . $imageProperties->externalId);
             });
+
             return $imageMeta->image->fileName;
         }
 
         $pathParts = explode('/', $imageUrl['path']);
+
         return end($pathParts);
     }
 
