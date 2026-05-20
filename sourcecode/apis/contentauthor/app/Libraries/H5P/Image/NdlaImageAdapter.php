@@ -9,6 +9,8 @@ use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use Exception;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderInterface
 {
@@ -22,10 +24,13 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
     ];
 
     public function __construct(
-        private readonly NdlaImageClient $client,
+        private readonly NdlaImageClient        $client,
         private readonly CerpusStorageInterface $storage,
-        private readonly string $url,
-    ) {}
+        private readonly string                 $url,
+        private readonly array                  $modifyDomainPaths = [],
+    )
+    {
+    }
 
     public function mapParams($params, $originalKeys = false)
     {
@@ -60,12 +65,18 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
 
     public function isTargetType($mimeType, $pathToFile): bool
     {
-        return $this->isImageMime($mimeType) && $this->isSameDomain($pathToFile);
+        return $this->isImageMime($mimeType) && $this->isUrlPathValid($pathToFile);
     }
 
-    private function isSameDomain($pathToFile): bool
+    private function isUrlPathValid($pathToFile): bool
     {
-        return str_starts_with($pathToFile, $this->url);
+        foreach ($this->modifyDomainPaths as $domainPath) {
+            if (str_starts_with($pathToFile, $domainPath)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isImageMime($mime): bool
@@ -123,12 +134,55 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
         if (!$settings->useImageWidth) {
             unset($query['width']);
         }
+
         if (!empty($imageProperties->externalId) && str_contains($imageProperties->path, "/" . $imageProperties->externalId . "?")) {
             $imageProperties->path = $this->getImageUrlFromId($imageProperties->externalId, $query, true);
         } else {
             $imageProperties->path = $this->getImageUrlFromName(basename($url['path']), $query, true);
         }
+
+        $this->replaceApiUrlWithCdnUrl($imageProperties, $query);
+
         return $imageProperties;
+    }
+
+
+    private function replaceApiUrlWithCdnUrl(object &$imageProperties, array $query = [])
+    {
+        $imageUrl = parse_url($imageProperties->path);
+
+        if (!$this->isApiHostUrl($imageUrl)) {
+            return;
+        }
+
+        $fileName = $this->resolveFileName($imageProperties, $imageUrl);
+        $imageProperties->originalPath = $imageProperties->path;
+        $imageProperties->path = config('ndla.image.cdnUrl') . '/' . $fileName . ($query ? '?' . http_build_query($query) : '');
+    }
+
+    private function isApiHostUrl(array|false $imageUrl): bool
+    {
+        if (!isset($imageUrl['host']) || !isset($imageUrl['path'])) {
+            return false;
+        }
+
+        $apiHost = parse_url(config('ndla.image.url'), PHP_URL_HOST);
+        return $imageUrl['host'] === $apiHost;
+    }
+
+    private function resolveFileName(object $imageProperties, array $imageUrl): string
+    {
+        if (Str::contains($imageProperties->path, '/image-api/raw/id/')) {
+            $imageClient = app(NdlaImageClient::class);
+            $cacheKey = 'ndla_image_meta_' . $imageProperties->externalId;
+            $imageMeta = Cache::remember($cacheKey, 3600, function () use ($imageClient, $imageProperties) {
+                return $imageClient->request('GET', '/image-api/v3/images/' . $imageProperties->externalId);
+            });
+            return $imageMeta->image->fileName;
+        }
+
+        $pathParts = explode('/', $imageUrl['path']);
+        return end($pathParts);
     }
 
     public function getViewCss(): array
@@ -149,7 +203,7 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
     public function getEditorScripts(): array
     {
         return [
-            (string) mix('js/ndla-image.js'),
+            (string)mix('js/ndla-image.js'),
         ];
     }
 
