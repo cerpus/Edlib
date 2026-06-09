@@ -75,4 +75,11 @@ interface H5PAdapterInterface
     public function getCustomEditorStyles(): array;
 
     public function filterEditorScripts(): array;
+
+    /**
+     * @param array $styles
+     * @param array $dependencies
+     * @return array
+     */
+    public function alterStyles(array $styles, array $dependencies): array;
 }
