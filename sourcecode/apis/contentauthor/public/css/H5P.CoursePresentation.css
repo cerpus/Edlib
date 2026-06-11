@@ -1,0 +1,66 @@
+div[role="document"] {
+    .h5p-alternative-inner > p {
+        font-size: calc(var(--h5p-theme-font-size-s) * 0.9)em;
+    }
+
+    .h5p-question-introduction {
+        margin: var(--h5p-theme-spacing-s) var(--h5p-theme-spacing-m) !important;
+    }
+
+    .h5p-question-content {
+        margin: var(--h5p-theme-spacing-s) var(--h5p-theme-spacing-m) !important;
+        padding: 0 var(--h5p-theme-spacing-m) !important;
+    }
+
+    .h5p-answer {
+        margin: 1px;
+    }
+
+    .h5p-alternative-container {
+        padding: var(--h5p-theme-spacing-xxs) var(--h5p-theme-spacing-xxs);
+    }
+
+    .h5p-question-evaluation-container {
+        padding: var(--h5p-theme-spacing-s) var(--h5p-theme-spacing-m) !important;
+    }
+
+    .h5p-drag-text .h5p-draggable:not(.h5p-draggable--dropped) {
+        margin: 2px;
+    }
+
+    .h5p-drag-droppable-words {
+        line-height: var(--h5p-theme-spacing-l) !important;
+    }
+
+    .h5p-drag-text .h5p-drag-droppable-words {
+        line-height: var(--h5p-theme-spacing-l);
+        span {
+            line-height: var(--h5p-theme-spacing-xs) !important;
+            vertical-align: middle !important;
+        }
+    }
+
+    .h5p-drag-droppable-words-container .h5p-dropzone--inline {
+        vertical-align: middle !important;
+        line-height: var(--h5p-theme-spacing-xxs) !important;
+        margin-top: 2px;
+    }
+    /* Single Choice Set - Reduce spacing between alternatives */
+    .h5p-sc-alternatives li.h5p-sc-alternative {
+        margin: 2px 0 !important;
+        padding: 2px var(--h5p-theme-spacing-s) !important;
+    }
+
+    li.h5p-sc-alternative .h5p-sc-label p {
+        margin: 2px 0 !important;
+    }
+
+    /* Drag Question (image-based) */
+    .h5p-dragquestion .h5p-draggable {
+        --padding: 2px !important;
+    }
+
+    .h5p-mark-the-words .h5p-word-selectable-words {
+        line-height: calc(var(--h5p-theme-spacing-xl)*0.8);
+    }
+}
