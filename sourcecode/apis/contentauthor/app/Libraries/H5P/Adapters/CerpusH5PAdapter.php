@@ -173,9 +173,4 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     {
         return [];
     }
-
-    public function alterStyles(array $styles, array $dependencies): array
-    {
-        return $styles;
-    }
 }

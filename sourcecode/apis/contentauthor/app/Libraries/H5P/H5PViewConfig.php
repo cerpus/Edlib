@@ -174,8 +174,6 @@ class H5PViewConfig extends H5PConfigAbstract
             $this->addAsset('styles', $this->getAssetUrl(null, $css));
         }, $this->adapter->getCustomViewCss());
 
-        $this->assets['styles'] = $this->adapter->alterStyles($this->assets['styles'], $dependencies);
-
         array_map(function ($script) {
             $this->addAsset('scripts', (object) [
                 'path' => $script,

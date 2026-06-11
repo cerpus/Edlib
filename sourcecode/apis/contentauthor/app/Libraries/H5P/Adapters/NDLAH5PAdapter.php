@@ -283,13 +283,4 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'scripts/h5peditor-html.js',
         ];
     }
-
-    public function alterStyles(array $styles, array $dependencies): array
-    {
-        foreach ($dependencies as $dependency) {
-            $styles = $this->getLibraryCustomCss($dependency['machineName'], $styles);
-        }
-
-        return $styles;
-    }
 }
