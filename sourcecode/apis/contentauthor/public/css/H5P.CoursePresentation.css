@@ -1,5 +1,4 @@
 div[role="document"] {
-    font-size: 0.9em;
 
     .h5p-alternative-inner > p {
         font-size: calc(var(--h5p-theme-font-size-s) * 0.9) em;
@@ -15,7 +14,7 @@ div[role="document"] {
     }
 
     .h5p-question-evaluation-container {
-        padding: 0;
+        padding: 0.5em 0;
     }
     .h5p-answer {
         margin: 1px;
@@ -25,12 +24,16 @@ div[role="document"] {
         gap: var(--h5p-theme-spacing-xxs);
     }
 
+    .h5p-dropzone.h5p-dropzone--inline [aria-dropeffect] {
+        height: calc(100% - 0.05em);
+    }
+
     .h5p-alternative-container {
         padding: var(--h5p-theme-spacing-xxs) var(--h5p-theme-spacing-xxs);
     }
 
     .h5p-drag-text .h5p-draggable:not(.h5p-draggable--dropped) {
-        margin: 2px;
+        margin: 3px;
     }
 
     .h5p-drag-droppable-words {
@@ -71,6 +74,10 @@ div[role="document"] {
 
     .h5p-dragquestion .h5p-draggable {
         --padding: 2px !important;
+    }
+
+    .h5p-drag-text {
+        padding: 0.1em 0.1em;
     }
 
     .h5p-mark-the-words .h5p-word-selectable-words {
