@@ -1,14 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {FormattedMessage} from "react-intl";
+import Switch from "@material-ui/core/Switch";
+import Sharing from "../Sharing";
 
 const ModifyCss = () => {
-    return (
-        <div>
-            {/* Placeholder for Modify CSS functionality */}
-        </div>
-    );
+   <div className="modifyCss-container">
+        <FormattedMessage id="SHARINGCOMPONENT.SHOWINSHAREDCONTENT" />
+        <Switch
+            checked={modifyCss}
+            onChange={() => onChange(!modifyCss)}
+            color="primary"
+        />
+    </div>
 };
 
-ModifyCss.propTypes = {};
+ModifyCss.propTypes = {
+    modifyCss: PropTypes.bool,
+    onChange: PropTypes.func,
+};
 
 export default ModifyCss;

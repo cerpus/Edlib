@@ -66,7 +66,10 @@ const SidebarCommonComponents = (settings, dispatch, state, intl) => {
             id: 'modifyCss',
             title: intl.formatMessage({ id: 'SIDEBAR.MODIFY_CSS_OF_SUB_H5PS' }),
             component: (
-                <ModifyCss />
+                <ModifyCss
+                    modifyCss={settings.modifyCss}
+                    onChange={modifyCss => dispatch(FormActions.setModifyCss, { modifyCss })}
+                />
             ),
         });
     }
