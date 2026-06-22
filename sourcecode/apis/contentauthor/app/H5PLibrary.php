@@ -5,14 +5,15 @@ namespace App;
 use App\Observers\H5PLibraryObserver;
 use H5PFrameworkInterface;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -337,7 +338,7 @@ class H5PLibrary extends Model
             ->whereNotNull('l1.add_to')
             ->get()
             ->map(function ($addon) {
-                return (array) $addon;
+                return (array)$addon;
             })
             ->toArray();
     }
@@ -382,5 +383,17 @@ class H5PLibrary extends Model
         }
 
         return $usageCount === 0 && H5PContentLibrary::where('library_id', $libraryId)->doesntExist();
+    }
+
+    protected function version(): Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => $attributes['major_version'] . '.' . $attributes['minor_version'] . '.' . $attributes['patch_version'],
+        );
+    }
+
+    public function versionCompare(string $version, string $operation = '>='): bool
+    {
+        return version_compare($this->version, $version, $operation);
     }
 }

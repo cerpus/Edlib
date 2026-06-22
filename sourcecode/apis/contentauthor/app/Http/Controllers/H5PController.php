@@ -58,7 +58,6 @@ use Ramsey\Uuid\Uuid;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
-
 use function app;
 use function config;
 use function request;
@@ -70,10 +69,11 @@ class H5PController extends Controller
     private string $viewDataCacheName = 'viewData-';
 
     public function __construct(
-        private Lti $lti,
-        private h5p $h5p,
+        private Lti             $lti,
+        private h5p             $h5p,
         private H5PLibraryAdmin $h5pLibraryAdmin,
-    ) {
+    )
+    {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
@@ -164,25 +164,10 @@ class H5PController extends Controller
 
         $ltiRequest = $this->lti->getRequest(request());
 
-        $showModifyCss = false;
-        if ($contenttype === 'H5P.CoursePresentation') {
-            /** @var H5PLibrary $library */
-            $library = H5PLibrary::fromMachineName($contenttype)
-                ->latestVersion()
-                ->first();
-            if ($library && ($library->major_version > 1 || ($library->major_version === 1 && $library->minor_version >= 27))) {
-                $showModifyCss = true;
-            }
-        } elseif ($libraryData = H5PCore::libraryFromString($contenttype)) {
-            if ($libraryData['machineName'] === 'H5P.CoursePresentation' && ($libraryData['majorVersion'] > 1 || ($libraryData['majorVersion'] == 1 && $libraryData['minorVersion'] >= 27))) {
-                $showModifyCss = true;
-            }
-        }
-
         $editorSetup = H5PEditorConfigObject::create([
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'showModifyCss' => $showModifyCss,
+            'showModifyCss' => $adapter->showCustomCssForNewContentTypes(null), // New content always uses the default css
             'adapterName' => config('feature.allow-mode-switch') === true ? $adapter->getAdapterName() : null,
             'adapterList' => $adapter::getAllAdapters(),
             'h5pLanguage' => Iso639p3::code2letters($language),
@@ -192,15 +177,15 @@ class H5PController extends Controller
         ]);
 
         $state = H5PStateDataObject::create($displayOptions + [
-            'library' => $contenttype,
-            'license' => License::getDefaultLicense(),
-            'isPublished' => $ltiRequest?->getPublished() ?? false,
-            'isShared' => $ltiRequest?->getShared() ?? false,
-            'language_iso_639_3' => $language,
-            'redirectToken' => $request->get('redirectToken'),
-            'route' => route('h5p.store'),
-            '_method' => "POST",
-        ])->toJson();
+                'library' => $contenttype,
+                'license' => License::getDefaultLicense(),
+                'isPublished' => $ltiRequest?->getPublished() ?? false,
+                'isShared' => $ltiRequest?->getShared() ?? false,
+                'language_iso_639_3' => $language,
+                'redirectToken' => $request->get('redirectToken'),
+                'route' => route('h5p.store'),
+                '_method' => "POST",
+            ])->toJson();
 
         return view(
             'h5p.create',
@@ -275,19 +260,10 @@ class H5PController extends Controller
         /** @var LtiRequest|null $ltiRequest */
         $ltiRequest = Session::get('lti_requests.' . $redirectToken);
 
-        $showModifyCss = false;
-        dd($h5pContent);
-        if ($h5pContent->getMachineName() === 'H5P.CoursePresentation') {
-            $library = $h5pContent->library;
-            if ($library->major_version > 1 || ($library->major_version === 1 && $library->minor_version >= 27)) {
-                $showModifyCss = true;
-            }
-        }
-
         $editorSetup = H5PEditorConfigObject::create([
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'showModifyCss' => $showModifyCss,
+            'showModifyCss' => $adapter->showCustomCssForNewContentTypes($h5pContent),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
@@ -310,7 +286,7 @@ class H5PController extends Controller
         $displayOptions['download'] = $displayOptions['export'];
 
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
-            'id' => (string) $content['id'],
+            'id' => (string)$content['id'],
             'createdAt' => $h5pContent->created_at->toIso8601String(),
             'type' => $library->getTitleAndVersionString(),
             'maxScore' => $library->supportsMaxScore() ? $h5pContent->max_score : null,
@@ -318,21 +294,21 @@ class H5PController extends Controller
         ]));
 
         $state = H5PStateDataObject::create($displayOptions + [
-            'id' => $h5pContent->id,
-            'library' => $library->getLibraryString(false),
-            'libraryid' => $h5pContent->library_id,
-            'parameters' => $params,
-            'language_iso_639_3' => $contentLanguage,
-            'title' => $h5pContent->title,
-            'license' => $h5pContent->license ?: License::getDefaultLicense(),
-            'isPublished' => $ltiRequest?->getPublished() ?? false,
-            'isDraft' => $h5pContent->isDraft(),
-            'isShared' => $ltiRequest?->getShared() ?? false,
-            'redirectToken' => $request->get('redirectToken'),
-            'route' => route('h5p.update', ['h5p' => $id]),
-            'max_score' => $h5pContent->max_score,
-            '_method' => "PUT",
-        ])->toJson();
+                'id' => $h5pContent->id,
+                'library' => $library->getLibraryString(false),
+                'libraryid' => $h5pContent->library_id,
+                'parameters' => $params,
+                'language_iso_639_3' => $contentLanguage,
+                'title' => $h5pContent->title,
+                'license' => $h5pContent->license ?: License::getDefaultLicense(),
+                'isPublished' => $ltiRequest?->getPublished() ?? false,
+                'isDraft' => $h5pContent->isDraft(),
+                'isShared' => $ltiRequest?->getShared() ?? false,
+                'redirectToken' => $request->get('redirectToken'),
+                'route' => route('h5p.update', ['h5p' => $id]),
+                'max_score' => $h5pContent->max_score,
+                '_method' => "PUT",
+            ])->toJson();
 
         return view(
             'h5p.edit',
