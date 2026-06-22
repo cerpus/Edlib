@@ -1,5 +1,5 @@
 import { FormActions } from '../../contexts/FormContext';
-import { ContentPropertiesContainer, LicenseIndicator, Sharing } from './components';
+import { ContentPropertiesContainer, LicenseIndicator, Sharing, ModifyCss } from './components';
 import React from 'react';
 
 const SidebarCommonComponents = (settings, dispatch, state, intl) => {
@@ -57,6 +57,16 @@ const SidebarCommonComponents = (settings, dispatch, state, intl) => {
                     customFields={contentProperties.customFields}
                     ownerName={contentProperties.ownerName}
                 />
+            ),
+        });
+    }
+
+    if (settings.showModifyCss) {
+        components.push({
+            id: 'modifyCss',
+            title: intl.formatMessage({ id: 'SIDEBAR.MODIFY_CSS_OF_SUB_H5PS' }),
+            component: (
+                <ModifyCss />
             ),
         });
     }

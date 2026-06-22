@@ -167,7 +167,7 @@ class H5PController extends Controller
         $editorSetup = H5PEditorConfigObject::create([
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
+            'showModifyCss' => $contenttype === 'H5P.CoursePresentation',
             'adapterName' => config('feature.allow-mode-switch') === true ? $adapter->getAdapterName() : null,
             'adapterList' => $adapter::getAllAdapters(),
             'h5pLanguage' => Iso639p3::code2letters($language),
@@ -263,6 +263,7 @@ class H5PController extends Controller
         $editorSetup = H5PEditorConfigObject::create([
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
+            'showModifyCss' => $h5pContent->getMachineName() === 'H5P.CoursePresentation',
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
