@@ -164,10 +164,25 @@ class H5PController extends Controller
 
         $ltiRequest = $this->lti->getRequest(request());
 
+        $showModifyCss = false;
+        if ($contenttype === 'H5P.CoursePresentation') {
+            /** @var H5PLibrary $library */
+            $library = H5PLibrary::fromMachineName($contenttype)
+                ->latestVersion()
+                ->first();
+            if ($library && ($library->major_version > 1 || ($library->major_version === 1 && $library->minor_version >= 27))) {
+                $showModifyCss = true;
+            }
+        } elseif ($libraryData = H5PCore::libraryFromString($contenttype)) {
+            if ($libraryData['machineName'] === 'H5P.CoursePresentation' && ($libraryData['majorVersion'] > 1 || ($libraryData['majorVersion'] == 1 && $libraryData['minorVersion'] >= 27))) {
+                $showModifyCss = true;
+            }
+        }
+
         $editorSetup = H5PEditorConfigObject::create([
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'showModifyCss' => $contenttype === 'H5P.CoursePresentation',
+            'showModifyCss' => $showModifyCss,
             'adapterName' => config('feature.allow-mode-switch') === true ? $adapter->getAdapterName() : null,
             'adapterList' => $adapter::getAllAdapters(),
             'h5pLanguage' => Iso639p3::code2letters($language),
@@ -260,10 +275,19 @@ class H5PController extends Controller
         /** @var LtiRequest|null $ltiRequest */
         $ltiRequest = Session::get('lti_requests.' . $redirectToken);
 
+        $showModifyCss = false;
+        dd($h5pContent);
+        if ($h5pContent->getMachineName() === 'H5P.CoursePresentation') {
+            $library = $h5pContent->library;
+            if ($library->major_version > 1 || ($library->major_version === 1 && $library->minor_version >= 27)) {
+                $showModifyCss = true;
+            }
+        }
+
         $editorSetup = H5PEditorConfigObject::create([
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'showModifyCss' => $h5pContent->getMachineName() === 'H5P.CoursePresentation',
+            'showModifyCss' => $showModifyCss,
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
