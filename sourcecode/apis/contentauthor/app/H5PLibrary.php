@@ -41,6 +41,7 @@ use Illuminate\Support\Facades\Storage;
  * @property int $major_version
  * @property int $minor_version
  * @property int $patch_version
+ * @property string $version
  * @property int $runnable
  * @property int $restricted
  * @property int $fullscreen
