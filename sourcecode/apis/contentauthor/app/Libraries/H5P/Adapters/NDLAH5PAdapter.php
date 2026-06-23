@@ -289,6 +289,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function showCustomCssForNewContentTypes(?H5PContent $h5pContent = null): bool
     {
+        return false;
+        /*
         if (is_null($h5pContent)) {
             return false;
         }
@@ -299,5 +301,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         }
 
         return false;
+        */
     }
 }
