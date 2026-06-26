@@ -148,6 +148,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         }
         $css[] = (string)mix('css/ndlah5p-iframe.css');
         $customLibraryCss = $this->getLibraryCustomCss($content['library']['name'], []);
+        $modifyOldCss = $this->getLibraryOldCss($content['library']['name'], $content);
 
         return array_unique([
             ...$css,
@@ -155,6 +156,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             ...$this->imageAdapter->getViewCss(),
             ...$this->videoAdapter->getViewCss(),
             ...$customLibraryCss,
+            ...$modifyOldCss,
         ]);
     }
 
@@ -289,8 +291,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function showCustomCssForNewContentTypes(?H5PContent $h5pContent = null): bool
     {
-        return false;
-        /*
         if (is_null($h5pContent)) {
             return false;
         }
@@ -301,7 +301,17 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         }
 
         return false;
-        */
+    }
+
+    private function getLibraryOldCss(mixed $name, $content): array
+    {
+        $resetStyles = [];
+        if ($content['modifyCss'] ?? false) {
+            if (File::exists(public_path('/css/' . $name . '_Reset.css'))) {
+                $resetStyles[] = "/css/{$name}_Reset.css";
+            }
+        }
+        return $resetStyles;
     }
 
 }

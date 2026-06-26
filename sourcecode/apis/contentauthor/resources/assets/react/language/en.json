@@ -190,6 +190,7 @@
     "SAVEBOX.ERROR": "Whoops",
     "SIDEBAR.SAVEANDCLOSE": "Save and close",
     "SIDEBAR.MODIFY_CSS_OF_SUB_H5PS": "Modify CSS of sub H5Ps",
+    "SIDEBAR.MODIFY_CSS_OF_SUB_H5PS_EXPLANATION": "Emulate pre v1.28 CSS",
     "SIDEBAR.PROCESSING": "Processing",
     "ARTICLE.TITLE": "Title",
     "ARTICLE.TITLEPLACEHOLDER": "Add your title…",

@@ -167,7 +167,7 @@ class H5PController extends Controller
         $editorSetup = H5PEditorConfigObject::create([
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'showModifyCss' => $adapter->showCustomCssForNewContentTypes(null), // New content always uses the default css
+            'showModifyCss' => false, // New content always uses the default css
             'modifyCss' => false,
             'adapterName' => config('feature.allow-mode-switch') === true ? $adapter->getAdapterName() : null,
             'adapterList' => $adapter::getAllAdapters(),
@@ -265,7 +265,7 @@ class H5PController extends Controller
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
             'showModifyCss' => $adapter->showCustomCssForNewContentTypes($h5pContent),
-            'modifyCss' => $adapter->showCustomCssForNewContentTypes($h5pContent),
+            'modifyCss' => $h5pContent->modify_css,
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),

@@ -3,7 +3,7 @@ import { ContentPropertiesContainer, LicenseIndicator, Sharing, ModifyCss } from
 import React from 'react';
 
 const SidebarCommonComponents = (settings, dispatch, state, intl) => {
-    const { license, isShared } = state;
+    const { license, isShared, modifyCss } = state;
     const { contentProperties, canList, useLicense } = settings;
 
     const components = [];
@@ -67,7 +67,7 @@ const SidebarCommonComponents = (settings, dispatch, state, intl) => {
             title: intl.formatMessage({ id: 'SIDEBAR.MODIFY_CSS_OF_SUB_H5PS' }),
             component: (
                 <ModifyCss
-                    modifyCss={settings.modifyCss}
+                    modifyCss={modifyCss ?? settings.modifyCss}
                     onChange={modifyCss => dispatch(FormActions.setModifyCss, { modifyCss })}
                 />
             ),
