@@ -328,7 +328,8 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                     $filePath = ContentStorageSettings::CACHEDASSETS_JS_PATH;
                 } else {
                     // Rewrite relative URLs used inside stylesheets
-                    $cssRelPath = preg_replace('/[^\/]+$/', '', $asset->path);
+                    // Strip any leading slash so it doesn't combine with the "../" prefix below into "..//"
+                    $cssRelPath = ltrim(preg_replace('/[^\/]+$/', '', $asset->path), '/');
                     $content .= preg_replace_callback(
                         '/url\([\'"]?([^"\')]+)[\'"]?\)/i',
                         function ($matches) use ($cssRelPath) {
