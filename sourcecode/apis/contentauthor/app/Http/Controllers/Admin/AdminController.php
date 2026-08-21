@@ -40,7 +40,6 @@ class AdminController extends Controller
             },
         ])
             ->groupBy('id')
-            ->having('contents_count', ">", 0)
             ->orderBy('name')
             ->get()
             ->filter(fn(H5PLibrary $library) => $library->supportsMaxScore());
