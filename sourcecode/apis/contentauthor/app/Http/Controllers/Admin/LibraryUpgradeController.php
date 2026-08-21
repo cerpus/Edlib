@@ -109,7 +109,7 @@ class LibraryUpgradeController extends Controller
 
                 if ($library->runnable) {
                     if (config('h5p.isHubEnabled')) {
-                        $upgrades = $this->core->getUpgrades($library, $versions->toArray());
+                        $upgrades = $this->core->getUpgrades($library, $versions);
 
                         $item['upgradeUrl'] = empty($upgrades) || empty($usage['content']) ? false : route('admin.library', [
                             'task' => 'upgrade',
