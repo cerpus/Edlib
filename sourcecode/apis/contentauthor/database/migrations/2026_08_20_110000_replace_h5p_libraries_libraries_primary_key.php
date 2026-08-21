@@ -14,7 +14,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        // Eloquent has no native support for composite primary keys
+        // Eloquent has no native support for composite primary keys. Some databases
+        // still have the original composite primary key from before this table
+        // gained a surrogate `id` column; others already have the `id` primary key
+        // from table creation, so only replace the primary key where it's still composite.
+        if (!$this->hasCompositePrimaryKey('h5p_libraries_libraries')) {
+            return;
+        }
+
         Schema::table('h5p_libraries_libraries', function (Blueprint $table) {
             $table->dropPrimary(['library_id', 'required_library_id']);
         });
@@ -32,6 +39,10 @@ return new class extends Migration {
      */
     public function down()
     {
+        if ($this->hasCompositePrimaryKey('h5p_libraries_libraries')) {
+            return;
+        }
+
         Schema::table('h5p_libraries_libraries', function (Blueprint $table) {
             $table->dropUnique(['library_id', 'required_library_id']);
             $table->dropColumn('id');
@@ -40,5 +51,12 @@ return new class extends Migration {
         Schema::table('h5p_libraries_libraries', function (Blueprint $table) {
             $table->primary(['library_id', 'required_library_id']);
         });
+    }
+
+    private function hasCompositePrimaryKey(string $table): bool
+    {
+        $primaryKey = collect(Schema::getIndexes($table))->firstWhere('primary', true);
+
+        return count($primaryKey['columns'] ?? []) > 1;
     }
 };
