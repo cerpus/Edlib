@@ -951,15 +951,15 @@ class Framework implements \H5PFrameworkInterface, Result
         }
         $sql =
             "SELECT hl.id
-              , hl.name AS machineName
-              , hl.major_version AS majorVersion
-              , hl.minor_version AS minorVersion
-              , hl.patch_version AS patchVersion
-              , hl.preloaded_css AS preloadedCss
-              , hl.preloaded_js AS preloadedJs
-              , hcl.drop_css AS dropCss
-              , hcl.dependency_type AS dependencyType
-              , hl.patch_version_in_folder_name AS patchVersionInFolderName
+              , hl.name AS \"machineName\"
+              , hl.major_version AS \"majorVersion\"
+              , hl.minor_version AS \"minorVersion\"
+              , hl.patch_version AS \"patchVersion\"
+              , hl.preloaded_css AS \"preloadedCss\"
+              , hl.preloaded_js AS \"preloadedJs\"
+              , hcl.drop_css AS \"dropCss\"
+              , hcl.dependency_type AS \"dependencyType\"
+              , hl.patch_version_in_folder_name AS \"patchVersionInFolderName\"
         FROM h5p_contents_libraries hcl
         JOIN h5p_libraries hl ON hcl.library_id = hl.id
         WHERE hcl.content_id = ?";
