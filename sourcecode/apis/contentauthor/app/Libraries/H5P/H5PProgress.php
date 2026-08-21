@@ -152,7 +152,7 @@ class H5PProgress implements ProgressInterface
 
     public function getState($contentId, $context)
     {
-        $sql = "select data, sub_content_id, data_id from $this->tableName where content_id=:contentId and user_id=:userId and preload=1";
+        $sql = "select data, sub_content_id, data_id from $this->tableName where content_id=:contentId and user_id=:userId and preload=true";
         $params = [
             ':contentId' => $contentId,
             ':userId' => $this->currentUserId,
