@@ -1136,7 +1136,7 @@ class Framework implements \H5PFrameworkInterface, Result
     public function saveCachedAssets($key, $libraries)
     {
         foreach ($libraries as $library) {
-            H5PLibrariesCachedAssets::create([
+            H5PLibrariesCachedAssets::firstOrCreate([
                 'hash' => $key,
                 'library_id' => $library['id'],
             ]);
