@@ -21,6 +21,7 @@ use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
+use App\Libraries\H5P\Exceptions\H5PExternalMediaException;
 use App\Libraries\H5P\h5p;
 use App\Libraries\H5P\H5PCopyright;
 use App\Libraries\H5P\H5PCreateConfig;
@@ -638,8 +639,19 @@ class H5PController extends Controller
         }
 
         $fileName = sprintf("%s-%d.h5p", $h5p->slug, $h5p->id);
-        if ($storage->hasExport($fileName) || $export->generateExport($h5p)) {
-            return $storage->downloadContent($fileName, $h5p->title);
+
+        try {
+            if ($storage->hasExport($fileName) || $export->generateExport($h5p)) {
+                return $storage->downloadContent($fileName, $h5p->title);
+            }
+        } catch (H5PExternalMediaException $exception) {
+            Log::warning('H5P export aborted due to external media error', [
+                'contentId' => $h5p->id,
+                'path' => $exception->getPath(),
+                'mime' => $exception->getMime(),
+            ]);
+
+            return response(trans('h5p-editor.external-media-error', ['file' => $exception->getPath()]), 422);
         }
 
         return response(trans('h5p-editor.could-not-find-content'), 404);
