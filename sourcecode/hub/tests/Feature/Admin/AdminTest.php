@@ -58,4 +58,13 @@ final class AdminTest extends TestCase
             ->get('/admin/admins')
             ->assertForbidden();
     }
+
+    public function testAdminCanSearchContentExclusions(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $this->actingAs($user)
+            ->get('/admin/content-exclusions/search')
+            ->assertOk();
+    }
 }
