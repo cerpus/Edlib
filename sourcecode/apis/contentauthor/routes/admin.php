@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminContentMigrateController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
+use App\Http\Controllers\Admin\CachedFilesController;
 use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
@@ -106,6 +107,9 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
 
         Route::get('presave', [PresaveController::class, 'index'])->name('admin.presave.index');
         Route::post('presave/run-presave', [PresaveController::class, 'runPresave'])->name('admin.presave.run-presave');
+
+        Route::get('cached-files', [CachedFilesController::class, 'index'])->name('admin.cached-files.index');
+        Route::post('cached-files/delete', [CachedFilesController::class, 'delete'])->name('admin.cached-files.delete');
 
         // More general Admin Backend routes
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
