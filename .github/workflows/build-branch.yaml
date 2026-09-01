@@ -1,0 +1,50 @@
+name: "Build a branch"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to build (tag, branch, or commit SHA)"
+        required: false
+        type: string
+
+jobs:
+  get_variables:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    outputs:
+      releaseRef: ${{ steps.resolve.outputs.tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Resolve branch name to tag
+        id: resolve
+        run: |
+          raw_ref="${{ inputs.ref || github.ref_name }}"
+          ref="${raw_ref#refs/heads/}"
+          ref="${ref#refs/tags/}"
+          tag=$(echo "$ref" | sed 's#[^a-zA-Z0-9._-]#-#g')
+          echo "Resolved ref '$raw_ref' to tag: $tag"
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+
+  build_image_hub:
+    name: Hub
+    needs: get_variables
+    uses: ./.github/workflows/hub.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      deploy: false
+    secrets: inherit
+
+  build_image_content_author:
+    name: Content author
+    needs: get_variables
+    uses: ./.github/workflows/contentauthor.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      deploy: false
+    secrets: inherit
