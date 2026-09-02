@@ -121,7 +121,7 @@
                                     name="contentId"
                                     id="contentId"
                                     value="{{ $searchParams['contentId'] }}"
-                                    placeholder="Search by content ID"
+                                    placeholder="Search by content ID (comma separated)"
                                 >
                             </div>
                             <div class="col-md-6">

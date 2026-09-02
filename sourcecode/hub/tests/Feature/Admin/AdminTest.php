@@ -67,4 +67,25 @@ final class AdminTest extends TestCase
             ->get('/admin/content-exclusions/search')
             ->assertOk();
     }
+
+    public function testAdminCanSearchMultipleContentExclusionsByIds(): void
+    {
+        $user = User::factory()->admin()->create();
+        $content1 = \App\Models\Content::factory()->hasVersions(1)->create();
+        $content2 = \App\Models\Content::factory()->hasVersions(1)->create();
+
+        // Without spaces
+        $this->actingAs($user)
+            ->get('/admin/content-exclusions/search?contentId=' . $content1->id . ',' . $content2->id)
+            ->assertOk()
+            ->assertSee($content1->id)
+            ->assertSee($content2->id);
+
+        // With spaces and non-existent ID
+        $this->actingAs($user)
+            ->get('/admin/content-exclusions/search?contentId=' . $content1->id . ', ' . $content2->id . ', non_existent')
+            ->assertOk()
+            ->assertSee($content1->id)
+            ->assertSee($content2->id);
+    }
 }

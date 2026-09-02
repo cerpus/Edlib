@@ -40,11 +40,20 @@ final class ContentExclusionController extends Controller
         $message = null;
 
         if ($searchContentId !== '') {
-            $content = Content::with('latestPublishedVersion')
-                ->find($searchContentId);
+            $ids = collect(explode(',', $searchContentId))
+                ->map(fn ($id) => trim($id))
+                ->filter()
+                ->unique()
+                ->values();
 
-            if ($content) {
-                $results = collect([$content]);
+            if ($ids->isNotEmpty()) {
+                $results = Content::with('latestPublishedVersion')
+                    ->whereIn('id', $ids)
+                    ->get();
+
+                if ($results->isEmpty()) {
+                    $message = 'Content not found';
+                }
             } else {
                 $message = 'Content not found';
             }
