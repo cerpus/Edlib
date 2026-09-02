@@ -1,7 +1,8 @@
+@php use App\Support\SessionScope; @endphp
 <x-layout>
     <x-slot:title>Content exclusions</x-slot:title>
 
-    <x-admin.back-link />
+    <x-admin.back-link/>
 
     <ul class="nav nav-tabs mb-3" role="tablist">
         <li class="nav-item" role="presentation">
@@ -45,50 +46,51 @@
             <x-form method="DELETE" action="{{ route('admin.content-exclusions.delete') }}">
                 <table class="table table-striped">
                     <thead>
-                        <tr>
-                            <th>Select</th>
-                            <th>Content ID</th>
-                            <th>Title</th>
-                            <th>Excluded from</th>
-                        </tr>
+                    <tr>
+                        <th>Select</th>
+                        <th>Content ID</th>
+                        <th>Title</th>
+                        <th>Excluded from</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @forelse($excluded as $exclusion)
-                            <tr>
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        name="contentIds[]"
-                                        value="{{ $exclusion->content_id }}"
-                                    >
-                                </td>
-                                <td>
-                                    @if($exclusion->content)
-                                        <a href="{{ route('content.details', [$exclusion->content]) }}">
-                                            {{ $exclusion->content_id }}
-                                        </a>
-                                    @else
+                    @forelse($excluded as $exclusion)
+                        <tr>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    name="contentIds[]"
+                                    value="{{ $exclusion->content_id }}"
+                                >
+                            </td>
+                            <td>
+                                @if($exclusion->content)
+                                    <a href="{{ route('content.details', [$exclusion->content]) }}">
                                         {{ $exclusion->content_id }}
-                                    @endif
-                                </td>
-                                <td>{{ $exclusion->content?->latestPublishedVersion?->title ?? '' }}</td>
-                                <td>
-                                    {{ match($exclusion->exclude_from) {
-                                        'content_bulk_upgrade' => 'Content type version update',
-                                        'library_translation_update' => 'Content type translation update',
-                                        default => $exclusion->exclude_from,
-                                    } }}
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4">No excluded content</td>
-                            </tr>
-                        @endforelse
+                                    </a>
+                                @else
+                                    {{ $exclusion->content_id }}
+                                @endif
+                            </td>
+                            <td>{{ $exclusion->content?->latestPublishedVersion?->title ?? '' }}</td>
+                            <td>
+                                {{ match($exclusion->exclude_from) {
+                                    'content_bulk_upgrade' => 'Content type version update',
+                                    'library_translation_update' => 'Content type translation update',
+                                    default => $exclusion->exclude_from,
+                                } }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4">No excluded content</td>
+                        </tr>
+                    @endforelse
                     </tbody>
                 </table>
 
-                <input type="hidden" name="excludeFrom" value="{{ $excluded->first()?->exclude_from ?? 'library_translation_update' }}">
+                <input type="hidden" name="excludeFrom"
+                       value="{{ $excluded->first()?->exclude_from ?? 'library_translation_update' }}">
 
                 <x-form.button class="btn-danger" :disabled="$excluded->isEmpty()">
                     Remove selected
@@ -104,7 +106,12 @@
         >
             <div class="card mb-3">
                 <div class="card-body">
+
                     <form method="GET" action="{{ route('admin.content-exclusions.search') }}">
+                        @if(request()->has(SessionScope::TOKEN_PARAM))
+                            <input type="hidden" name="{{ SessionScope::TOKEN_PARAM }}"
+                                   value="{{ request(SessionScope::TOKEN_PARAM) }}">
+                        @endif
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label for="contentId" class="form-label">Content ID:</label>
@@ -152,38 +159,38 @@
                     @csrf
                     <table class="table table-striped">
                         <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Content ID</th>
-                                <th>Title</th>
-                                <th>Language</th>
-                                <th>Content type</th>
-                            </tr>
+                        <tr>
+                            <th>Select</th>
+                            <th>Content ID</th>
+                            <th>Title</th>
+                            <th>Language</th>
+                            <th>Content type</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @forelse($results as $content)
-                                <tr>
-                                    <td>
-                                        <input
-                                            type="checkbox"
-                                            name="contentIds[]"
-                                            value="{{ $content->id }}"
-                                        >
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('content.details', [$content]) }}">
-                                            {{ $content->id }}
-                                        </a>
-                                    </td>
-                                    <td>{{ $content->latestPublishedVersion?->title ?? '' }}</td>
-                                    <td>{{ $content->latestPublishedVersion?->getTranslatedLanguage() ?? '' }}</td>
-                                    <td>{{ $content->latestPublishedVersion?->displayed_content_type ?? '' }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5">No content found</td>
-                                </tr>
-                            @endforelse
+                        @forelse($results as $content)
+                            <tr>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        name="contentIds[]"
+                                        value="{{ $content->id }}"
+                                    >
+                                </td>
+                                <td>
+                                    <a href="{{ route('content.details', [$content]) }}">
+                                        {{ $content->id }}
+                                    </a>
+                                </td>
+                                <td>{{ $content->latestPublishedVersion?->title ?? '' }}</td>
+                                <td>{{ $content->latestPublishedVersion?->getTranslatedLanguage() ?? '' }}</td>
+                                <td>{{ $content->latestPublishedVersion?->displayed_content_type ?? '' }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5">No content found</td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
 
