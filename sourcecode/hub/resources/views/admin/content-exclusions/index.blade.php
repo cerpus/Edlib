@@ -160,7 +160,9 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th>Select</th>
+                            <th>
+                                <input type="checkbox" id="selectAllContent" aria-label="Select all content">
+                            </th>
                             <th>Content ID</th>
                             <th>Title</th>
                             <th>Language</th>
@@ -211,6 +213,13 @@
                         Exclude selected
                     </button>
                 </form>
+
+                <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
+                    document.getElementById('selectAllContent')?.addEventListener('change', function() {
+                        const checkboxes = document.querySelectorAll('input[name="contentIds[]"]');
+                        checkboxes.forEach(cb => cb.checked = this.checked);
+                    });
+                </script>
             @endif
         </div>
     </div>
