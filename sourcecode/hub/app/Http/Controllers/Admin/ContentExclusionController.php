@@ -57,15 +57,33 @@ final class ContentExclusionController extends Controller
             } else {
                 $message = 'Content not found';
             }
-        } elseif (mb_strlen($searchTitle) >= 3) {
-            $paginator = Content::with('latestPublishedVersion')
-                ->whereHas('latestPublishedVersion', function ($query) use ($searchTitle) {
-                    $query->where('title', 'ILIKE', '%' . $searchTitle . '%'); // @phpstan-ignore argument.type
-                })
-                ->paginate(25);
-            $paginator->appends(['title' => $searchTitle]);
-            $results = $paginator->getCollection();
-            $resultsPaginator = $paginator;
+        } elseif ($searchTitle !== '') {
+            $titles = collect(explode(',', $searchTitle))
+                ->map(fn ($t) => trim($t))
+                ->filter(fn ($t) => mb_strlen($t) >= 3)
+                ->unique()
+                ->values();
+
+            if ($titles->isNotEmpty()) {
+                $paginator = Content::with('latestPublishedVersion')
+                    ->whereHas('latestPublishedVersion', function ($query) use ($titles) {
+                        $query->where(function ($q) use ($titles) {
+                            foreach ($titles as $title) {
+                                $q->orWhere('title', 'ILIKE', '%' . $title . '%'); // @phpstan-ignore argument.type
+                            }
+                        });
+                    })
+                    ->paginate(25);
+                $paginator->appends(['title' => $searchTitle]);
+                $results = $paginator->getCollection();
+                $resultsPaginator = $paginator;
+
+                if ($results->isEmpty()) {
+                    $message = 'Content not found';
+                }
+            } else {
+                $message = 'Content not found';
+            }
         }
 
         $excluded = ContentExclusion::with('content.latestPublishedVersion')

@@ -132,8 +132,7 @@
                                     name="title"
                                     id="title"
                                     value="{{ $searchParams['title'] }}"
-                                    placeholder="Search by title (min 3 characters)"
-                                    minlength="3"
+                                    placeholder="Search by title (min 3 characters, comma separated)"
                                 >
                             </div>
                         </div>

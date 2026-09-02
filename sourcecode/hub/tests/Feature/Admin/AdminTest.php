@@ -88,4 +88,25 @@ final class AdminTest extends TestCase
             ->assertSee($content1->id)
             ->assertSee($content2->id);
     }
+
+    public function testAdminCanSearchMultipleContentExclusionsByTitles(): void
+    {
+        $user = User::factory()->admin()->create();
+        $content1 = \App\Models\Content::factory()->hasVersions(1, ['title' => 'First Content Title'])->create();
+        $content2 = \App\Models\Content::factory()->hasVersions(1, ['title' => 'Second Content Title'])->create();
+
+        // Without spaces
+        $this->actingAs($user)
+            ->get('/admin/content-exclusions/search?title=' . urlencode('First Content Title,Second Content Title'))
+            ->assertOk()
+            ->assertSee('First Content Title')
+            ->assertSee('Second Content Title');
+
+        // With spaces and short title filtered out
+        $this->actingAs($user)
+            ->get('/admin/content-exclusions/search?title=' . urlencode('First Content Title, Second Content Title, AB'))
+            ->assertOk()
+            ->assertSee('First Content Title')
+            ->assertSee('Second Content Title');
+    }
 }
