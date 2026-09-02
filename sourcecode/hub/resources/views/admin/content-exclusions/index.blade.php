@@ -170,7 +170,7 @@
                         </thead>
                         <tbody>
                         @forelse($results as $content)
-                            <tr>
+                            <tr @class(['table-warning' => $content->exclusions->isNotEmpty()])>
                                 <td>
                                     <input
                                         type="checkbox"
@@ -183,7 +183,20 @@
                                         {{ $content->id }}
                                     </a>
                                 </td>
-                                <td>{{ $content->latestPublishedVersion?->title ?? '' }}</td>
+                                <td>
+                                    {{ $content->latestPublishedVersion?->title ?? '' }}
+                                    @if($content->exclusions->isNotEmpty())
+                                        <div class="mt-1">
+                                            @foreach($content->exclusions as $exclusion)
+                                                <span class="badge text-bg-warning me-1">{{ match($exclusion->exclude_from) {
+                                                    'content_bulk_upgrade' => 'Content type version update',
+                                                    'library_translation_update' => 'Content type translation update',
+                                                    default => $exclusion->exclude_from,
+                                                } }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </td>
                                 <td>{{ $content->latestPublishedVersion?->getTranslatedLanguage() ?? '' }}</td>
                                 <td>{{ $content->latestPublishedVersion?->displayed_content_type ?? '' }}</td>
                             </tr>

@@ -109,4 +109,22 @@ final class AdminTest extends TestCase
             ->assertSee('First Content Title')
             ->assertSee('Second Content Title');
     }
+
+    public function testAdminCanSeeExcludedMarkInSearchResults(): void
+    {
+        $user = User::factory()->admin()->create();
+        $content = \App\Models\Content::factory()->hasVersions(1, ['title' => 'Excluded Content Title'])->create();
+        \App\Models\ContentExclusion::create([
+            'content_id' => $content->id,
+            'exclude_from' => 'library_translation_update',
+            'user_id' => $user->id,
+        ]);
+
+        $this->actingAs($user)
+            ->get('/admin/content-exclusions/search?title=' . urlencode('Excluded Content Title'))
+            ->assertOk()
+            ->assertSee('Excluded Content Title')
+            ->assertSee('Content type translation update')
+            ->assertSee('table-warning');
+    }
 }

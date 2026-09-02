@@ -47,7 +47,7 @@ final class ContentExclusionController extends Controller
                 ->values();
 
             if ($ids->isNotEmpty()) {
-                $results = Content::with('latestPublishedVersion')
+                $results = Content::with(['latestPublishedVersion', 'exclusions'])
                     ->whereIn('id', $ids)
                     ->get();
 
@@ -65,7 +65,7 @@ final class ContentExclusionController extends Controller
                 ->values();
 
             if ($titles->isNotEmpty()) {
-                $paginator = Content::with('latestPublishedVersion')
+                $paginator = Content::with(['latestPublishedVersion', 'exclusions'])
                     ->whereHas('latestPublishedVersion', function ($query) use ($titles) {
                         $query->where(function ($q) use ($titles) {
                             foreach ($titles as $title) {
