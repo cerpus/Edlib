@@ -136,6 +136,35 @@
                                 >
                             </div>
                         </div>
+                        <div class="row g-3 align-items-center mb-3">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="excludeExcluded"
+                                        id="excludeExcluded"
+                                        value="1"
+                                        @checked($searchParams['excludeExcluded'] ?? false)
+                                    >
+                                    <label class="form-check-label" for="excludeExcluded">
+                                        Exclude already excluded content from search results
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-2">
+                                    <label for="perPage" class="form-label mb-0 text-nowrap">Results per page:</label>
+                                    <select name="perPage" id="perPage" class="form-select w-auto">
+                                        @foreach([10, 25, 50, 100, 200] as $option)
+                                            <option value="{{ $option }}" @selected(($searchParams['perPage'] ?? 50) === $option)>
+                                                {{ $option }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary">Search</button>
                     </form>
                 </div>
