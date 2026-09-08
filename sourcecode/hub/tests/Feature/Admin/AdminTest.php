@@ -113,7 +113,7 @@ final class AdminTest extends TestCase
     public function testAdminCanSeeExcludedMarkInSearchResults(): void
     {
         $user = User::factory()->admin()->create();
-        $content = \App\Models\Content::factory()->hasVersions(1, ['title' => 'Excluded Content Title'])->create();
+        $content = \App\Models\Content::factory()->hasVersions(1, ['title' => 'Excluded Content Title', 'published' => true])->create();
         \App\Models\ContentExclusion::create([
             'content_id' => $content->id,
             'exclude_from' => 'library_translation_update',
@@ -126,5 +126,25 @@ final class AdminTest extends TestCase
             ->assertSee('Excluded Content Title')
             ->assertSee('Content type translation update')
             ->assertSee('table-warning');
+    }
+
+    public function testAdminContentExclusionsSearchPaginatesFiftyItems(): void
+    {
+        $user = User::factory()->admin()->create();
+        \App\Models\Content::factory()
+            ->count(55)
+            ->hasVersions(1, ['title' => 'Pagination Matching Title', 'published' => true])
+            ->create();
+
+        $response = $this->actingAs($user)
+            ->get('/admin/content-exclusions/search?title=' . urlencode('Pagination Matching Title'))
+            ->assertOk();
+
+        /** @var \Illuminate\Pagination\LengthAwarePaginator $resultsPaginator */
+        $resultsPaginator = $response->viewData('resultsPaginator');
+        $this->assertNotNull($resultsPaginator);
+        $this->assertSame(50, $resultsPaginator->perPage());
+        $this->assertSame(55, $resultsPaginator->total());
+        $this->assertCount(50, $resultsPaginator->items());
     }
 }

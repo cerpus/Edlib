@@ -73,7 +73,7 @@ final class ContentExclusionController extends Controller
                             }
                         });
                     })
-                    ->paginate(25);
+                    ->paginate(50);
                 $paginator->appends(['title' => $searchTitle]);
                 $results = $paginator->getCollection();
                 $resultsPaginator = $paginator;
