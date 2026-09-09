@@ -13,6 +13,15 @@ on:
         description: "A version to release"
         required: true
         type: string
+      additional_tag:
+        description: "An additional tag"
+        required: false
+        type: string
+      enable_latest:
+        description: "Whether to tag as latest"
+        required: false
+        type: boolean
+        default: false
       deploy:
         description: "A version to release"
         required: false
@@ -126,8 +135,9 @@ jobs:
           images: |
             name=ghcr.io/cerpus/edlib-contentauthor
           tags: |
-            type=raw,value=latest,prefix=php-
             type=raw,value=${{ inputs.version }},prefix=php-
+            ${{ inputs.enable_latest && 'type=raw,value=latest,prefix=php-' || '' }}
+            ${{ inputs.additional_tag && format('type=raw,value={0},prefix=php-', inputs.additional_tag) || '' }}
 
       - name: Build PHP image
         uses: docker/build-push-action@v5
@@ -146,8 +156,9 @@ jobs:
           images: |
             name=ghcr.io/cerpus/edlib-contentauthor
           tags: |
-            type=raw,value=latest,prefix=web-
             type=raw,value=${{ inputs.version }},prefix=web-
+            ${{ inputs.enable_latest && 'type=raw,value=latest,prefix=web-' || '' }}
+            ${{ inputs.additional_tag && format('type=raw,value={0},prefix=web-', inputs.additional_tag) || '' }}
 
       - name: Build web image
         uses: docker/build-push-action@v5

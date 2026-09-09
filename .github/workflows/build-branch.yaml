@@ -13,7 +13,8 @@ jobs:
     name: Resolve version
     runs-on: ubuntu-latest
     outputs:
-      releaseRef: ${{ steps.resolve.outputs.tag }}
+      commitSha: ${{ steps.resolve.outputs.commitSha }}
+      tag: ${{ steps.resolve.outputs.tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,9 +22,12 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 0
 
-      - name: Resolve branch name to tag
+      - name: Resolve ref
         id: resolve
         run: |
+          sha=$(git rev-parse HEAD)
+          echo "commitSha=$sha" >> $GITHUB_OUTPUT
+
           raw_ref="${{ inputs.ref || github.ref_name }}"
           ref="${raw_ref#refs/heads/}"
           ref="${ref#refs/tags/}"
@@ -36,7 +40,9 @@ jobs:
     needs: get_variables
     uses: ./.github/workflows/hub.yaml
     with:
-      version: ${{ needs.get_variables.outputs.releaseRef }}
+      version: ${{ needs.get_variables.outputs.commitSha }}
+      additional_tag: ${{ needs.get_variables.outputs.tag }}
+      enable_latest: false
       deploy: false
     secrets: inherit
 
@@ -45,6 +51,8 @@ jobs:
     needs: get_variables
     uses: ./.github/workflows/contentauthor.yaml
     with:
-      version: ${{ needs.get_variables.outputs.releaseRef }}
+      version: ${{ needs.get_variables.outputs.commitSha }}
+      additional_tag: ${{ needs.get_variables.outputs.tag }}
+      enable_latest: false
       deploy: false
     secrets: inherit
