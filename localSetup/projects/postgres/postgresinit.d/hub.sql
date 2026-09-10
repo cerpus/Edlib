@@ -1,2 +1,3 @@
 CREATE DATABASE hub;
 CREATE DATABASE hub_test;
+CREATE DATABASE contentauthor;

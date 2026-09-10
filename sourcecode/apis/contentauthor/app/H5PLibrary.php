@@ -323,15 +323,15 @@ class H5PLibrary extends Model
                 });
             })
             ->select([
-                'l1.id as libraryId',
-                'l1.add_to as addTo',
-                'l1.name as machineName',
-                'l1.major_version as majorVersion',
-                'l1.minor_version as minorVersion',
-                'l1.patch_version as patchVersion',
-                'l1.preloaded_js as preloadedJs',
-                'l1.preloaded_css as preloadedCss',
-                'l1.patch_version_in_folder_name as patchVersionInFolderName',
+                'l1.id as \"libraryId\"',
+                'l1.add_to as \"addTo\"',
+                'l1.name as \"machineName\"',
+                'l1.major_version as \"majorVersion\"',
+                'l1.minor_version as \"minorVersion\"',
+                'l1.patch_version as \"patchVersion\"',
+                'l1.preloaded_js as \"preloadedJs\"',
+                'l1.preloaded_css as \"preloadedCss\"',
+                'l1.patch_version_in_folder_name as \"patchVersionInFolderName\"',
             ])
             ->whereNull('l2.name')
             ->whereNotNull('l1.add_to')

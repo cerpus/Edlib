@@ -20,7 +20,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LibraryUpgradeController extends Controller
@@ -46,12 +45,11 @@ class LibraryUpgradeController extends Controller
                 'patch_version',
                 'runnable',
                 'restricted',
-                DB::raw('UNIX_TIMESTAMP(created_at) as created_ts'),
-                DB::raw('UNIX_TIMESTAMP(updated_at) as updated_ts'),
+                'created_at',
+                'updated_at',
             ])
             ->orderBy('major_version')
             ->orderBy('minor_version')
-            ->getQuery()
             ->get()
             ->mapToGroups(function ($item) {
                 return [$item->name => $item];
@@ -105,13 +103,13 @@ class LibraryUpgradeController extends Controller
                     'hubUpgradeMessage' => '',
                     'hubAvailable' => false,
                     'canRebuild' => !empty($library->id),
-                    'createdTs' => $library->created_ts,
-                    'updatedTs' => $library->updated_ts,
+                    'createdTs' => $library->created_at->timestamp,
+                    'updatedTs' => $library->updated_at->timestamp,
                 ];
 
                 if ($library->runnable) {
                     if (config('h5p.isHubEnabled')) {
-                        $upgrades = $this->core->getUpgrades($library, $versions->toArray());
+                        $upgrades = $this->core->getUpgrades($library, $versions->all());
 
                         $item['upgradeUrl'] = empty($upgrades) || empty($usage['content']) ? false : route('admin.library', [
                             'task' => 'upgrade',
