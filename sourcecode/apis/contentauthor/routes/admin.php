@@ -109,7 +109,9 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
         Route::post('presave/run-presave', [PresaveController::class, 'runPresave'])->name('admin.presave.run-presave');
 
         Route::get('cached-files', [CachedFilesController::class, 'index'])->name('admin.cached-files.index');
+        Route::get('cached-files/status', [CachedFilesController::class, 'status'])->name('admin.cached-files.status');
         Route::post('cached-files/delete', [CachedFilesController::class, 'delete'])->name('admin.cached-files.delete');
+        Route::post('cached-files/unlock', [CachedFilesController::class, 'unlock'])->name('admin.cached-files.unlock');
 
         // More general Admin Backend routes
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
