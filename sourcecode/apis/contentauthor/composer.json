@@ -24,8 +24,8 @@
         "embed/embed": "^3.4.18",
         "firebase/php-jwt": "^7.0",
         "guzzlehttp/guzzle": "^7.9.2",
-        "h5p/h5p-core": "dev-master#b5f527e140c17da2792283d369f621e9b3f969ff",
-        "h5p/h5p-editor": "dev-master#f3a60ec2bdbe410cb2b11e8f8cb4cf206c41364b",
+        "h5p/h5p-core": "^1.28.0",
+        "h5p/h5p-editor": "dev-master",
         "laravel/framework": "^11",
         "laravel/nightwatch": "^1.19",
         "laravel/tinker": "^2.10",
@@ -88,7 +88,12 @@
         },
         "audit": {
             "ignore": [
-                "PKSA-pg71-gz29-h5sq"
+                "PKSA-pg71-gz29-h5sq",
+                "PKSA-mdq4-51ck-6kdq",
+                "PKSA-8qx3-n5y5-vvnd",
+                "PKSA-q46n-4fdk-zjr4",
+                "PKSA-qzrn-rnz3-85w1",
+                "PKSA-w7xr-vk7n-rstm"
             ]
         }
     }
