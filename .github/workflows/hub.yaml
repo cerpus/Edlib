@@ -164,7 +164,7 @@ jobs:
             name=ghcr.io/cerpus/edlib-hub
           tags: |
             type=raw,value=${{ inputs.version }},prefix=php-
-            ${{ inputs.enable_latest && 'type=raw,value=latest,prefix=php-' || '' }}
+            ${{ inputs.enable_latest && github.ref_name == 'master' && 'type=raw,value=latest,prefix=php-' || '' }}
             ${{ inputs.additional_tag && format('type=raw,value={0},prefix=php-', inputs.additional_tag) || '' }}
 
       - name: Build PHP image
@@ -185,7 +185,7 @@ jobs:
             name=ghcr.io/cerpus/edlib-hub
           tags: |
             type=raw,value=${{ inputs.version }},prefix=web-
-            ${{ inputs.enable_latest && 'type=raw,value=latest,prefix=web-' || '' }}
+            ${{ inputs.enable_latest && github.ref_name == 'master' && 'type=raw,value=latest,prefix=web-' || '' }}
             ${{ inputs.additional_tag && format('type=raw,value={0},prefix=web-', inputs.additional_tag) || '' }}
 
       - name: Build web image
