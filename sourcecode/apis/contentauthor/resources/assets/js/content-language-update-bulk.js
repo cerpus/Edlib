@@ -1,4 +1,4 @@
-window.H5PEditor = H5P.jQuery.extend({}, H5P, H5PEditor);
+window.H5PEditor = window.ns = H5P.jQuery.extend(window.H5PEditor || {}, H5P);
 
 // Initialize
 $(document).ready(function () {
