@@ -312,28 +312,32 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
             $content = '';
             foreach ($assets as $asset) {
-                $library = $this->getLibraryFolderFromPath($asset->path);
                 $assetContent = null;
-                if (
-                    (($library !== null && $checkedLibraries->has($library))
-                        || $this->hasLibraryVersion($asset->path, $asset->version))
-                    && $this->uploadDisk->exists($asset->path)
-                ) {
-                    if($assetContent = $this->uploadDisk->get($asset->path)){
-                        $this->logger->debug('Asset content included from uploadDisk', ['path' => $asset->path]);
+
+                if ($this->filesystem->exists($asset->path)) {
+                    $assetContent = $this->filesystem->get($asset->path);
+                    if ($assetContent) {
+                        $this->logger->debug('Asset content included from filesystem.', ['path' => $asset->path]);
+                    } else {
+                        $this->logger->debug('Asset content not found in filesystem', ['path' => $asset->path]);
                     }
-                    if ($library !== null) {
-                        $checkedLibraries->put($library, true);
-                    }
+                } else {
+                    $this->logger->debug('Asset content not found in filesystem', ['path' => $asset->path]);
                 }
 
                 if (empty($assetContent)) {
-                    $assetContent = $this->filesystem->get($asset->path);
-                    if($assetContent){
-                        $this->logger->debug('Asset content included from filesystem.',['path' => $asset->path]);
-                    }
-                    else {
-                        $this->logger->debug('Asset content not found in filesystem',['path' => $asset->path]);
+                    $library = $this->getLibraryFolderFromPath($asset->path);
+                    if (
+                        (($library !== null && $checkedLibraries->has($library))
+                            || $this->hasLibraryVersion($asset->path, $asset->version))
+                        && $this->uploadDisk->exists($asset->path)
+                    ) {
+                        if ($assetContent = $this->uploadDisk->get($asset->path)) {
+                            $this->logger->debug('Asset content included from uploadDisk', ['path' => $asset->path]);
+                        }
+                        if ($library !== null) {
+                            $checkedLibraries->put($library, true);
+                        }
                     }
                 }
 

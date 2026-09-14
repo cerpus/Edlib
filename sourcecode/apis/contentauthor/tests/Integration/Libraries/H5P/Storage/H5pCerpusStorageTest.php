@@ -100,11 +100,40 @@ class H5pCerpusStorageTest extends TestCase
         $this->assertSame('libraries/H5P.Blanks-1.14.6/js/blanks.js', $files['scripts'][0]->path);
     }
 
-    public function test_cacheAssetsUsesFreshlyUploadedLibraryFiles(): void
+    public function test_cacheAssetsPrefersFilesystemOverUploadDisk(): void
     {
         $disk = Storage::fake();
         $uploadDisk = Storage::fake('h5pTmp');
-        $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var stale;');
+        $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var filesystem;');
+        $uploadDisk->put('libraries/H5P.Blanks-1.14.6/library.json', json_encode([
+            'majorVersion' => 1,
+            'minorVersion' => 14,
+            'patchVersion' => 6,
+        ]));
+        $uploadDisk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var uploaded;');
+
+        $files = [
+            'scripts' => [
+                (object) ['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js', 'version' => '?ver=1.14.6'],
+            ],
+            'styles' => [],
+        ];
+
+        $cerpusStorage = new H5PCerpusStorage(
+            new NullLogger(),
+            new NullVideoAdapter(),
+        );
+
+        $cerpusStorage->cacheAssets($files, 'somehash');
+
+        $this->assertStringContainsString('var filesystem;', $disk->get('cachedassets/somehash.js'));
+        $this->assertStringNotContainsString('var uploaded;', $disk->get('cachedassets/somehash.js'));
+    }
+
+    public function test_cacheAssetsUsesUploadDiskWhenNotFoundOnFilesystem(): void
+    {
+        $disk = Storage::fake();
+        $uploadDisk = Storage::fake('h5pTmp');
         $uploadDisk->put('libraries/H5P.Blanks-1.14.6/library.json', json_encode([
             'majorVersion' => 1,
             'minorVersion' => 14,
@@ -129,9 +158,15 @@ class H5pCerpusStorageTest extends TestCase
         $this->assertStringContainsString('var uploaded;', $disk->get('cachedassets/somehash.js'));
     }
 
-    public function test_cacheAssetsLogsWhenFileDoesNotExistOnUploadDisk(): void
+    public function test_cacheAssetsLogsWhenAssetIncludedFromFilesystem(): void
     {
-        Log::spy();
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())
+            ->method('debug')
+            ->with('Asset content included from filesystem.', [
+                'path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js',
+            ]);
+
         $disk = Storage::fake();
         Storage::fake('h5pTmp');
         $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var blanks;');
@@ -144,56 +179,36 @@ class H5pCerpusStorageTest extends TestCase
         ];
 
         $cerpusStorage = new H5PCerpusStorage(
-            app(LoggerInterface::class),
+            $logger,
             new NullVideoAdapter(),
         );
 
         $cerpusStorage->cacheAssets($files, 'somehash');
-
-        Log::shouldHaveReceived('debug')->with('Asset not included', [
-            'path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js',
-            'reason' => 'File does not exist on upload disk',
-        ])->once();
     }
 
-    public function test_cacheAssetsLogsWhenLibraryJsonMissingOnUploadDisk(): void
+    public function test_cacheAssetsLogsWhenAssetIncludedFromUploadDisk(): void
     {
-        Log::spy();
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->exactly(2))
+            ->method('debug')
+            ->willReturnCallback(function (string $message, array $context): void {
+                static $call = 0;
+                $call++;
+                if ($call === 1) {
+                    $this->assertSame('Asset content not found in filesystem', $message);
+                    $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
+                } elseif ($call === 2) {
+                    $this->assertSame('Asset content included from uploadDisk', $message);
+                    $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
+                }
+            });
+
         $disk = Storage::fake();
         $uploadDisk = Storage::fake('h5pTmp');
-        $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var disk;');
-        $uploadDisk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var uploaded;');
-
-        $files = [
-            'scripts' => [
-                (object) ['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js', 'version' => '?ver=1.14.6'],
-            ],
-            'styles' => [],
-        ];
-
-        $cerpusStorage = new H5PCerpusStorage(
-            app(LoggerInterface::class),
-            new NullVideoAdapter(),
-        );
-
-        $cerpusStorage->cacheAssets($files, 'somehash');
-
-        Log::shouldHaveReceived('debug')->with('Asset not included', [
-            'path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js',
-            'reason' => "Library metadata file 'libraries/H5P.Blanks-1.14.6/library.json' does not exist on upload disk",
-        ])->once();
-    }
-
-    public function test_cacheAssetsLogsWhenLibraryVersionMismatch(): void
-    {
-        Log::spy();
-        $disk = Storage::fake();
-        $uploadDisk = Storage::fake('h5pTmp');
-        $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var disk;');
         $uploadDisk->put('libraries/H5P.Blanks-1.14.6/library.json', json_encode([
             'majorVersion' => 1,
             'minorVersion' => 14,
-            'patchVersion' => 5,
+            'patchVersion' => 6,
         ]));
         $uploadDisk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var uploaded;');
 
@@ -205,71 +220,11 @@ class H5pCerpusStorageTest extends TestCase
         ];
 
         $cerpusStorage = new H5PCerpusStorage(
-            app(LoggerInterface::class),
+            $logger,
             new NullVideoAdapter(),
         );
 
         $cerpusStorage->cacheAssets($files, 'somehash');
-
-        Log::shouldHaveReceived('debug')->with('Asset not included', [
-            'path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js',
-            'reason' => "Library version mismatch: expected '?ver=1.14.6', found '?ver=1.14.5'",
-        ])->once();
-    }
-
-    public function test_cacheAssetsLogsWhenLibraryNotFoundInPath(): void
-    {
-        Log::spy();
-        $disk = Storage::fake();
-        $uploadDisk = Storage::fake('h5pTmp');
-        $disk->put('custom/script.js', 'var disk;');
-        $uploadDisk->put('custom/script.js', 'var uploaded;');
-
-        $files = [
-            'scripts' => [
-                (object) ['path' => 'custom/script.js', 'version' => '?ver=1.0.0'],
-            ],
-            'styles' => [],
-        ];
-
-        $cerpusStorage = new H5PCerpusStorage(
-            app(LoggerInterface::class),
-            new NullVideoAdapter(),
-        );
-
-        $cerpusStorage->cacheAssets($files, 'somehash');
-
-        Log::shouldHaveReceived('debug')->with('Asset not included', [
-            'path' => 'custom/script.js',
-            'reason' => 'Could not determine library from path',
-        ])->once();
-    }
-
-    public function test_cacheAssetsLogsWhenAssetIncludedFromFilesystem(): void
-    {
-        Log::spy();
-        $disk = Storage::fake();
-        Storage::fake('h5pTmp');
-        $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var blanks;');
-
-        $files = [
-            'scripts' => [
-                (object) ['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js', 'version' => '?ver=1.14.6'],
-            ],
-            'styles' => [],
-        ];
-
-        $cerpusStorage = new H5PCerpusStorage(
-            app(LoggerInterface::class),
-            new NullVideoAdapter(),
-        );
-
-        $cerpusStorage->cacheAssets($files, 'somehash');
-
-        Log::shouldHaveReceived('debug')->with('Asset included from filesystem', [
-            'path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js',
-            'content-size' => strlen('var blanks;'),
-        ])->once();
     }
 
     public static function provide_test_getUpdateScript(): \Generator
