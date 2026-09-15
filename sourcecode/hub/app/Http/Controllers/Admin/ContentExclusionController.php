@@ -16,9 +16,15 @@ final class ContentExclusionController extends Controller
 {
     public function index(Request $request): View
     {
+        $perPage = $request->integer('perPage', 50);
+        if ($perPage <= 0) {
+            $perPage = 50;
+        }
+
         $excluded = ContentExclusion::with('content.latestPublishedVersion')
             ->orderByDesc('id')
-            ->paginate(50, pageName: 'excluded_page');
+            ->paginate($perPage, pageName: 'excluded_page')
+            ->withQueryString();
 
         return view('admin.content-exclusions.index', [
             'activeTab' => 'tabExcluded',
@@ -26,7 +32,12 @@ final class ContentExclusionController extends Controller
             'hasSearched' => false,
             'results' => collect(),
             'resultsPaginator' => null,
-            'searchParams' => ['contentId' => '', 'title' => ''],
+            'searchParams' => [
+                'contentId' => '',
+                'title' => '',
+                'excludeExcluded' => false,
+                'perPage' => $perPage,
+            ],
             'message' => null,
         ]);
     }
@@ -35,33 +46,75 @@ final class ContentExclusionController extends Controller
     {
         $searchContentId = trim((string) $request->string('contentId'));
         $searchTitle = trim((string) $request->string('title'));
+        $excludeExcluded = $request->boolean('excludeExcluded');
+        $perPage = $request->integer('perPage', 50);
+        if ($perPage <= 0) {
+            $perPage = 50;
+        }
         $results = collect();
         $resultsPaginator = null;
         $message = null;
 
         if ($searchContentId !== '') {
-            $content = Content::with('latestPublishedVersion')
-                ->find($searchContentId);
+            $ids = collect(explode(',', $searchContentId))
+                ->map(fn ($id) => trim($id))
+                ->filter()
+                ->unique()
+                ->values();
 
-            if ($content) {
-                $results = collect([$content]);
+            if ($ids->isNotEmpty()) {
+                $query = Content::with(['latestPublishedVersion', 'exclusions'])
+                    ->whereIn('id', $ids);
+
+                if ($excludeExcluded) {
+                    $query->doesntHave('exclusions');
+                }
+
+                $results = $query->get();
+
+                if ($results->isEmpty()) {
+                    $message = 'Content not found';
+                }
             } else {
                 $message = 'Content not found';
             }
-        } elseif (mb_strlen($searchTitle) >= 3) {
-            $paginator = Content::with('latestPublishedVersion')
-                ->whereHas('latestPublishedVersion', function ($query) use ($searchTitle) {
-                    $query->where('title', 'ILIKE', '%' . $searchTitle . '%'); // @phpstan-ignore argument.type
-                })
-                ->paginate(25);
-            $paginator->appends(['title' => $searchTitle]);
-            $results = $paginator->getCollection();
-            $resultsPaginator = $paginator;
+        } elseif ($searchTitle !== '') {
+            $titles = collect(explode(',', $searchTitle))
+                ->map(fn ($t) => trim($t))
+                ->filter(fn ($t) => mb_strlen($t) >= 3)
+                ->unique()
+                ->values();
+
+            if ($titles->isNotEmpty()) {
+                $query = Content::with(['latestPublishedVersion', 'exclusions'])
+                    ->whereHas('latestPublishedVersion', function ($query) use ($titles) {
+                        $query->where(function ($q) use ($titles) {
+                            foreach ($titles as $title) {
+                                $q->orWhere('title', 'ILIKE', '%' . $title . '%'); // @phpstan-ignore argument.type
+                            }
+                        });
+                    });
+
+                if ($excludeExcluded) {
+                    $query->doesntHave('exclusions');
+                }
+
+                $paginator = $query->paginate($perPage)->withQueryString();
+                $results = $paginator->getCollection();
+                $resultsPaginator = $paginator;
+
+                if ($results->isEmpty()) {
+                    $message = 'Content not found';
+                }
+            } else {
+                $message = 'Content not found';
+            }
         }
 
         $excluded = ContentExclusion::with('content.latestPublishedVersion')
             ->orderByDesc('id')
-            ->paginate(50, pageName: 'excluded_page');
+            ->paginate($perPage, pageName: 'excluded_page')
+            ->withQueryString();
 
         return view('admin.content-exclusions.index', [
             'activeTab' => 'tabFind',
@@ -72,6 +125,8 @@ final class ContentExclusionController extends Controller
             'searchParams' => [
                 'contentId' => $searchContentId,
                 'title' => $searchTitle,
+                'excludeExcluded' => $excludeExcluded,
+                'perPage' => $perPage,
             ],
             'message' => $message,
         ]);
