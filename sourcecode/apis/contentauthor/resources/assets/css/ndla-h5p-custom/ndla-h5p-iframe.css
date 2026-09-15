@@ -21,3 +21,7 @@ body .h5p-course-presentation p {
 .h5p-icon-info {
   font-family: 'H5PFontIcons' !important;
 }
+
+.h5p-course-presentation .h5p-joubelui-button{
+    border-radius: var(--h5p-theme-border-radius-medium);
+}

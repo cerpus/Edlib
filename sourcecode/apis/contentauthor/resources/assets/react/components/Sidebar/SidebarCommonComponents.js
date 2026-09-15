@@ -1,9 +1,9 @@
 import { FormActions } from '../../contexts/FormContext';
-import { ContentPropertiesContainer, LicenseIndicator, Sharing } from './components';
+import { ContentPropertiesContainer, LicenseIndicator, Sharing, ModifyCss } from './components';
 import React from 'react';
 
 const SidebarCommonComponents = (settings, dispatch, state, intl) => {
-    const { license, isShared } = state;
+    const { license, isShared, modifyCss } = state;
     const { contentProperties, canList, useLicense } = settings;
 
     const components = [];
@@ -56,6 +56,19 @@ const SidebarCommonComponents = (settings, dispatch, state, intl) => {
                     type={contentProperties.type}
                     customFields={contentProperties.customFields}
                     ownerName={contentProperties.ownerName}
+                />
+            ),
+        });
+    }
+
+    if (settings.showModifyCss) {
+        components.push({
+            id: 'modifyCss',
+            title: intl.formatMessage({ id: 'SIDEBAR.MODIFY_CSS_OF_SUB_H5PS' }),
+            component: (
+                <ModifyCss
+                    modifyCss={modifyCss ?? settings.modifyCss}
+                    onChange={modifyCss => dispatch(FormActions.setModifyCss, { modifyCss })}
                 />
             ),
         });

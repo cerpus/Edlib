@@ -39,6 +39,8 @@ use function route;
  * @property string $language_iso_639_3
  * @property ?int $max_score
  * @property int $bulk_calculated
+ * @property bool $modify_css
+ * @property bool $modifyCss
  *
  * @property Collection<Collaborator> $collaborators
  * @property H5PLibrary $library
@@ -66,6 +68,7 @@ class H5PContent extends Content implements VersionableObject
     protected $casts = [
         'library_id' => "int",
         'is_draft' => 'boolean',
+        'modify_css' => 'boolean',
     ];
 
     protected $dispatchesEvents = [

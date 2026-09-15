@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "_variables";
 
 // Functions
@@ -10,7 +11,7 @@
     $context: $context * 1px;
   }
 
-  @return $pixels / $context * 1em;
+  @return math.div($pixels, $context) * 1em;
 }
 
 @mixin respond-to($media) {
