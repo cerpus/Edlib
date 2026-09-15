@@ -13,10 +13,11 @@ class CreateH5pLibrariesLanguagesTable extends Migration
     public function up()
     {
         Schema::create('h5p_libraries_languages', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('library_id')->unsigned();
             $table->string('language_code', 31);
             $table->text('translation', 65535);
-            $table->primary(['library_id','language_code']);
+            $table->unique(['library_id','language_code']);
         });
     }
 
