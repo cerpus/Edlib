@@ -163,7 +163,7 @@ class H5pCerpusStorageTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())
             ->method('debug')
-            ->with('Asset content included from filesystem.', [
+            ->with('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js included from filesystem.', [
                 'path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js',
             ]);
 
@@ -195,10 +195,10 @@ class H5pCerpusStorageTest extends TestCase
                 static $call = 0;
                 $call++;
                 if ($call === 1) {
-                    $this->assertSame('Asset content not found in filesystem', $message);
+                    $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js not found in filesystem', $message);
                     $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
                 } elseif ($call === 2) {
-                    $this->assertSame('Asset content included from uploadDisk', $message);
+                    $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js included from uploadDisk', $message);
                     $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
                 }
             });
