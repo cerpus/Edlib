@@ -141,7 +141,7 @@ class AdminContentMigrateController extends Controller
                     'message' => '',
                 ];
                 try {
-                    $newParameters = $this->alterParameters($sourceH5p->parameters);
+                    $newParameters = $this->alterParameters($sourceH5p->parameters, $fromLibrary->name);
                     $newH5pContent = $this->save($sourceH5p, $newParameters, $fromLibrary, $toLibrary);
                     $result['id'] = $newH5pContent->id;
                     $result['message'] = 'Migrated';
@@ -169,10 +169,12 @@ class AdminContentMigrateController extends Controller
     /**
      * Update the semantics
      */
-    private function alterParameters(string $parameters): string
+    private function alterParameters(string $parameters, string $libraryName): string
     {
         $content = json_decode($parameters, associative: true);
-        $content['threeImage']['wasConvertedFromVirtualTour'] = true;
+        if ($libraryName == 'H5P.ThreeImage') {
+            $content['threeImage']['wasConvertedFromVirtualTour'] = true;
+        }
         for ($i = 0; $i < count($content["threeImage"]["scenes"] ?? []); $i++) {
             $content["threeImage"]["scenes"][$i]["enableZoom"] = true;
             /*
