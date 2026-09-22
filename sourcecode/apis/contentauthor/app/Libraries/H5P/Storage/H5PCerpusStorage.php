@@ -317,7 +317,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                 if ($this->filesystem->exists($asset->path)) {
                     $assetContent = $this->filesystem->get($asset->path);
                     if ($assetContent) {
-                        $this->logger->debug('Asset content '.$asset->path.' included from filesystem.', ['path' => $asset->path]);
+                        $this->logger->debug('Asset content '.$asset->path.' ('.strlen($assetContent).' bytes) included from filesystem.', ['path' => $asset->path]);
                     } else {
                         $this->logger->debug('Asset content '.$asset->path.' not found in filesystem', ['path' => $asset->path]);
                     }
@@ -333,7 +333,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                         && $this->uploadDisk->exists($asset->path)
                     ) {
                         if ($assetContent = $this->uploadDisk->get($asset->path)) {
-                            $this->logger->debug('Asset content '.$asset->path.' included from uploadDisk', ['path' => $asset->path]);
+                            $this->logger->debug('Asset content '.$asset->path.' ('.strlen($assetContent).' bytes)  included from uploadDisk', ['path' => $asset->path]);
                         }
                         if ($library !== null) {
                             $checkedLibraries->put($library, true);
@@ -383,6 +383,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             if (!$this->filesystem->put($outputfile, $content)) {
                 throw new Exception("Could not create cached asset");
             }
+            $this->logger->debug('Cached asset '.$outputfile.' ('.strlen($content).' bytes, '.$type.') created.', ['path' => $outputfile]);
             $files[$type] = [(object) [
                 'path' => $outputfile,
                 'version' => '',

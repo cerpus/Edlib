@@ -160,16 +160,25 @@ class H5pCerpusStorageTest extends TestCase
 
     public function test_cacheAssetsLogsWhenAssetIncludedFromFilesystem(): void
     {
+        $assetContent = 'var blanks;';
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
+        $logger->expects($this->exactly(2))
             ->method('debug')
-            ->with('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js included from filesystem.', [
-                'path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js',
-            ]);
+            ->willReturnCallback(function (string $message, array $context) use ($assetContent): void {
+                static $call = 0;
+                $call++;
+                if ($call === 1) {
+                    $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js ('.strlen($assetContent).' bytes) included from filesystem.', $message);
+                    $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
+                } elseif ($call === 2) {
+                    $this->assertSame('Cached asset cachedassets/somehash.js ('.(strlen($assetContent) + 3).' bytes, scripts) created.', $message);
+                    $this->assertSame(['path' => 'cachedassets/somehash.js'], $context);
+                }
+            });
 
         $disk = Storage::fake();
         Storage::fake('h5pTmp');
-        $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var blanks;');
+        $disk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', $assetContent);
 
         $files = [
             'scripts' => [
@@ -188,18 +197,22 @@ class H5pCerpusStorageTest extends TestCase
 
     public function test_cacheAssetsLogsWhenAssetIncludedFromUploadDisk(): void
     {
+        $assetContent = 'var uploaded;';
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->exactly(2))
+        $logger->expects($this->exactly(3))
             ->method('debug')
-            ->willReturnCallback(function (string $message, array $context): void {
+            ->willReturnCallback(function (string $message, array $context) use ($assetContent): void {
                 static $call = 0;
                 $call++;
                 if ($call === 1) {
                     $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js not found in filesystem', $message);
                     $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
                 } elseif ($call === 2) {
-                    $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js included from uploadDisk', $message);
+                    $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js ('.strlen($assetContent).' bytes)  included from uploadDisk', $message);
                     $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
+                } elseif ($call === 3) {
+                    $this->assertSame('Cached asset cachedassets/somehash.js ('.(strlen($assetContent) + 3).' bytes, scripts) created.', $message);
+                    $this->assertSame(['path' => 'cachedassets/somehash.js'], $context);
                 }
             });
 
@@ -210,7 +223,7 @@ class H5pCerpusStorageTest extends TestCase
             'minorVersion' => 14,
             'patchVersion' => 6,
         ]));
-        $uploadDisk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', 'var uploaded;');
+        $uploadDisk->put('libraries/H5P.Blanks-1.14.6/js/blanks.js', $assetContent);
 
         $files = [
             'scripts' => [
