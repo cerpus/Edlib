@@ -166,13 +166,26 @@ class H5pCerpusStorageTest extends TestCase
             ->method('debug')
             ->willReturnCallback(function (string $message, array $context) use ($assetContent): void {
                 static $call = 0;
+                static $runNo = null;
                 $call++;
+
+                $this->assertArrayHasKey('runNo', $context);
+                $this->assertIsInt($context['runNo']);
+                $this->assertGreaterThanOrEqual(100000, $context['runNo']);
+                $this->assertLessThanOrEqual(999999, $context['runNo']);
+
+                if ($runNo === null) {
+                    $runNo = $context['runNo'];
+                } else {
+                    $this->assertSame($runNo, $context['runNo']);
+                }
+
                 if ($call === 1) {
                     $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js ('.strlen($assetContent).' bytes) included from filesystem.', $message);
-                    $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
+                    $this->assertSame('libraries/H5P.Blanks-1.14.6/js/blanks.js', $context['path']);
                 } elseif ($call === 2) {
                     $this->assertSame('Cached asset cachedassets/somehash.js ('.(strlen($assetContent) + 3).' bytes, scripts) created.', $message);
-                    $this->assertSame(['path' => 'cachedassets/somehash.js'], $context);
+                    $this->assertSame('cachedassets/somehash.js', $context['path']);
                 }
             });
 
@@ -203,16 +216,29 @@ class H5pCerpusStorageTest extends TestCase
             ->method('debug')
             ->willReturnCallback(function (string $message, array $context) use ($assetContent): void {
                 static $call = 0;
+                static $runNo = null;
                 $call++;
+
+                $this->assertArrayHasKey('runNo', $context);
+                $this->assertIsInt($context['runNo']);
+                $this->assertGreaterThanOrEqual(100000, $context['runNo']);
+                $this->assertLessThanOrEqual(999999, $context['runNo']);
+
+                if ($runNo === null) {
+                    $runNo = $context['runNo'];
+                } else {
+                    $this->assertSame($runNo, $context['runNo']);
+                }
+
                 if ($call === 1) {
                     $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js not found in filesystem', $message);
-                    $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
+                    $this->assertSame('libraries/H5P.Blanks-1.14.6/js/blanks.js', $context['path']);
                 } elseif ($call === 2) {
                     $this->assertSame('Asset content libraries/H5P.Blanks-1.14.6/js/blanks.js ('.strlen($assetContent).' bytes)  included from uploadDisk', $message);
-                    $this->assertSame(['path' => 'libraries/H5P.Blanks-1.14.6/js/blanks.js'], $context);
+                    $this->assertSame('libraries/H5P.Blanks-1.14.6/js/blanks.js', $context['path']);
                 } elseif ($call === 3) {
                     $this->assertSame('Cached asset cachedassets/somehash.js ('.(strlen($assetContent) + 3).' bytes, scripts) created.', $message);
-                    $this->assertSame(['path' => 'cachedassets/somehash.js'], $context);
+                    $this->assertSame('cachedassets/somehash.js', $context['path']);
                 }
             });
 

@@ -318,12 +318,21 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                 if ($this->filesystem->exists($asset->path)) {
                     $assetContent = $this->filesystem->get($asset->path);
                     if ($assetContent) {
-                        $this->logger->debug($runNo.' Asset content '.$asset->path.' ('.strlen($assetContent).' bytes) included from filesystem.', ['path' => $asset->path]);
+                        $this->logger->debug('Asset content '.$asset->path.' ('.strlen($assetContent).' bytes) included from filesystem.', [
+                            'path' => $asset->path,
+                            'runNo' => $runNo,
+                        ]);
                     } else {
-                        $this->logger->debug($runNo.' Asset content '.$asset->path.' not found in filesystem', ['path' => $asset->path]);
+                        $this->logger->debug('Asset content '.$asset->path.' not found in filesystem', [
+                            'path' => $asset->path,
+                            'runNo' => $runNo,
+                        ]);
                     }
                 } else {
-                    $this->logger->debug($runNo.' Asset content '.$asset->path.' not found in filesystem', ['path' => $asset->path]);
+                    $this->logger->debug('Asset content '.$asset->path.' not found in filesystem', [
+                        'path' => $asset->path,
+                        'runNo' => $runNo,
+                    ]);
                 }
 
                 if (empty($assetContent)) {
@@ -334,7 +343,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                         && $this->uploadDisk->exists($asset->path)
                     ) {
                         if ($assetContent = $this->uploadDisk->get($asset->path)) {
-                            $this->logger->debug($runNo.' Asset content '.$asset->path.' ('.strlen($assetContent).' bytes)  included from uploadDisk', ['path' => $asset->path]);
+                            $this->logger->debug('Asset content '.$asset->path.' ('.strlen($assetContent).' bytes)  included from uploadDisk', [
+                                'path' => $asset->path,
+                                'runNo' => $runNo,
+                            ]);
                         }
                         if ($library !== null) {
                             $checkedLibraries->put($library, true);
@@ -347,9 +359,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                     // doesn't just break its own library: everything following it
                     // in the aggregate is lost as well. Leave the assets
                     // unaggregated instead, so the remaining libraries still work.
-                    $this->logger->error($runNo.' Not caching H5P assets, a library file  '.$asset->path.' is missing or empty', [
+                    $this->logger->error('Not caching H5P assets, a library file  '.$asset->path.' is missing or empty', [
                         'path' => $asset->path,
                         'key' => $key,
+                        'runNo' => $runNo,
                     ]);
 
                     return;
@@ -384,7 +397,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             if (!$this->filesystem->put($outputfile, $content)) {
                 throw new Exception("Could not create cached asset");
             }
-            $this->logger->debug($runNo.' Cached asset '.$outputfile.' ('.strlen($content).' bytes, '.$type.') created.', ['path' => $outputfile]);
+            $this->logger->debug('Cached asset '.$outputfile.' ('.strlen($content).' bytes, '.$type.') created.', [
+                'path' => $outputfile,
+                'runNo' => $runNo,
+            ]);
             $files[$type] = [(object) [
                 'path' => $outputfile,
                 'version' => '',
