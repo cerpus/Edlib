@@ -384,7 +384,7 @@ final class ContentTest extends TestCase
                     'mediaType' => 'application/vnd.ims.lti.v1.ltilink',
                 ],
             ],
-        ]);
+        ], JSON_THROW_ON_ERROR);
 
         $request = new Request('POST', $url, [
             'content_items' => $contentItems,
@@ -397,6 +397,6 @@ final class ContentTest extends TestCase
             ->post($url, $signedRequest->toArray())
             ->assertOk();
 
-        $this->assertFalse($content->fresh()->isLocked());
+        $this->assertFalse($content->refresh()->isLocked());
     }
 }

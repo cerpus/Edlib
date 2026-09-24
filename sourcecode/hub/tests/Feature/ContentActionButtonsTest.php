@@ -26,20 +26,21 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestVersion ?? $this->fail();
 
         $content->acquireLock($holder);
         $this->assertTrue($content->isLocked());
 
         $response = $this->actingAs($owner)->get(route('content.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $response->assertOk();
         $response->assertSee('hx-trigger="every 5s"', escape: false);
         $response->assertSee('hx-get="' . e(route('content.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
             'forUser' => 0,
             'showDrafts' => 0,
         ])), escape: false);
@@ -58,20 +59,21 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestPublishedVersion ?? $this->fail();
 
         $content->acquireLock($holder);
         $this->assertTrue($content->isLocked());
 
         $response = $this->actingAs($viewer)->get(route('content.action-buttons', [
             $content,
-            'version' => $content->latestPublishedVersion->id,
+            'version' => $version->id,
         ]));
 
         $response->assertOk();
         $response->assertDontSee('hx-trigger="every', escape: false);
         $response->assertDontSee('hx-get="' . e(route('content.action-buttons', [
             $content,
-            'version' => $content->latestPublishedVersion->id,
+            'version' => $version->id,
         ])), escape: false);
     }
 
@@ -84,13 +86,14 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestVersion ?? $this->fail();
 
         $this->assertFalse($content->isLocked());
 
         // First request when unlocked: polling is active, no lock shown
         $responseUnlocked = $this->actingAs($owner)->get(route('content.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $responseUnlocked->assertOk();
@@ -104,7 +107,7 @@ class ContentActionButtonsTest extends TestCase
         // Next poll returns locked status dynamically
         $responseLocked = $this->actingAs($owner)->get(route('content.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $responseLocked->assertOk();
@@ -118,7 +121,7 @@ class ContentActionButtonsTest extends TestCase
         // Subsequent poll returns unlocked status dynamically
         $responseReleased = $this->actingAs($owner)->get(route('content.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $responseReleased->assertOk();
@@ -135,13 +138,14 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestVersion ?? $this->fail();
 
         $content->acquireLock($holder);
         $this->assertTrue($content->isLocked());
 
         $response = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $response->assertOk();
@@ -149,13 +153,13 @@ class ContentActionButtonsTest extends TestCase
         $response->assertSee('hx-trigger="every 5s"', escape: false);
         $response->assertSee('hx-get="' . e(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
             'explicitVersion' => 0,
         ])), escape: false);
         $response->assertSee('hx-swap="outerHTML"', escape: false);
         $response->assertSee('id="details-action-buttons-sidebar"', escape: false);
         $response->assertSee('hx-swap-oob="outerHTML:#details-action-buttons-sidebar"', escape: false);
-        $this->assertSame(1, substr_count($response->getContent(), 'hx-trigger="every 5s"'));
+        $this->assertSame(1, substr_count((string) $response->getContent(), 'hx-trigger="every 5s"'));
     }
 
     public function testDetailsActionButtonsEndpointDoesNotReturnPollingAttributesWhenUserCannotEdit(): void
@@ -169,13 +173,14 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestPublishedVersion ?? $this->fail();
 
         $content->acquireLock($holder);
         $this->assertTrue($content->isLocked());
 
         $response = $this->actingAs($viewer)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestPublishedVersion->id,
+            'version' => $version->id,
         ]));
 
         $response->assertOk();
@@ -192,13 +197,14 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestVersion ?? $this->fail();
 
         $this->assertFalse($content->isLocked());
 
         // First request when unlocked: polling is active, no lock shown
         $responseUnlocked = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $responseUnlocked->assertOk();
@@ -212,7 +218,7 @@ class ContentActionButtonsTest extends TestCase
         // Next poll returns locked status dynamically for both header and sidebar OOB
         $responseLocked = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $responseLocked->assertOk();
@@ -227,7 +233,7 @@ class ContentActionButtonsTest extends TestCase
         // Subsequent poll returns unlocked status dynamically
         $responseReleased = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
 
         $responseReleased->assertOk();
@@ -251,7 +257,7 @@ class ContentActionButtonsTest extends TestCase
         $response->assertSee('id="details-action-buttons-header"', escape: false);
         $response->assertSee('id="details-action-buttons-sidebar"', escape: false);
         // Only one polling trigger on the details page
-        $this->assertSame(1, substr_count($response->getContent(), 'hx-trigger="every 5s"'));
+        $this->assertSame(1, substr_count((string) $response->getContent(), 'hx-trigger="every 5s"'));
     }
 
     public function testDetailsPageDoesNotRenderPollingWhenUserCannotEdit(): void
@@ -408,7 +414,7 @@ class ContentActionButtonsTest extends TestCase
         ]));
 
         $response->assertOk();
-        $this->assertEmpty(trim($response->getContent()));
+        $this->assertEmpty(trim((string) $response->getContent()));
     }
 
     public function testBulkActionButtonsWithEmptyIdsReturnsEmptyContent(): void
@@ -417,7 +423,7 @@ class ContentActionButtonsTest extends TestCase
 
         $response = $this->actingAs($viewer)->get(route('content.bulk-action-buttons'));
         $response->assertOk();
-        $this->assertEmpty(trim($response->getContent()));
+        $this->assertEmpty(trim((string) $response->getContent()));
     }
 
     public function testListingRendersCustomConfiguredPollingIntervalForEditor(): void
@@ -506,6 +512,7 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestVersion ?? $this->fail();
 
         $response = $this->actingAs($owner)->get(route('content.details', $content));
         $response->assertOk();
@@ -515,7 +522,7 @@ class ContentActionButtonsTest extends TestCase
         // Also check the action buttons endpoint directly
         $endpointResponse = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
         $endpointResponse->assertOk();
         $endpointResponse->assertSee('hx-trigger="every 10s"', escape: false);
@@ -531,6 +538,7 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestVersion ?? $this->fail();
 
         $response = $this->actingAs($owner)->get(route('content.details', $content));
         $response->assertOk();
@@ -538,7 +546,7 @@ class ContentActionButtonsTest extends TestCase
 
         $endpointResponse = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
         $endpointResponse->assertOk();
         $endpointResponse->assertSee('hx-trigger="every 15s"', escape: false);
@@ -554,6 +562,7 @@ class ContentActionButtonsTest extends TestCase
             ->withVersion(ContentVersion::factory(['published' => true]))
             ->withUser($owner)
             ->create();
+        $version = $content->latestVersion ?? $this->fail();
 
         $response = $this->actingAs($owner)->get(route('content.details', $content));
         $response->assertOk();
@@ -561,7 +570,7 @@ class ContentActionButtonsTest extends TestCase
 
         $endpointResponse = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
-            'version' => $content->latestVersion->id,
+            'version' => $version->id,
         ]));
         $endpointResponse->assertOk();
         $endpointResponse->assertDontSee('hx-trigger="every', escape: false);

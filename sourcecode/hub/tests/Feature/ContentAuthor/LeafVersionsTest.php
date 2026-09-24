@@ -223,13 +223,13 @@ final class LeafVersionsTest extends TestCase
                     'mediaType' => 'application/vnd.ims.lti.v1.ltilink',
                 ],
             ],
-        ]);
+        ], JSON_THROW_ON_ERROR);
 
         $this->signedPost($url, [
             'content_items' => $contentItems,
             'user_id' => (string) $user->id,
         ])->assertCreated();
 
-        $this->assertFalse($content->fresh()->isLocked());
+        $this->assertFalse($content->refresh()->isLocked());
     }
 }

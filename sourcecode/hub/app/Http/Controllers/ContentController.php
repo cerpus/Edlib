@@ -532,7 +532,7 @@ class ContentController extends Controller
     {
         $version = null;
         if ($request->filled('version')) {
-            $version = $content->versions()->find($request->query('version'));
+            $version = $content->versions()->whereKey($request->query('version'))->first();
         }
         $forUser = $request->boolean('forUser');
         $showDrafts = $request->boolean('showDrafts');
@@ -606,7 +606,7 @@ class ContentController extends Controller
     {
         $version = null;
         if ($request->filled('version')) {
-            $version = $content->versions()->find($request->query('version'));
+            $version = $content->versions()->whereKey($request->query('version'))->first();
         }
         $version ??= $content->getCachedLatestPublishedVersion() ?? $content->latestVersion ?? throw new NotFoundHttpException();
         $explicitVersion = $request->boolean('explicitVersion');
