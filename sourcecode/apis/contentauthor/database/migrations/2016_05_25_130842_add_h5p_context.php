@@ -57,10 +57,17 @@ class AddH5pContext extends Migration
     public function down()
     {
         Schema::table('h5p_contents_user_data', function ($table) {
-            $table->dropColumn(["id", "context"]);
+            $table->dropUnique('cu_pid');
             if (!DB::connection() instanceof \Illuminate\Database\SQLiteConnection) {
-                $table->dropUnique('cu_pid');
+                $table->dropIndex(['context']);
             }
+        });
+
+        Schema::table('h5p_contents_user_data', function ($table) {
+            $table->dropColumn(["id", "context"]);
+        });
+
+        Schema::table('h5p_contents_user_data', function ($table) {
             $table->primary(['content_id', 'user_id', 'sub_content_id', 'data_id'], 'cud_pk1');
         });
 

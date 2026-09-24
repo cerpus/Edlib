@@ -86,13 +86,14 @@ class CRUTest extends TestCase
             ->assertStatus(Response::HTTP_CREATED); // Redirects after save
 
         $this->assertDatabaseCount('h5p_contents', 1);
-        $h5p = H5PContent::find(1);
+        $h5p = H5PContent::sole();
+        $firstId = $h5p->id;
         $this->assertCount(1, $h5p->collaborators);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
+        $this->assertDatabaseHas('h5p_contents', ['id' => $firstId, 'title' => 'Tittel']);
         $firstVersion = $h5p->version_id;
         $this->assertDatabaseHas('content_versions', [
             'id' => $firstVersion,
-            'content_id' => 1,
+            'content_id' => $firstId,
             'content_type' => Content::TYPE_H5P,
             'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
@@ -103,7 +104,7 @@ class CRUTest extends TestCase
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->put(route('h5p.update', 1), [
+            ->put(route('h5p.update', $firstId), [
                 '_token' => csrf_token(),
                 'title' => 'Tittel',
                 'action' => 'create',
@@ -121,14 +122,14 @@ class CRUTest extends TestCase
         $h5p->refresh();
         $this->assertDatabaseCount('h5p_contents', 1);
         $this->assertCount(2, $h5p->collaborators);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
+        $this->assertDatabaseHas('h5p_contents', ['id' => $firstId, 'title' => 'Tittel']);
 
         $this->assertDatabaseCount('content_versions', 2);
         $secondVersion = $h5p->version_id;
         $this->assertDatabaseHas('content_versions', [
             'id' => $secondVersion,
             'parent_id' => $firstVersion,
-            'content_id' => 1,
+            'content_id' => $firstId,
             'content_type' => Content::TYPE_H5P,
             'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
@@ -139,7 +140,7 @@ class CRUTest extends TestCase
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->put(route('h5p.update', 1), [
+            ->put(route('h5p.update', $firstId), [
                 '_token' => csrf_token(),
                 'title' => 'Tittel 2', // Will trigger a new version
                 'action' => 'create',
@@ -154,16 +155,17 @@ class CRUTest extends TestCase
             ]);
 
         $this->assertDatabaseCount('h5p_contents', 2);
-        $this->assertCount(2, H5PContent::find(1)->collaborators); // Original still has two collaborators
-        $this->assertCount(3, H5PContent::find(2)->collaborators); // New has three collaborators
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'Tittel 2']);
+        $secondId = H5PContent::max('id');
+        $this->assertCount(2, H5PContent::find($firstId)->collaborators); // Original still has two collaborators
+        $this->assertCount(3, H5PContent::find($secondId)->collaborators); // New has three collaborators
+        $this->assertDatabaseHas('h5p_contents', ['id' => $firstId, 'title' => 'Tittel']);
+        $this->assertDatabaseHas('h5p_contents', ['id' => $secondId, 'title' => 'Tittel 2']);
 
         $this->assertDatabaseCount('content_versions', 3);
-        $thirdVersion = H5PContent::find(2)->version_id;
+        $thirdVersion = H5PContent::find($secondId)->version_id;
         $this->assertDatabaseHas('content_versions', [
             'id' => $thirdVersion,
-            'content_id' => 2,
+            'content_id' => $secondId,
             'parent_id' => $secondVersion,
             'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
@@ -190,14 +192,15 @@ class CRUTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseCount('h5p_contents', 3);
-        $this->assertCount(2, H5PContent::find(3)->collaborators); // Collaborators not updated
+        $thirdId = H5PContent::max('id');
+        $this->assertCount(2, H5PContent::find($thirdId)->collaborators); // Collaborators not updated
         $this->assertDatabaseHas('h5p_contents', ['user_id' => $owner->auth_id, 'title' => 'Tittel 3']); // Owner has not changed, title updated
 
         $this->assertDatabaseCount('content_versions', 4);
-        $fourthVersion = H5PContent::find(3)->version_id;
+        $fourthVersion = H5PContent::find($thirdId)->version_id;
         $this->assertDatabaseHas('content_versions', [
             'id' => $fourthVersion,
-            'content_id' => 3,
+            'content_id' => $thirdId,
             'parent_id' => $useLinearVersioning ? $thirdVersion : $secondVersion,
             'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
@@ -227,13 +230,14 @@ class CRUTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseCount('h5p_contents', 4); // New H5P in db
+        $fourthId = H5PContent::max('id');
         $this->assertDatabaseHas('h5p_contents', ['user_id' => $copyist->auth_id, 'title' => 'Tittel 4']); // Owner and title updated
-        $this->assertCount(0, H5PContent::find(4)->collaborators); //No collaborators on new resource
+        $this->assertCount(0, H5PContent::find($fourthId)->collaborators); //No collaborators on new resource
 
         $this->assertDatabaseCount('content_versions', 5);
         $this->assertDatabaseHas('content_versions', [
-            'id' => H5PContent::find(4)->version_id,
-            'content_id' => 4,
+            'id' => H5PContent::find($fourthId)->version_id,
+            'content_id' => $fourthId,
             'parent_id' => $useLinearVersioning ? $fourthVersion : $secondVersion,
             'version_purpose' => ContentVersion::PURPOSE_COPY,
         ]);

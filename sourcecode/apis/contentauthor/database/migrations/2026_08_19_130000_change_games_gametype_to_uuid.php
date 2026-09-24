@@ -41,22 +41,7 @@ return new class extends Migration {
      */
     public function down()
     {
-        // The column's type name is driver-specific once changed (e.g. "char" on
-        // MySQL, "uuid" on Postgres), so only skip when it's still the original varchar.
-        if (Schema::getColumnType('games', 'gametype') === 'varchar') {
-            return;
-        }
-
-        Schema::table('games', function (Blueprint $table) {
-            $table->dropForeign(['gametype']);
-        });
-
-        Schema::table('games', function (Blueprint $table) {
-            $table->string('gametype')->change();
-        });
-
-        Schema::table('games', function (Blueprint $table) {
-            $table->foreign('gametype')->references('id')->on('gametypes');
-        });
+        // Nothing to revert: "gametype" should be a uuid on every database, and
+        // changing it back to a varchar breaks the foreign key on Postgres.
     }
 };

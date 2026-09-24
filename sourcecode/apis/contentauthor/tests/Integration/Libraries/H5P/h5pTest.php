@@ -119,7 +119,7 @@ class h5pTest extends TestCase
         $h5p = app(h5p::class);
         $content = $h5p->storeContent($request, null, "createContentUserId");
         $this->assertNotFalse($content);
-        $this->assertEquals(1, $content['id']);
+        $this->assertEquals(H5PContent::max('id'), $content['id']);
         $this->assertEquals("My Test Title", $content['title']);
         $this->assertEquals("createContentUserId", $content['user_id']);
         $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
@@ -130,8 +130,8 @@ class h5pTest extends TestCase
         $this->assertEquals("Hvor er ørreten?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
 
-        $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
-        $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, "license" => "U"]);
+        $this->assertDatabaseHas("h5p_contents", ["id" => $content['id']]);
+        $this->assertDatabaseHas("h5p_contents_metadata", ['content_id' => $content['id'], "license" => "U"]);
 
         $request = new Request();
         $request->replace([
@@ -145,7 +145,7 @@ class h5pTest extends TestCase
         $storedContent = $core->loadContent($content['id']);
         $updatedContent = $h5p->storeContent($request, $storedContent, "createContentUserId");
         $this->assertNotFalse($updatedContent);
-        $this->assertEquals(1, $updatedContent['id']);
+        $this->assertEquals($content['id'], $updatedContent['id']);
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
         $this->assertEquals("createContentUserId", $updatedContent['user_id']);
         $contentParamsDecoded = json_decode($updatedContent['params']);
@@ -155,13 +155,13 @@ class h5pTest extends TestCase
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
         $this->assertFileExists("{$this->getContentDirectory()}/{$updatedContent['id']}/images/image-5805bff7c5330.jpg");
 
-        $h5pContent = H5PContent::find(1);
+        $h5pContent = H5PContent::find($content['id']);
         $this->assertEquals($h5pContent->id, $updatedContent['id']);
         $this->assertEquals("Deltittel", $h5pContent->title);
 
-        $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
-        $this->assertDatabaseMissing("h5p_contents", ["id" => 2]);
-        $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, 'license' => "BY"]);
+        $this->assertDatabaseCount("h5p_contents", 1);
+        $this->assertDatabaseHas("h5p_contents", ["id" => $content['id']]);
+        $this->assertDatabaseHas("h5p_contents_metadata", ['content_id' => $content['id'], 'license' => "BY"]);
     }
 
     #[Test]
@@ -179,7 +179,7 @@ class h5pTest extends TestCase
         $h5p = app(h5p::class);
         $content = $h5p->storeContent($request, null, "createContentUserId");
         $this->assertNotFalse($content);
-        $this->assertEquals(1, $content['id']);
+        $this->assertEquals(H5PContent::max('id'), $content['id']);
         $this->assertEquals("My Test Title", $content['title']);
         $this->assertEquals("createContentUserId", $content['user_id']);
         $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
@@ -190,8 +190,8 @@ class h5pTest extends TestCase
         $this->assertEquals("Hvor er ørreten?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
 
-        $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
-        $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, "license" => "U"]);
+        $this->assertDatabaseHas("h5p_contents", ["id" => $content['id']]);
+        $this->assertDatabaseHas("h5p_contents_metadata", ['content_id' => $content['id'], "license" => "U"]);
 
         $request = Request::create('', parameters: [
             'library' => "H5P.Flashcards 1.1",
@@ -204,7 +204,7 @@ class h5pTest extends TestCase
         $storedContent['useVersioning'] = true;
         $updatedContent = $h5p->storeContent($request, $storedContent, "createContentUserId");
         $this->assertNotFalse($updatedContent);
-        $this->assertEquals(2, $updatedContent['id']);
+        $this->assertNotEquals($content['id'], $updatedContent['id']);
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
         $this->assertEquals("createContentUserId", $updatedContent['user_id']);
         $contentParamsDecoded = json_decode($updatedContent['params']);
@@ -214,10 +214,10 @@ class h5pTest extends TestCase
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
         $this->assertFileExists("{$this->getContentDirectory()}/{$updatedContent['id']}/images/image-5805bff7c5330.jpg");
 
-        $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
-        $this->assertDatabaseHas("h5p_contents", ["id" => 2]);
-        $this->assertDatabaseMissing("h5p_contents", ["id" => 3]);
-        $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, 'license' => "U"]);
-        $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 2, 'content_id' => 2, 'license' => "BY"]);
+        $this->assertDatabaseCount("h5p_contents", 2);
+        $this->assertDatabaseHas("h5p_contents", ["id" => $content['id']]);
+        $this->assertDatabaseHas("h5p_contents", ["id" => $updatedContent['id']]);
+        $this->assertDatabaseHas("h5p_contents_metadata", ['content_id' => $content['id'], 'license' => "U"]);
+        $this->assertDatabaseHas("h5p_contents_metadata", ['content_id' => $updatedContent['id'], 'license' => "BY"]);
     }
 }

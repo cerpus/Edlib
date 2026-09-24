@@ -68,6 +68,31 @@ jobs:
     if: "!inputs.deploy"
     runs-on: ubuntu-22.04
 
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: mysqlpassword
+          MARIADB_DATABASE: edlibcontentauthor_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: thepgpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd=pg_isready
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
     steps:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
@@ -91,6 +116,9 @@ jobs:
       - name: Test
         run: |
           docker run -v "/tmp:/reports" --rm \
+            --network host \
+            -e DB_HOST=127.0.0.1 \
+            -e DB_PGSQL_HOST=127.0.0.1 \
             test-image \
             vendor/bin/phpunit --coverage-clover /reports/coverage.xml
 
