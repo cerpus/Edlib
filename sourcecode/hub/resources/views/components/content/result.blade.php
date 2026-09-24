@@ -9,6 +9,18 @@
         <x-content.list :$contents />
     @endif
 
+    @php
+        $editableIds = $contents->filter(fn($item) => !empty($item->editUrl))->pluck('id')->filter()->values()->all();
+    @endphp
+
+    @if ($editableIds && ($pollingInterval = \App\Configuration\Features::listPollingInterval()))
+        <div
+            hx-get="{{ route('content.bulk-action-buttons', ['ids' => $editableIds, 'forUser' => $mine ? 1 : 0, 'showDrafts' => $mine ? 1 : 0]) }}"
+            hx-trigger="every {{ $pollingInterval }}"
+            hx-swap="none"
+        ></div>
+    @endif
+
     <div hx-boost="true" hx-target="#content" class="mt-3">
         {{ $contents->withQueryString()->links() }}
     </div>

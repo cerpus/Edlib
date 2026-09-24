@@ -1,9 +1,22 @@
 @php
+    use App\Configuration\Features;
     use App\Support\SessionScope;
+    use Illuminate\Support\Facades\Gate;
+
     $activeLock = $content->getActiveLock();
+    $canEdit = Gate::allows('edit', [$content, $version]);
+    $pollingInterval = $canEdit ? Features::detailsPollingInterval() : null;
 @endphp
 @props(['content', 'version', 'explicitVersion'])
 
+<div
+    class="action-buttons-container"
+    @if ($pollingInterval)
+        hx-get="{{ route('content.details.action-buttons', [$content, 'version' => $version->id, 'explicitVersion' => $explicitVersion ? 1 : 0]) }}"
+        hx-trigger="every {{ $pollingInterval }}"
+        hx-swap="outerHTML"
+    @endif
+>
 @can('use', [$content, $version])
     <x-form action="{{ $version->getUseUrl() }}">
         <button class="btn btn-primary d-flex gap-2 text-nowrap">
@@ -88,3 +101,4 @@
         {{ trans('messages.the-lock-is-held-by-since', ['name' => $activeLock?->user->name ?? 'unknown', 'datetime' => $activeLock?->created_at ?? '?' ]) }}
     @endif
 @endcannot
+</div>
