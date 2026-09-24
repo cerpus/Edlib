@@ -426,6 +426,8 @@ class ContentController extends Controller
         });
         assert($version instanceof ContentVersion);
 
+        $content->releaseLock($user);
+
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
             $ltiRequest = $version->toItemSelectionRequest();

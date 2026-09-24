@@ -13,6 +13,7 @@ use App\Models\ContentVersion;
 use App\Models\ContentView;
 use App\Models\ContentViewsAccumulated;
 use App\Models\LtiPlatform;
+use App\Models\LtiTool;
 use App\Models\User;
 use Carbon\Carbon;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
@@ -352,5 +353,50 @@ final class ContentTest extends TestCase
         $this->assertNotNull($lock);
         $this->assertSame('2025-01-01T00:00:00Z', $lock->created_at?->toIso8601ZuluString());
         $this->assertSame('2025-01-01T00:00:30Z', $lock->updated_at?->toIso8601ZuluString());
+    }
+
+    public function testLtiUpdateReleasesLock(): void
+    {
+        $user = User::factory()->create();
+        $tool = LtiTool::factory()->create([
+            'consumer_key' => 'test-key',
+            'consumer_secret' => 'test-secret',
+        ]);
+        $content = Content::factory()
+            ->withVersion(ContentVersion::factory()->for($tool, 'tool'))
+            ->withUser($user)
+            ->create();
+        $version = $content->latestVersion;
+        $this->assertNotNull($version);
+
+        $content->acquireLock($user);
+        $this->assertTrue($content->isLocked());
+
+        $url = route('content.lti-update', [$tool, $content, $version]);
+        $contentItems = json_encode([
+            '@context' => 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+            '@graph' => [
+                [
+                    '@type' => 'LtiLinkItem',
+                    '@id' => 'https://example.com/h5p/1',
+                    'url' => 'https://example.com/h5p/1',
+                    'title' => 'Updated Title',
+                    'mediaType' => 'application/vnd.ims.lti.v1.ltilink',
+                ],
+            ],
+        ]);
+
+        $request = new Request('POST', $url, [
+            'content_items' => $contentItems,
+            'lti_message_type' => 'ContentItemSelection',
+        ]);
+        $signedRequest = $this->app->make(Signer::class)->sign($request, $tool->getOauth1Credentials());
+
+        $this->actingAs($user)
+            ->withCookie('_edlib_cookies', '1')
+            ->post($url, $signedRequest->toArray())
+            ->assertOk();
+
+        $this->assertFalse($content->fresh()->isLocked());
     }
 }

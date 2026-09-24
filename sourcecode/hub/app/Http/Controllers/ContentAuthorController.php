@@ -168,6 +168,8 @@ class ContentAuthorController extends Controller
         });
         assert($version instanceof ContentVersion);
 
+        $content->releaseLock($user);
+
         return response()->json(
             [
                 'id' => $version->content_id,
