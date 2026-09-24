@@ -210,6 +210,8 @@ services:
       test: [CMD, curl, -f, http://localhost:7700/health]
     volumes:
       - meilisearch_data:/meili_data
+    ports:
+      - "7700:7700"
 
   mysql:
     image: mariadb:11
