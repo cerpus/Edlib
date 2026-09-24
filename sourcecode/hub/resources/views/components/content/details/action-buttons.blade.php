@@ -7,11 +7,23 @@
     $canEdit = Gate::allows('edit', [$content, $version]);
     $pollingInterval = $canEdit ? Features::detailsPollingInterval() : null;
 @endphp
-@props(['content', 'version', 'explicitVersion'])
+@props([
+    'content',
+    'version',
+    'explicitVersion' => false,
+    'id' => 'details-action-buttons-header',
+    'poll' => true,
+    'oob' => false,
+    'includeOob' => false,
+])
 
 <div
+    id="{{ $id }}"
     class="action-buttons-container"
-    @if ($pollingInterval)
+    @if ($oob)
+        hx-swap-oob="outerHTML:#{{ $id }}"
+    @endif
+    @if ($poll && $pollingInterval)
         hx-get="{{ route('content.details.action-buttons', [$content, 'version' => $version->id, 'explicitVersion' => $explicitVersion ? 1 : 0]) }}"
         hx-trigger="every {{ $pollingInterval }}"
         hx-swap="outerHTML"
@@ -102,3 +114,15 @@
     @endif
 @endcannot
 </div>
+
+@if ($includeOob)
+    <x-content.details.action-buttons
+        :$content
+        :$version
+        :$explicitVersion
+        id="details-action-buttons-sidebar"
+        :poll="false"
+        :oob="true"
+        :includeOob="false"
+    />
+@endif

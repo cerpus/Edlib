@@ -145,6 +145,7 @@ class ContentActionButtonsTest extends TestCase
         ]));
 
         $response->assertOk();
+        $response->assertSee('id="details-action-buttons-header"', escape: false);
         $response->assertSee('hx-trigger="every 5s"', escape: false);
         $response->assertSee('hx-get="' . e(route('content.details.action-buttons', [
             $content,
@@ -152,6 +153,9 @@ class ContentActionButtonsTest extends TestCase
             'explicitVersion' => 0,
         ])), escape: false);
         $response->assertSee('hx-swap="outerHTML"', escape: false);
+        $response->assertSee('id="details-action-buttons-sidebar"', escape: false);
+        $response->assertSee('hx-swap-oob="outerHTML:#details-action-buttons-sidebar"', escape: false);
+        $this->assertSame(1, substr_count($response->getContent(), 'hx-trigger="every 5s"'));
     }
 
     public function testDetailsActionButtonsEndpointDoesNotReturnPollingAttributesWhenUserCannotEdit(): void
@@ -176,10 +180,7 @@ class ContentActionButtonsTest extends TestCase
 
         $response->assertOk();
         $response->assertDontSee('hx-trigger="every', escape: false);
-        $response->assertDontSee('hx-get="' . e(route('content.details.action-buttons', [
-            $content,
-            'version' => $content->latestPublishedVersion->id,
-        ])), escape: false);
+        $response->assertDontSee('content/' . $content->id . '/details-action-buttons', escape: false);
     }
 
     public function testDetailsActionButtonsEndpointShowsLockWhenLockIsCreatedForEditor(): void
@@ -208,7 +209,7 @@ class ContentActionButtonsTest extends TestCase
         $content->acquireLock($holder);
         $this->assertTrue($content->isLocked());
 
-        // Next poll returns locked status dynamically
+        // Next poll returns locked status dynamically for both header and sidebar OOB
         $responseLocked = $this->actingAs($owner)->get(route('content.details.action-buttons', [
             $content,
             'version' => $content->latestVersion->id,
@@ -217,6 +218,7 @@ class ContentActionButtonsTest extends TestCase
         $responseLocked->assertOk();
         $responseLocked->assertSee('hx-trigger="every 5s"', escape: false);
         $responseLocked->assertSee('disabled', escape: false);
+        $responseLocked->assertSee('hx-swap-oob="outerHTML:#details-action-buttons-sidebar"', escape: false);
 
         // Lock is released
         $content->releaseLock($holder);
@@ -245,7 +247,11 @@ class ContentActionButtonsTest extends TestCase
         $response = $this->actingAs($owner)->get(route('content.details', $content));
         $response->assertOk();
         $response->assertSee('hx-trigger="every 5s"', escape: false);
-        $response->assertSee('details-action-buttons', escape: false);
+        $response->assertSee('content/' . $content->id . '/details-action-buttons', escape: false);
+        $response->assertSee('id="details-action-buttons-header"', escape: false);
+        $response->assertSee('id="details-action-buttons-sidebar"', escape: false);
+        // Only one polling trigger on the details page
+        $this->assertSame(1, substr_count($response->getContent(), 'hx-trigger="every 5s"'));
     }
 
     public function testDetailsPageDoesNotRenderPollingWhenUserCannotEdit(): void
@@ -262,13 +268,13 @@ class ContentActionButtonsTest extends TestCase
         $response = $this->actingAs($viewer)->get(route('content.details', $content));
         $response->assertOk();
         $response->assertDontSee('hx-trigger="every', escape: false);
-        $response->assertDontSee('details-action-buttons', escape: false);
+        $response->assertDontSee('content/' . $content->id . '/details-action-buttons', escape: false);
 
         // Unauthenticated guest test
         $guestResponse = $this->get(route('content.details', $content));
         $guestResponse->assertOk();
         $guestResponse->assertDontSee('hx-trigger="every', escape: false);
-        $guestResponse->assertDontSee('details-action-buttons', escape: false);
+        $guestResponse->assertDontSee('content/' . $content->id . '/details-action-buttons', escape: false);
     }
 
     public function testListingRendersBulkPollingForEditableItemsOnly(): void

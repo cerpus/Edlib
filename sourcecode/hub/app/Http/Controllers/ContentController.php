@@ -619,6 +619,7 @@ class ContentController extends Controller
             'content' => $content,
             'version' => $version,
             'explicitVersion' => $explicitVersion,
+            'includeOob' => true,
         ]);
     }
 }
