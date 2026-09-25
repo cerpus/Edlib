@@ -49,7 +49,7 @@ Only enable this if you trust a login provider completely.
 Configures the background polling interval used by content listing views (such as search and user content lists) to dynamically update edit lock statuses across displayed items via HTMX.
 
 * **Default**: `5s`
-* **Format**: A time duration string (e.g. `5s`, `10s`, `1m`) or numeric seconds (e.g. `5`, `10`).
+* **Format**: A time duration string in seconds (e.g. `5s`, `10s`) or numeric seconds (e.g. `5`, `10`).
 * **Disabling**: Set to `false`, `0`, `none`, or `disabled` to disable list polling entirely and minimize server requests.
 
 ### `FEATURE_DETAILS_POLLING_INTERVAL`
@@ -57,5 +57,5 @@ Configures the background polling interval used by content listing views (such a
 Configures the background polling interval used by the content details view to dynamically update edit locks and action button states via HTMX.
 
 * **Default**: `5s`
-* **Format**: A time duration string (e.g. `5s`, `10s`, `1m`) or numeric seconds (e.g. `5`, `10`).
+* **Format**: A time duration string in seconds (e.g. `5s`, `10s`) or numeric seconds (e.g. `5`, `10`).
 * **Disabling**: Set to `false`, `0`, `none`, or `disabled` to disable details polling entirely and minimize server requests.
