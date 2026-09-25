@@ -303,7 +303,9 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function cacheAssets(&$files, $key)
     {
+        $runNo = random_int(100000, 999999);
         $checkedLibraries = collect();
+        $cachedAssets = [];
         foreach ($files as $type => $assets) {
             if (empty($assets)) {
                 continue; // Skip no assets
@@ -311,20 +313,64 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
             $content = '';
             foreach ($assets as $asset) {
-                $library = collect(explode("/", $asset->path))
-                    ->filter(function ($element) {
-                        return \H5PCore::libraryFromString($element);
-                    })
-                    ->first();
-                if ($checkedLibraries->has($library) || $this->hasLibraryVersion($asset->path, $asset->version)) {
-                    $assetContent = $this->uploadDisk->get($asset->path);
-                    $checkedLibraries->put($library, true);
-                } else {
+                $assetContent = null;
+
+                if ($this->filesystem->exists($asset->path)) {
                     $assetContent = $this->filesystem->get($asset->path);
+                    if ($assetContent) {
+                        $this->logger->debug('Asset content '.$asset->path.' ('.strlen($assetContent).' bytes) included from filesystem.', [
+                            'path' => $asset->path,
+                            'runNo' => $runNo,
+                        ]);
+                    } else {
+                        $this->logger->debug('Asset content '.$asset->path.' not found in filesystem', [
+                            'path' => $asset->path,
+                            'runNo' => $runNo,
+                        ]);
+                    }
+                } else {
+                    $this->logger->debug('Asset content '.$asset->path.' not found in filesystem', [
+                        'path' => $asset->path,
+                        'runNo' => $runNo,
+                    ]);
                 }
+
+                if (empty($assetContent)) {
+                    $library = $this->getLibraryFolderFromPath($asset->path);
+                    if (
+                        (($library !== null && $checkedLibraries->has($library))
+                            || $this->hasLibraryVersion($asset->path, $asset->version))
+                        && $this->uploadDisk->exists($asset->path)
+                    ) {
+                        if ($assetContent = $this->uploadDisk->get($asset->path)) {
+                            $this->logger->debug('Asset content '.$asset->path.' ('.strlen($assetContent).' bytes)  included from uploadDisk', [
+                                'path' => $asset->path,
+                                'runNo' => $runNo,
+                            ]);
+                        }
+                        if ($library !== null) {
+                            $checkedLibraries->put($library, true);
+                        }
+                    }
+                }
+
+                if (empty($assetContent)) {
+                    // All files are concatenated into one, so an unreadable file
+                    // doesn't just break its own library: everything following it
+                    // in the aggregate is lost as well. Leave the assets
+                    // unaggregated instead, so the remaining libraries still work.
+                    $this->logger->error('Not caching H5P assets, a library file  '.$asset->path.' is missing or empty', [
+                        'path' => $asset->path,
+                        'key' => $key,
+                        'runNo' => $runNo,
+                    ]);
+
+                    return;
+                }
+
                 // Get file content and concatenate
                 if ($type === 'scripts') {
-                    $content .= $assetContent . ";\n";
+                    $content .= $assetContent . "\n;\n";
                     $filePath = ContentStorageSettings::CACHEDASSETS_JS_PATH;
                 } else {
                     // Rewrite relative URLs used inside stylesheets
@@ -344,16 +390,57 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                 }
             }
 
-            $outputfile = sprintf($filePath, $key);
+            $cachedAssets[$type] = [sprintf($filePath, $key), $content];
+        }
+
+        foreach ($cachedAssets as $type => [$outputfile, $content]) {
             if (!$this->filesystem->put($outputfile, $content)) {
                 throw new Exception("Could not create cached asset");
             }
+            $this->logger->debug('Cached asset '.$outputfile.' ('.strlen($content).' bytes, '.$type.') created.', [
+                'path' => $outputfile,
+                'runNo' => $runNo,
+            ]);
             $files[$type] = [(object) [
                 'path' => $outputfile,
                 'version' => '',
                 'url' => $this->filesystem->url($outputfile),
             ]];
         }
+    }
+
+    /**
+     * Find the library folder, if any, an asset path points into.
+     */
+    private function getLibraryFolderFromPath(string $path): ?string
+    {
+        return collect(explode("/", $path))
+            ->first(fn ($element) => self::libraryFromFolderName($element) !== false);
+    }
+
+    /**
+     * H5PCore::libraryFromString() only understands "Name-major.minor", while
+     * library folders may also include the patch version, e.g. "Name-1.2.3".
+     */
+    private static function libraryFromFolderName(string $folderName): array|false
+    {
+        $library = \H5PCore::libraryFromString($folderName);
+        if ($library !== false) {
+            return $library;
+        }
+
+        if (preg_match('/^(.+)\.([0-9]{1,5})$/', $folderName, $matches) !== 1) {
+            return false;
+        }
+
+        $library = \H5PCore::libraryFromString($matches[1]);
+        if ($library === false) {
+            return false;
+        }
+
+        $library['patchVersion'] = (int) $matches[2];
+
+        return $library;
     }
 
     /**
@@ -584,7 +671,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         }
         return collect(explode("/", $path))
             ->filter(function ($element) {
-                return \H5PCore::libraryFromString($element);
+                return self::libraryFromFolderName($element) !== false;
             })
             ->filter(function ($library) use ($versionString) {
                 $libraryPath = sprintf(ContentStorageSettings::LIBRARY_JSONFILE_PATH, $library);

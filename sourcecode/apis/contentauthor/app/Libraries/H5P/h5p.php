@@ -82,6 +82,7 @@ class h5p
         $content['max_score'] = $request->get('max_score', 0);
         // Set disabled features
         $content['disable'] = $this->getDisabledContentFeatures($this->core, $content['disable'], $request);
+        $content['modify_css'] = $request->get('modifyCss', false);
 
         $content['id'] = $this->core->saveContent($content);
         if (!empty($content['parent_content_id'])) {

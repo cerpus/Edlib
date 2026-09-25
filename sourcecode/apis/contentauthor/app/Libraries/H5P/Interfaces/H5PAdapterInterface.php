@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
+use App\H5PContent;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 
 interface H5PAdapterInterface
@@ -75,4 +76,6 @@ interface H5PAdapterInterface
     public function getCustomEditorStyles(): array;
 
     public function filterEditorScripts(): array;
+
+    public function showCustomCssForNewContentTypes(?H5PContent $h5pContent = null): bool;
 }

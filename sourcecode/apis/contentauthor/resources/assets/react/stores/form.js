@@ -99,6 +99,14 @@ const form = (state, action) => {
                 ...state,
                 link: action.payload.link,
             };
+        case actions.setModifyCss: {
+            const { modifyCss } = action.payload;
+            console.log('modifyCss', modifyCss);
+            return {
+                ...state,
+                modifyCss,
+            };
+        }
     }
 };
 
@@ -115,6 +123,7 @@ const actions = {
     setQuestionSetData: 'SET_QUESTIONSET_DATA',
     setEmbed: 'SET_EMBED',
     setIsNewLanguageVariant: 'SET_IS_NEW_LANGUAGE_VARIANT',
+    setModifyCss: 'SET_MODIFY_CSS',
 };
 
 

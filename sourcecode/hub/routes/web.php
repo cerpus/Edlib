@@ -64,6 +64,9 @@ Route::controller(ContentController::class)->group(function () {
         ->middleware('auth')
         ->name('content.mine');
 
+    Route::get('/content/bulk-action-buttons', 'bulkActionButtons')
+        ->name('content.bulk-action-buttons');
+
     Route::post('/content/toggle', 'layoutSwitch')
         ->name('content.layout');
 
@@ -204,6 +207,18 @@ Route::controller(ContentController::class)->group(function () {
         ->uses([ContentController::class, 'releaseLock'])
         ->name('content.release-lock')
         ->can('edit', 'content')
+        ->whereUlid('content');
+
+    Route::get('/content/{content}/action-buttons')
+        ->uses([ContentController::class, 'actionButtons'])
+        ->name('content.action-buttons')
+        ->can('view', 'content')
+        ->whereUlid('content');
+
+    Route::get('/content/{content}/details-action-buttons')
+        ->uses([ContentController::class, 'detailsActionButtons'])
+        ->name('content.details.action-buttons')
+        ->can('view', 'content')
         ->whereUlid('content');
 });
 

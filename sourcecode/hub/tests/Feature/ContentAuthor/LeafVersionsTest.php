@@ -7,6 +7,7 @@ namespace Tests\Feature\ContentAuthor;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
+use App\Models\User;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
@@ -192,5 +193,43 @@ final class LeafVersionsTest extends TestCase
 
         $this->post($url, $oauthRequest->toArray())
             ->assertUnauthorized();
+    }
+
+    public function testUpdateReleasesContentLock(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->for($this->tool, 'tool')
+                    ->withLaunchUrl('https://ca.test/h5p/1'),
+            )
+            ->withUser($user)
+            ->create();
+        $version = $content->latestVersion;
+        $this->assertNotNull($version);
+
+        $content->acquireLock($user);
+        $this->assertTrue($content->isLocked());
+
+        $url = route('author.content.update', [$this->tool, $content, $version]);
+        $contentItems = json_encode([
+            '@context' => 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+            '@graph' => [
+                [
+                    '@type' => 'LtiLinkItem',
+                    'url' => 'https://ca.test/h5p/1',
+                    'title' => 'Updated Title',
+                    'mediaType' => 'application/vnd.ims.lti.v1.ltilink',
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $this->signedPost($url, [
+            'content_items' => $contentItems,
+            'user_id' => (string) $user->id,
+        ])->assertCreated();
+
+        $this->assertFalse($content->refresh()->isLocked());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P\Adapters;
 
+use App\H5PContent;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
@@ -172,5 +173,10 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function filterEditorScripts(): array
     {
         return [];
+    }
+
+    public function showCustomCssForNewContentTypes(?H5PContent $h5pContent = null): bool
+    {
+        return false;
     }
 }
