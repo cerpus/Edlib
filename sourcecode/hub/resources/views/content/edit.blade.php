@@ -21,10 +21,9 @@
     ></div>
 
     <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
-        addEventListener('unload', function () {
+        addEventListener('pagehide', function () {
             const data = new FormData();
             data.set('_token', {!! json_encode(csrf_token()) !!});
-
             navigator.sendBeacon({!! json_encode(route('content.release-lock', [$content])) !!}, data);
         });
     </script>
