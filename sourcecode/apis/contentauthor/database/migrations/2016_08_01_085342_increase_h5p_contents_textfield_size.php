@@ -14,12 +14,12 @@ class IncreaseH5pContentsTextfieldSize extends Migration
     public function up()
     {
         Schema::table('h5p_contents', function ($table) {
-            $table->string('parameters', self::longTextLength)->change();
-            $table->string('filtered', self::longTextLength)->change();
+            $table->longText('parameters')->change();
+            $table->longText('filtered')->change();
         });
 
         Schema::table('h5p_contents_user_data', function ($table) {
-            $table->string('data', self::longTextLength)->change();
+            $table->longText('data')->change();
         });
     }
 
