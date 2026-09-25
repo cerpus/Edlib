@@ -3,11 +3,14 @@
 namespace App\Libraries\H5P;
 
 use App\H5PContent;
+use App\Libraries\H5P\Exceptions\H5PExternalMediaException;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
+use Exception;
 use H5PContentValidator;
 use H5PCore;
 use H5PExport as H5PDefaultExport;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use UnexpectedValueException;
 
@@ -30,6 +33,7 @@ readonly class H5PExport
 
     /**
      * @throws JsonException
+     * @throws H5PExternalMediaException
      */
     public function generateExport(H5PContent $content): bool
     {
@@ -99,8 +103,25 @@ readonly class H5PExport
             );
 
         if ($externalProvider instanceof H5PExternalProviderInterface) {
-            $fileDetails = $externalProvider->storeContent($values, $content);
-            $values = array_merge($values, $fileDetails);
+            try {
+                $fileDetails = $externalProvider->storeContent($values, $content);
+                $values = array_merge($values, $fileDetails);
+            } catch (Exception $exception) {
+                Log::error('Failed to fetch external H5P content, aborting export', [
+                    'contentId' => $content['id'] ?? null,
+                    'path' => $values['path'] ?? null,
+                    'mime' => $values['mime'] ?? null,
+                    'exception' => $exception->getMessage(),
+                ]);
+
+                throw new H5PExternalMediaException(
+                    path: (string) ($values['path'] ?? ''),
+                    mime: $values['mime'] ?? null,
+                    contentId: $content['id'] ?? null,
+                    message: sprintf('Failed to fetch external media file "%s": %s', $values['path'] ?? 'unknown', $exception->getMessage()),
+                    previous: $exception,
+                );
+            }
         }
 
         return $values;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataObjects\ContentDisplayItem;
 use App\DataObjects\LtiCreateInfo;
 use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
@@ -30,6 +31,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -426,6 +428,8 @@ class ContentController extends Controller
         });
         assert($version instanceof ContentVersion);
 
+        $content->releaseLock($user);
+
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
             $ltiRequest = $version->toItemSelectionRequest();
@@ -522,5 +526,100 @@ class ContentController extends Controller
         $content->releaseLock($this->getUser());
 
         return response()->noContent();
+    }
+
+    public function actionButtons(Content $content, Request $request): View
+    {
+        $version = null;
+        if ($request->filled('version')) {
+            $version = $content->versions()->whereKey($request->query('version'))->first();
+        }
+        $forUser = $request->boolean('forUser');
+        $showDrafts = $request->boolean('showDrafts');
+        $version ??= ($showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
+            ?? $content->latestVersion
+            ?? throw new NotFoundHttpException();
+
+        $this->authorize('view', [$content, $version]);
+
+        $content->loadMissing(['users', 'locks.user']);
+
+        $displayItem = ContentDisplayItem::fromContent(
+            $content,
+            $version,
+            forUser: $forUser,
+            showDrafts: $showDrafts,
+            includeActionButtonsUrl: true,
+        );
+
+        return view('components.content.action-buttons', [
+            'content' => $displayItem,
+        ]);
+    }
+
+    public function bulkActionButtons(Request $request): View
+    {
+        $ids = (array) $request->input('ids', []);
+        $forUser = $request->boolean('forUser');
+        $showDrafts = $request->boolean('showDrafts');
+
+        if (empty($ids)) {
+            return view('content.bulk-action-buttons', [
+                'displayItems' => collect(),
+            ]);
+        }
+
+        $eagerLoad = ['users', 'locks.user'];
+        if ($showDrafts) {
+            $eagerLoad[] = 'latestVersion';
+        }
+        if (!$showDrafts || $forUser) {
+            $eagerLoad[] = 'latestPublishedVersion';
+        }
+
+        $contents = Content::whereIn('id', $ids)
+            ->with($eagerLoad)
+            ->get();
+
+        $displayItems = $contents->map(function (Content $content) use ($forUser, $showDrafts) {
+            $version = ($showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
+                ?? $content->latestVersion;
+
+            if (!$version || !Gate::allows('view', [$content, $version]) || !Gate::allows('edit', [$content, $version])) {
+                return null;
+            }
+
+            return ContentDisplayItem::fromContent(
+                content: $content,
+                version: $version,
+                forUser: $forUser,
+                showDrafts: $showDrafts,
+            );
+        })->filter()->values();
+
+        return view('content.bulk-action-buttons', [
+            'displayItems' => $displayItems,
+        ]);
+    }
+
+    public function detailsActionButtons(Content $content, Request $request): View
+    {
+        $version = null;
+        if ($request->filled('version')) {
+            $version = $content->versions()->whereKey($request->query('version'))->first();
+        }
+        $version ??= $content->getCachedLatestPublishedVersion() ?? $content->latestVersion ?? throw new NotFoundHttpException();
+        $explicitVersion = $request->boolean('explicitVersion');
+
+        $this->authorize('view', [$content, $version]);
+
+        $content->loadMissing(['locks.user']);
+
+        return view('components.content.details.action-buttons', [
+            'content' => $content,
+            'version' => $version,
+            'explicitVersion' => $explicitVersion,
+            'includeOob' => true,
+        ]);
     }
 }

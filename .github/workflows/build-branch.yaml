@@ -1,47 +1,38 @@
-name: "Deploy a branch to ndla_test"
+name: "Build a branch"
 
 on:
   workflow_dispatch:
     inputs:
       ref:
-        description: "Git ref to deploy (tag, branch, or commit SHA)"
+        description: "Git ref to build (tag, branch, or commit SHA)"
         required: false
         type: string
-      environment:
-        description: "Environment to deploy to"
-        required: true
-        type: choice
-        options:
-          - ndla_test
-         # - ndla_staging
-         # - ndla_prod
-         # - prod
-        default: ndla_test
 
 jobs:
   get_variables:
     name: Resolve version
     runs-on: ubuntu-latest
     outputs:
-      releaseRef: ${{ steps.resolve.outputs.commitSha }}
+      commitSha: ${{ steps.resolve.outputs.commitSha }}
       tag: ${{ steps.resolve.outputs.tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref || github.sha }}
+          ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 0
 
-      - name: Resolve ref to commit SHA and tag
+      - name: Resolve ref
         id: resolve
         run: |
           sha=$(git rev-parse HEAD)
           echo "commitSha=$sha" >> $GITHUB_OUTPUT
 
-          raw_ref="${{ inputs.ref || github.ref }}"
+          raw_ref="${{ inputs.ref || github.ref_name }}"
           ref="${raw_ref#refs/heads/}"
           ref="${ref#refs/tags/}"
           tag=$(echo "$ref" | sed 's#[^a-zA-Z0-9._-]#-#g')
+          echo "Resolved ref '$raw_ref' to tag: $tag"
           echo "tag=$tag" >> $GITHUB_OUTPUT
 
   build_image_hub:
@@ -49,7 +40,7 @@ jobs:
     needs: get_variables
     uses: ./.github/workflows/hub.yaml
     with:
-      version: ${{ needs.get_variables.outputs.releaseRef }}
+      version: ${{ needs.get_variables.outputs.commitSha }}
       additional_tag: ${{ needs.get_variables.outputs.tag }}
       enable_latest: false
       deploy: false
@@ -60,20 +51,8 @@ jobs:
     needs: get_variables
     uses: ./.github/workflows/contentauthor.yaml
     with:
-      version: ${{ needs.get_variables.outputs.releaseRef }}
+      version: ${{ needs.get_variables.outputs.commitSha }}
       additional_tag: ${{ needs.get_variables.outputs.tag }}
       enable_latest: false
       deploy: false
-    secrets: inherit
-
-  deploy:
-    name: Deploy to ${{ inputs.environment }}
-    needs:
-      - get_variables
-      - build_image_hub
-      - build_image_content_author
-    uses: ./.github/workflows/deploy-eb.yaml
-    with:
-      version: ${{ needs.get_variables.outputs.releaseRef }}
-      environment: ${{ inputs.environment }}
     secrets: inherit

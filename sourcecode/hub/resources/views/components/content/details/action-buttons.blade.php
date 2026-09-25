@@ -1,9 +1,34 @@
 @php
+    use App\Configuration\Features;
     use App\Support\SessionScope;
-    $activeLock = $content->getActiveLock();
-@endphp
-@props(['content', 'version', 'explicitVersion'])
+    use Illuminate\Support\Facades\Gate;
 
+    $activeLock = $content->getActiveLock();
+    $canEdit = Gate::allows('edit', [$content, $version]);
+    $pollingInterval = $canEdit ? Features::detailsPollingInterval() : null;
+@endphp
+@props([
+    'content',
+    'version',
+    'explicitVersion' => false,
+    'id' => 'details-action-buttons-header',
+    'poll' => true,
+    'oob' => false,
+    'includeOob' => false,
+])
+
+<div
+    id="{{ $id }}"
+    class="action-buttons-container"
+    @if ($oob)
+        hx-swap-oob="outerHTML:#{{ $id }}"
+    @endif
+    @if ($poll && $pollingInterval)
+        hx-get="{{ route('content.details.action-buttons', [$content, 'version' => $version->id, 'explicitVersion' => $explicitVersion ? 1 : 0]) }}"
+        hx-trigger="every {{ $pollingInterval }}"
+        hx-swap="outerHTML"
+    @endif
+>
 @can('use', [$content, $version])
     <x-form action="{{ $version->getUseUrl() }}">
         <button class="btn btn-primary d-flex gap-2 text-nowrap">
@@ -88,3 +113,16 @@
         {{ trans('messages.the-lock-is-held-by-since', ['name' => $activeLock?->user->name ?? 'unknown', 'datetime' => $activeLock?->created_at ?? '?' ]) }}
     @endif
 @endcannot
+</div>
+
+@if ($includeOob)
+    <x-content.details.action-buttons
+        :$content
+        :$version
+        :$explicitVersion
+        id="details-action-buttons-sidebar"
+        :poll="false"
+        :oob="true"
+        :includeOob="false"
+    />
+@endif

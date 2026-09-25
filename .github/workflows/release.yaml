@@ -25,6 +25,7 @@ jobs:
     uses: ./.github/workflows/hub.yaml
     with:
       version: ${{ needs.get_variables.outputs.releaseRef }}
+      enable_latest: true
       deploy: false
     secrets: inherit
 
@@ -34,6 +35,7 @@ jobs:
     uses: ./.github/workflows/contentauthor.yaml
     with:
       version: ${{ needs.get_variables.outputs.releaseRef }}
+      enable_latest: true
       deploy: false
     secrets: inherit
 

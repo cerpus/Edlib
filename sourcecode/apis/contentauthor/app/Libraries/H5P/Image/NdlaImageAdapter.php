@@ -81,6 +81,7 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
     {
         $source = $values['path'];
         $tempFile = tempnam(sys_get_temp_dir(), 'h5p-');
+
         $this->client->get($source, [
             'sink' => $tempFile,
         ]);

@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
+use App\Libraries\H5P\Exceptions\H5PExternalMediaException;
 use App\Libraries\H5P\h5p;
 use App\Libraries\H5P\H5PExport;
 use App\Libraries\H5P\H5PViewConfig;
@@ -303,8 +304,12 @@ class AdminH5PDetailsController extends Controller
         $storage = app(H5PCerpusStorage::class);
         $fileName = sprintf("%s-%d.h5p", $h5pContent->slug, $h5pContent->id);
 
-        if ($storage->hasExport($fileName) || $export->generateExport($h5pContent)) {
-            return $storage->downloadContent($fileName, $h5pContent->title);
+        try {
+            if ($storage->hasExport($fileName) || $export->generateExport($h5pContent)) {
+                return $storage->downloadContent($fileName, $h5pContent->title);
+            }
+        } catch (H5PExternalMediaException $exception) {
+            return response(trans('h5p-editor.external-media-error', ['file' => $exception->getPath()]), 422);
         }
 
         return response(trans('h5p-editor.could-not-find-content'), 404);
