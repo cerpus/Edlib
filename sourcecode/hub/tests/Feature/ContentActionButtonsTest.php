@@ -4,18 +4,48 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Meilisearch\Client as MeilisearchClient;
+use Meilisearch\Contracts\TasksQuery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use App\Http\Controllers\ContentController;
 use Tests\TestCase;
+
+use function app;
+use function array_column;
 
 #[CoversClass(ContentController::class)]
 class ContentActionButtonsTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        RebuildContentIndex::dispatchSync();
+        $this->waitForMeilisearchTasks();
+    }
+
+    private function waitForMeilisearchTasks(): void
+    {
+        $client = app(MeilisearchClient::class);
+        $indexUid = (new Content())->searchableAs();
+        $tasks = $client->getTasks(
+            (new TasksQuery())
+                ->setIndexUids([$indexUid])
+                ->setStatuses(['enqueued', 'processing'])
+        );
+        $results = $tasks->getResults();
+        if (!empty($results)) {
+            $uids = array_column($results, 'uid');
+            $client->waitForTasks($uids);
+        }
+    }
 
     public function testActionButtonsEndpointReturnsPollingAttributesWhenUserCanEdit(): void
     {
@@ -302,6 +332,7 @@ class ContentActionButtonsTest extends TestCase
 
         $content1->searchable();
         $content2->searchable();
+        $this->waitForMeilisearchTasks();
 
         // For $owner: content1 is editable, content2 is not editable
         $response = $this->actingAs($owner)->get(route('content.index'));
@@ -332,6 +363,7 @@ class ContentActionButtonsTest extends TestCase
             ->withUser($owner)
             ->create();
         $content->searchable();
+        $this->waitForMeilisearchTasks();
 
         // Viewer cannot edit $content
         $response = $this->actingAs($viewer)->get(route('content.index'));
@@ -438,6 +470,7 @@ class ContentActionButtonsTest extends TestCase
             ->withUser($owner)
             ->create();
         $content->searchable();
+        $this->waitForMeilisearchTasks();
 
         $response = $this->actingAs($owner)->get(route('content.index'));
         $response->assertOk();
@@ -456,6 +489,7 @@ class ContentActionButtonsTest extends TestCase
             ->withUser($owner)
             ->create();
         $content->searchable();
+        $this->waitForMeilisearchTasks();
 
         $response = $this->actingAs($owner)->get(route('content.index'));
         $response->assertOk();
@@ -474,6 +508,7 @@ class ContentActionButtonsTest extends TestCase
             ->withUser($owner)
             ->create();
         $content->searchable();
+        $this->waitForMeilisearchTasks();
 
         $response = $this->actingAs($owner)->get(route('content.index'));
         $response->assertOk();
