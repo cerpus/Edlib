@@ -6,12 +6,10 @@ namespace App\Http\Requests;
 
 use App\DataObjects\ContentDisplayItem;
 use App\Models\Content;
-use App\Support\SessionScope;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Laravel\Scout\Builder;
 use Override;
@@ -334,33 +332,13 @@ class ContentFilter extends FormRequest
                 $version = ($showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
                     ?? throw new NotFoundHttpException();
 
-                $canUse = Gate::allows('use', [$content, $version]);
-                $canEdit = Gate::allows('edit', [$content, $version]);
-                $canView = Gate::allows('view', $content);
-                $canDelete = $forUser && Gate::allows('delete', $content);
-                $canCopy = Gate::allows('copy', $content);
-
-                $languageName = locale_get_display_language($version->language_iso_639_3, app()->getLocale());
-                $languageName = (!empty($languageName) && $languageName !== $version->language_iso_639_3) ? $languageName : null;
-
-                return new ContentDisplayItem(
-                    title: $version->title,
-                    createdAt: $version->created_at?->toImmutable(),
-                    isPublished: $version->published,
+                return ContentDisplayItem::fromContent(
+                    content: $content,
+                    version: $version,
+                    forUser: $forUser,
+                    showDrafts: $showDrafts,
                     viewsCount: $item['views'] ?? 0,
-                    contentType: $item['content_type'] ?? $version->displayed_content_type,
-                    languageIso639_3: strtoupper($version->language_iso_639_3),
-                    languageDisplayName: $languageName,
-                    users: $content->users->map(fn($user) => $user->name)->join(', '),
-                    detailsUrl: $showDrafts ? route('content.version-details', [$content, $version]) : route('content.details', [$content]),
-                    previewUrl: route('content.preview', [$content, $version]),
-                    useUrl: $canUse ? route('content.use', [$content, $version]) : null,
-                    editUrl: $canEdit ? route('content.edit', [$content, $version]) : null,
-                    shareUrl: $canView ? route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) : null,
-                    shareDialogUrl: $canView ? route('content.share-dialog', [$content]) : null,
-                    copyUrl: $canCopy ? route('content.copy', [$content]) : null,
-                    deleteUrl: $canDelete ? route('content.delete', [$content]) : null,
-                    lockedByUserName: $content->getActiveLock()?->user?->name,
+                    contentType: $item['content_type'] ?? null,
                 );
             });
     }

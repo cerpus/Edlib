@@ -31,7 +31,7 @@
 
         <x-slot:sidebar>
             <div class="d-flex d-lg-none flex-wrap justify-content-end gap-2">
-                <x-content.details.action-buttons :$content :$version :$explicitVersion />
+                <x-content.details.action-buttons :$content :$version :$explicitVersion id="details-action-buttons-sidebar" :poll="false" />
             </div>
 
             @can('edit', [$content])

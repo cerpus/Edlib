@@ -24,3 +24,7 @@ yarn-error.log
 .env.staging
 /.vite
 /tools/vapor-cli/vendor
+
+.junie
+boost.json
+AGENTS.md
