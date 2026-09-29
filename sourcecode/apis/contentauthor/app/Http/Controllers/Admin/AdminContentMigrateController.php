@@ -188,7 +188,63 @@ class AdminContentMigrateController extends Controller
             */
         }
 
+        if (isset($contentJson["threeImage"]["scenes"])) {
+            $this->fixHotspotInteractionPositions($contentJson["threeImage"]["scenes"]);
+        }
+
         return json_encode($content, flags: JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * Compensate for `transform: translate(-50%, -50%);` set on "nav buttons" shown as hotspot other than GoToScene
+     * in static scenes and panorama scenes.
+     *
+     * @param array &$scenes The scenes array to modify.
+     */
+    private function fixHotspotInteractionPositions(&$scenes)
+    {
+        foreach ($scenes as &$scene) {
+            if ($scene["sceneType"] === "360" || !isset($scene["interactions"])) {
+                continue;
+            }
+
+            foreach ($scene["interactions"] as &$interaction) {
+                if (
+                    $interaction["showAsHotspot"] !== true ||
+                    !isset($interaction["action"]["library"]) ||
+                    $interaction["action"]["library"] === "H5P.GoToScene 0.1"
+                ) {
+                    continue;
+                }
+
+                $positions = isset($interaction["interactionpos"])
+                    ? explode(",", $interaction["interactionpos"])
+                    : [];
+                $sizes = isset($interaction["hotspotSettings"]["hotSpotSizeValues"])
+                    ? explode(",", $interaction["hotspotSettings"]["hotSpotSizeValues"])
+                    : [];
+
+                if (count($positions) < 2 || count($sizes) < 2) {
+                    continue;
+                }
+                // `interactionpos` is something like "1.234%,5.678%"
+                $left = floatval(trim($positions[0]));
+                $top = floatval(trim($positions[1]));
+
+                // `hotSpotSizeValues` is something like `1.234,5.678"
+                $width = floatval($sizes[0]);
+                $height = floatval($sizes[1]);
+
+                $newLeft = $left + $width / 2;
+                $newTop = $top + $height / 2;
+
+                $interaction["interactionpos"] = "{$newLeft}%,{$newTop}%";
+            }
+
+            unset($interaction);
+        }
+
+        unset($scene);
     }
 
     /**
