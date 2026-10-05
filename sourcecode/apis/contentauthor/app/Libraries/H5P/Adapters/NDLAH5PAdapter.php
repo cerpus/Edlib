@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P\Adapters;
 
+use App\H5PContent;
 use App\H5POption;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -10,12 +11,10 @@ use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Carbon\Carbon;
-
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use function array_unique;
 use function config;
-
 use const JSON_THROW_ON_ERROR;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
@@ -26,12 +25,15 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         private readonly H5PAudioInterface $audioAdapter,
         private readonly H5PImageInterface $imageAdapter,
         private readonly H5PVideoInterface $videoAdapter,
-    ) {}
+    )
+    {
+    }
 
     public function alterParameters(
-        string $parameters,
+        string                               $parameters,
         H5PAlterParametersSettingsDataObject $settings = new H5PAlterParametersSettingsDataObject(),
-    ): string {
+    ): string
+    {
         if ($parameters === '') {
             return '';
         }
@@ -57,7 +59,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             '50%', '56.25%', '62.50%', '68.75%', '75%', '87.50%', '100%', '112.50%', '125%', '137.50%',
             '150%', '162.50%', '175%', '225%', '300%', '450%', '675%', '1350%', '3375%',
         ])
-            ->map(fn(string $size) => (object) [
+            ->map(fn(string $size) => (object)[
                 'label' => $size,
                 'css' => $size,
             ])
@@ -69,7 +71,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         $css[] = '/js/cropperjs/cropper.min.css';
         if (config('h5p.include-custom-css') === true) {
-            $css[] = (string) mix('css/ndlah5p-edit.css');
+            $css[] = (string)mix('css/ndlah5p-edit.css');
         }
         return array_unique([
             ...$this->audioAdapter->getEditorCss(),
@@ -103,11 +105,11 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         return array_unique([
             // Custom HTML component to enable CKEDitor 5 plugins TextPartLanguage, MathType and ChemType
-            (string) mix('js/ndla-h5peditor-html.js'),
+            (string)mix('js/ndla-h5peditor-html.js'),
             // Custom image editor/cropper
-            (string) mix('js/h5peditor-image-popup.js'),
+            (string)mix('js/h5peditor-image-popup.js'),
             // H5P.getCrossOrigin override
-            (string) mix('js/h5peditor-custom.js'),
+            (string)mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getEditorScripts(),
             ...$this->imageAdapter->getEditorScripts(),
             ...$this->videoAdapter->getEditorScripts(),
@@ -125,7 +127,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             // Display of formulas
             'https://www.wiris.net/client/plugins/app/WIRISplugins.js?viewer=image',
             '/js/h5p/wiris/view.js',
-            (string) mix('js/h5peditor-custom.js'),
+            (string)mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getViewScripts(),
             ...$this->imageAdapter->getViewScripts(),
             ...$this->videoAdapter->getViewScripts(),
@@ -141,11 +143,12 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $customCssBreakpoint = Carbon::parse($ndlaCustomCssOption->option_value);
             $updated = $content['updated_at'];
             if ($customCssBreakpoint > $updated) {
-                $css[] = (string) mix('css/ndlah5p-iframe-legacy.css');
+                $css[] = (string)mix('css/ndlah5p-iframe-legacy.css');
             }
         }
-        $css[] = (string) mix('css/ndlah5p-iframe.css');
+        $css[] = (string)mix('css/ndlah5p-iframe.css');
         $customLibraryCss = $this->getLibraryCustomCss($content['library']['name'], []);
+        $modifyOldCss = $this->getLibraryOldCss($content['library']['name'], $content);
 
         return array_unique([
             ...$css,
@@ -153,6 +156,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             ...$this->imageAdapter->getViewCss(),
             ...$this->videoAdapter->getViewCss(),
             ...$customLibraryCss,
+            ...$modifyOldCss,
         ]);
     }
 
@@ -173,6 +177,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
         return $styles;
     }
+
     /**
      * @return void
      */
@@ -283,4 +288,30 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'scripts/h5peditor-html.js',
         ];
     }
+
+    public function showCustomCssForNewContentTypes(?H5PContent $h5pContent = null): bool
+    {
+        if (is_null($h5pContent)) {
+            return false;
+        }
+
+        if ($h5pContent->getMachineName() === 'H5P.CoursePresentation') {
+            $library = $h5pContent->library;
+            return $library->versionCompare('1.27');
+        }
+
+        return false;
+    }
+
+    private function getLibraryOldCss(mixed $name, $content): array
+    {
+        $resetStyles = [];
+        if ($content['modifyCss'] ?? false) {
+            if (File::exists(public_path('/css/' . $name . '_Reset.css'))) {
+                $resetStyles[] = "/css/{$name}_Reset.css";
+            }
+        }
+        return $resetStyles;
+    }
+
 }

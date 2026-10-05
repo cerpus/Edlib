@@ -144,6 +144,7 @@ Sidebar.defaultProps = {
         'language',
         'upgradeContent',
         'contentProperties',
+        'modifyCss',
         'adapterSelect',
     ],
     customComponents: [],
