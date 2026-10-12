@@ -17,3 +17,5 @@ docker-compose.override.yml
 /sourcecode/npm/nodeUtils
 /sourcecode/proxies
 /sourcecode/www
+
+/backups
