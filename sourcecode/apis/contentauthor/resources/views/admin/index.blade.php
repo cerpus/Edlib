@@ -22,6 +22,9 @@
                         <a class="col-md-4 well well-lg" href="{{ route('admin.games') }}">
                             <i class="glyphicon glyphicon-upload"></i> Update games
                         </a>
+                        <a class="col-md-4 well well-lg" href="{{ route('admin.cached-files.index') }}">
+                            <i class="glyphicon glyphicon-trash"></i> Cached files
+                        </a>
 
                         <form action="{{ route('admin.clear-cache') }}" method="POST">
                             @csrf
