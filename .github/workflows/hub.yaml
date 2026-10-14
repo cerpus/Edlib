@@ -151,6 +151,10 @@ jobs:
           registry: ghcr.io
           username: cerpusbot
           password: ${{ secrets.CERPUSBOT_SECRET }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
       - name: Checkout
@@ -173,6 +177,7 @@ jobs:
           cache-from: type=gha,scope=hub
           cache-to: type=gha,scope=hub,mode=max
           context: sourcecode/hub
+          platforms: linux/amd64,linux/arm64
           push: true
           target: prod
           tags: ${{ steps.php_meta.outputs.tags }}
@@ -193,6 +198,7 @@ jobs:
         with:
           cache-from: type=gha,scope=hub
           context: sourcecode/hub
+          platforms: linux/amd64,linux/arm64
           push: true
           target: web
           tags: ${{ steps.web_meta.outputs.tags }}
