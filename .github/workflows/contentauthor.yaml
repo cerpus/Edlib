@@ -122,6 +122,9 @@ jobs:
           username: cerpusbot
           password: ${{ secrets.CERPUSBOT_SECRET }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -145,6 +148,7 @@ jobs:
           cache-from: type=gha,scope=contentauthor
           cache-to: type=gha,scope=contentauthor,mode=max
           context: sourcecode/apis/contentauthor
+          platforms: linux/amd64,linux/arm64
           push: true
           target: prod
           tags: ${{ steps.php_meta.outputs.tags }}
@@ -165,6 +169,7 @@ jobs:
         with:
           cache-from: type=gha,scope=contentauthor
           context: sourcecode/apis/contentauthor
+          platforms: linux/amd64,linux/arm64
           push: true
           target: web
           tags: ${{ steps.web_meta.outputs.tags }}
