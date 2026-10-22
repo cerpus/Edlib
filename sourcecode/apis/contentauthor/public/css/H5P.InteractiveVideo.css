@@ -1,0 +1,13 @@
+.h5p-interactive-video {
+    --h5p-interactive-video-background: #fff;
+}
+
+.h5p-interactive-video .h5p-element {
+    line-height: normal;
+    letter-spacing: normal;
+}
+
+.h5p-interactive-video .h5p-element.h5p-text {
+    line-height: normal;
+    letter-spacing: normal;
+}
