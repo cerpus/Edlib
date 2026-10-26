@@ -7,15 +7,22 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            Migrate the contents of library <code>H5P.NDLAThreeImage 0.5.x</code> to <code>H5P.EscapeRoom 0.7.x</code>
+                            Migrate the contents of libraries <code>H5P.NDLAThreeImage 0.5.x</code> and <code>H5P.ThreeImage 0.5.x</code> to <code>H5P.EscapeRoom 0.7.x</code>
                         </h3>
                     </div>
                     <div class="panel-body">
-                        H5P.NDLAThreeImage 0.5.x: @if($fromLibrary) <a href="{{ route('admin.check-library', [$fromLibrary['id']]) }}" target="_blank">{{ $fromLibrary->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
-                        <p>
+                        @foreach(['H5P.NDLAThreeImage', 'H5P.ThreeImage'] as $libraryName)
+                            {{ $libraryName }} 0.5.x: @if($library = $fromLibraries->get($libraryName)) <a href="{{ route('admin.check-library', [$library['id']]) }}" target="_blank">{{ $library->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
+                            <p>
+                        @endforeach
                         H5P.EscapeRoom 0.7.x: @if($toLibrary) <a href="{{ route('admin.check-library', [$toLibrary['id']]) }}" target="_blank">{{ $toLibrary->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
                     </div>
-                    @if ($toLibrary && $fromLibrary)
+                    @if (!empty($error))
+                        <div class="panel-body">
+                            <div class="alert alert-danger" role="alert">{{ $error }}</div>
+                        </div>
+                    @endif
+                    @if ($toLibrary && $fromLibraries->isNotEmpty())
                         @if (count($migrated) > 0)
                             <div class="panel-body">
                                 <h4>Migrated content</h4>
@@ -56,6 +63,7 @@
                                             <th>Migrate</th>
                                             <th>Content id</th>
                                             <th>Title</th>
+                                            <th>Library</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -67,13 +75,13 @@
                                                 </td>
                                                 <td><a href="{{ route('admin.content-details', [$content->h5p_id]) }}">{{ $content->h5p_id }}</a></td>
                                                 <td>{{ $content->title }}</td>
+                                                <td>{{ $content->source_library }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
 
                                 @csrf
-                                <input type="hidden" value="{{ $fromLibrary->id }}">
                                 <div id="form-group major-publishing-actions" class="submitbox">
                                     <input type="submit" name="submit" value="Migrate content" class="button button-primary button-large btn btn-primary"/>
                                 </div>

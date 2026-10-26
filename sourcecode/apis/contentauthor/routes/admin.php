@@ -73,7 +73,7 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
 
         Route::match(['GET', 'POST'], 'ajax', [AdminController::class, 'ajaxLoading'])->name('admin.ajax');
 
-        // Migrate content from H5P.NDLAThreeImage to H5P.EscapeRoom
+        // Migrate content from H5P.NDLAThreeImage and H5P.ThreeImage to H5P.EscapeRoom
         Route::match(['GET', 'POST'], '/migrate/library-content', [AdminContentMigrateController::class, 'index'])
             ->name('admin.migrate.library-content');
 
