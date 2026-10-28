@@ -345,7 +345,7 @@ class AdminContentMigrateController extends Controller
     {
         $decoded = $this->hubClient->post(
             '/content-versions/leaves',
-            ['tag' => 'h5p:h5p.' . strtolower($machineName)],
+            ['tag' => 'h5p:' . strtolower($machineName)],
         );
 
         return $decoded['data'] ?? [];
