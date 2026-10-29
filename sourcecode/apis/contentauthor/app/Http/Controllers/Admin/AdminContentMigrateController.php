@@ -99,11 +99,30 @@ class AdminContentMigrateController extends Controller
 
             $count = $items->count();
             $contents = $items->slice($pageSize * ($page - 1), $pageSize)->values();
+        } else {
+            $reasons = [];
+            if ($fromLibraries->isEmpty()) {
+                $reasons[] = 'Source libraries H5P.NDLAThreeImage 0.5.x and H5P.ThreeImage 0.5.x were not found';
+            }
+            if ($toLibrary === null) {
+                $reasons[] = 'Target library H5P.EscapeRoom 0.7.x was not found';
+            }
+            $error = 'Content migration is unavailable: ' . implode('. ', $reasons) . '.';
+            if ($request->method() === 'POST') {
+                $error .= ' No content was migrated.';
+            }
+
+            Log::warning('[AdminContentMigrate] ' . $error, [
+                'method' => $request->method(),
+                'foundFromLibraries' => $fromLibraries->map(fn (H5PLibrary $library) => $library->getLibraryString(true))->values()->all(),
+                'toLibraryFound' => $toLibrary !== null,
+            ]);
         }
 
         return view('admin.migrate.index', [
             'fromLibraries' => $fromLibraries,
             'toLibrary' => $toLibrary,
+            'error' => $error ?? null,
             'migrated' => $migrated ?? [],
             'paginator' => (new LengthAwarePaginator($contents, $count, $pageSize))
                 ->withPath(route('admin.migrate.library-content')),

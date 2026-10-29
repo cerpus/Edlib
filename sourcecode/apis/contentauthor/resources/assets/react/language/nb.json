@@ -186,6 +186,8 @@
     "SAVEBOX.PROCESSING": "Prosesserer",
     "SAVEBOX.ERROR": "Oi sann",
     "SIDEBAR.SAVEANDCLOSE": "Lagre og lukk",
+    "SIDEBAR.MODIFY_CSS_OF_SUB_H5PS": "Endre CSS på sub-H5Per",
+    "SIDEBAR.MODIFY_CSS_OF_SUB_H5PS_EXPLANATION": "Emuler < v1.28 CSS",
     "SIDEBAR.PROCESSING": "Prosesserer",
     "ARTICLE.TITLE": "Tittel",
     "ARTICLE.TITLEPLACEHOLDER": "Legg til din tittel…",

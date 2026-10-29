@@ -42,3 +42,8 @@ buildid
 test-storage-volume/
 /storage/framework/testing/
 /tools/vapor-cli/vendor
+
+.junie
+.ai
+boost.json
+AGENTS.md
