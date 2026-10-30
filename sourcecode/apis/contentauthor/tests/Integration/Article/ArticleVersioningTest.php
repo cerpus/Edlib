@@ -26,12 +26,18 @@ class ArticleVersioningTest extends TestCase
     {
         $authId = Str::uuid();
         $article = Article::factory()->create(['owner_id' => $authId]);
+        ContentVersion::factory()->create([
+            'id' => $article->version_id,
+            'content_id' => $article->id,
+            'content_type' => Content::TYPE_ARTICLE,
+        ]);
         $startCount = Article::count();
         $this->withSession(['authId' => $authId])
             ->put(route('article.update', $article->id), [
                 'title' => 'Title',
                 'content' => 'Content',
-            ]);
+            ])
+            ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', [ // See the new
             'title' => 'Title',
             'content' => 'Content',

@@ -17,12 +17,18 @@ class EnsureVersionExistsTest extends TestCase
 
     public function test_articles(): void
     {
+        // The command processes articles ordered by created_at, so make it unique
+        $seconds = 0;
+        $createdAt = function () use (&$seconds) {
+            return ['created_at' => now()->addSeconds(++$seconds)];
+        };
+
         // Not versioned
-        $noVersion = Article::factory(2)->create([
+        $noVersion = Article::factory(2)->sequence($createdAt)->create([
             'version_id' => null,
         ]);
         // With version
-        $versioned = Article::factory(2)->create()->each(function (Article $article) {
+        $versioned = Article::factory(2)->sequence($createdAt)->create()->each(function (Article $article) {
             ContentVersion::factory()->create([
                 'id' => $article->version_id,
                 'content_id' => $article->id,
@@ -30,10 +36,10 @@ class EnsureVersionExistsTest extends TestCase
             ]);
         });
         // Version record missing
-        $missing = Article::factory(2)->create();
+        $missing = Article::factory(2)->sequence($createdAt)->create();
         // Unconnected version
         $unconnectedVersions = collect();
-        $notConnected = Article::factory(2)->create([
+        $notConnected = Article::factory(2)->sequence($createdAt)->create([
             'version_id' => null,
         ])->each(function (Article $article) use ($unconnectedVersions) {
             $unconnectedVersions->add(ContentVersion::factory()->create([

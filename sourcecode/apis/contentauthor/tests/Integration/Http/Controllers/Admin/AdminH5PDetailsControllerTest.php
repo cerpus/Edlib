@@ -244,7 +244,6 @@ class AdminH5PDetailsControllerTest extends TestCase
             'library_id' => $library->id,
         ]);
         $content = H5PContent::factory()->create([
-            'id' => 42,
             'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
         ]);
@@ -305,7 +304,6 @@ class AdminH5PDetailsControllerTest extends TestCase
         ]);
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
-            'id' => 42,
             'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
         ]);
