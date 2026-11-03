@@ -76,7 +76,9 @@ class AdminConfig implements ConfigInterface
      */
     public function addContentLanguageScripts(): void
     {
+        $this->addAsset('scripts', asset('/js/h5p/h5peditor-cross-origin-before.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor.js'));
+        $this->addAsset('scripts', asset('/js/h5p/h5peditor-cross-origin-after.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-editor.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-init.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'language/en.js'));

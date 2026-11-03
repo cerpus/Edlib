@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @push('js')
     <script>bulkTranslationConfig = @json($jsConfig)</script>
+    <script>window.h5pEditorCrossOriginDebug = @json(app()->environment('local'))</script>
     @foreach($scripts as $script)
         <script src="{{$script}}"></script>
     @endforeach

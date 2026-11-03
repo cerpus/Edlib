@@ -353,7 +353,11 @@ class AdminH5PTranslationTest extends TestCase
 
         $data = $response->getData();
         $this->assertSame(3, $data['contentCount']);
-        $this->assertCount(7, $data['scripts']);
+        $this->assertCount(9, $data['scripts']);
+        $scripts = array_values($data['scripts']);
+        $editorIndex = array_key_first(array_filter($scripts, fn ($s) => str_contains($s, 'scripts/h5peditor.js')));
+        $this->assertStringContainsString('h5peditor-cross-origin-before.js', $scripts[$editorIndex - 1]);
+        $this->assertStringContainsString('h5peditor-cross-origin-after.js', $scripts[$editorIndex + 1]);
 
         $this->assertSame('H5P.Foobar 1.2.3', $data['libraryName']);
         $this->assertArrayHasKey('ajaxPath', $data['jsConfig']);
