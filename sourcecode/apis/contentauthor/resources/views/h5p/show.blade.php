@@ -15,6 +15,10 @@
     @foreach( $styles as $css)
         <link rel="stylesheet" href="{{ $css }}">
     @endforeach
+    <script>
+      // H5P expects this flag to be set to `false` explicitly if content is not from embed URL.
+      window.H5P.externalEmbed = @json($externalEmbed);
+    </script>
     <script type="text/x-mathjax-config">
         // When MathJax is done, check if a resize of the container is required
         MathJax.Hub.Register.StartupHook("End", function () {
