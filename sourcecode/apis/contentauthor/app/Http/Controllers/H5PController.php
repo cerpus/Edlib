@@ -118,6 +118,10 @@ class H5PController extends Controller
             'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
             'preview' => $ltiRequest?->isPreview() ?? false,
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
+            'externalEmbed' => (bool) preg_match(
+                '#/content/[^/]+(/version/[^/]+)?/embed$#',
+                (string) $ltiRequest?->param('resource_link_id'),
+            ),
         ]);
     }
 
