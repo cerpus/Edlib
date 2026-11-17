@@ -38,7 +38,8 @@ ContentTranslationRefresh = function (library, locale, ajaxPath, logFunction) {
  * H5PEditor settings
  */
 ContentTranslationRefresh.prototype.H5PEditorInit = function () {
-    if (!window.H5PEditor || !window.ns) {
+    const editor = window.H5PEditor || window.ns;
+    if (!editor) {
         throw Error('H5PEditor not initialised/loaded');
     }
 
@@ -47,10 +48,12 @@ ContentTranslationRefresh.prototype.H5PEditorInit = function () {
         return true;
     }
 
-    ns.resetLoadedLibraries();
+    if (typeof editor.resetLoadedLibraries === 'function') {
+        editor.resetLoadedLibraries();
+    }
 
     // Translation to load with the library
-    ns.contentLanguage = ns.defaultLanguage = this.locale;
+    editor.contentLanguage = editor.defaultLanguage = this.locale;
 
     // Set ajaxPath used by H5PEditor.getAjaxUrl() in 'vendor/h5p/h5p-editor/scripts/h5peditor-init.js'
     if (!window.H5PIntegration) {
@@ -78,7 +81,8 @@ ContentTranslationRefresh.prototype.isObject = value => value === Object(value);
  * @param library
  */
 ContentTranslationRefresh.prototype.queueLibrary = function (library) {
-    if (ns.libraryCache && typeof ns.libraryCache[library] === 'undefined' && !this.librariesToLoad.includes(library)) {
+    const editor = window.H5PEditor || window.ns;
+    if (editor?.libraryCache && typeof editor.libraryCache[library] === 'undefined' && !this.librariesToLoad.includes(library)) {
         this.librariesToLoad.push(library);
     }
 }
@@ -125,9 +129,10 @@ ContentTranslationRefresh.prototype.loadQueuedLibraries = async function () {
  * @return {Promise<Object>}
  */
 ContentTranslationRefresh.prototype.loadLibrary = async function (library) {
+    const editor = window.H5PEditor || window.ns;
     return new Promise((resolve, reject) => {
         // Library is queued by H5P, this will be the case if the library has previously failed to load
-        if (ns.libraryCache[library] === 0) {
+        if (editor?.libraryCache && editor.libraryCache[library] === 0) {
             reject({
                 library: library,
                 message: 'Already attempted',
@@ -141,7 +146,7 @@ ContentTranslationRefresh.prototype.loadLibrary = async function (library) {
             }),
             5 * 1000
         );
-        H5PEditor.loadLibrary(library, semantics => {
+        (editor || H5PEditor).loadLibrary(library, semantics => {
             clearTimeout(timeout);
             resolve({
                 library: library,
@@ -229,11 +234,14 @@ ContentTranslationRefresh.prototype.getSubContentLibraries = function (parameter
  * @return {Array}
  */
 ContentTranslationRefresh.prototype.translationsLoaded = function () {
+    const editor = window.H5PEditor || window.ns;
     const missing = [];
 
-    for (let li in ns.libraryCache) {
-        if (!ns.libraryCache[li].translation || !ns.libraryCache[li].translation[this.locale]) {
-            missing.push(li);
+    if (editor?.libraryCache) {
+        for (let li in editor.libraryCache) {
+            if (!editor.libraryCache[li].translation || !editor.libraryCache[li].translation[this.locale]) {
+                missing.push(li);
+            }
         }
     }
 
