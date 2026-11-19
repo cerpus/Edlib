@@ -7,3 +7,4 @@ export { default as SaveBox } from './SaveBox';
 export { default as Publish } from './Publish';
 export { default as Sharing } from './Sharing';
 export { default as ContentProperties, ContentPropertiesContainer } from './ContentProperties';
+export { default as ModifyCss } from './ModifyCss/ModifyCss';

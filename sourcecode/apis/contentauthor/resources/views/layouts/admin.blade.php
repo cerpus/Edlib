@@ -48,6 +48,9 @@
                             <li>
                                 <a href="{{ route('admin.log.audit') }}">Audit log</a>
                             </li>
+                            <li>
+                                <a href="{{ route('admin.cached-files.index') }}">Cached files</a>
+                            </li>
                         </ul>
                     </li>
                     @if( config('h5p.isHubEnabled') !== true )

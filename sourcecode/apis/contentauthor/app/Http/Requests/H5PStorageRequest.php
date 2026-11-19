@@ -7,7 +7,6 @@ namespace App\Http\Requests;
 use App\H5PContent;
 use App\Rules\LicenseContent;
 use Illuminate\Foundation\Http\FormRequest;
-
 use function assert;
 
 class H5PStorageRequest extends FormRequest
@@ -23,6 +22,16 @@ class H5PStorageRequest extends FormRequest
         if ($this->has('isShared')) {
             $this->merge([
                 'isShared' => $this->boolean('isShared'),
+            ]);
+        }
+
+        if ($this->has('modifyCss')) {
+            $this->merge([
+                'modifyCss' => $this->boolean('modifyCss'),
+            ]);
+        } else {
+            $this->merge([
+                'modifyCss' => false,
             ]);
         }
     }
@@ -47,6 +56,7 @@ class H5PStorageRequest extends FormRequest
                 config('app.enable_licensing') ? 'string' : 'nullable',
                 new LicenseContent(),
             ],
+            'modifyCss' => ['sometimes', 'boolean'],
         ];
     }
 }

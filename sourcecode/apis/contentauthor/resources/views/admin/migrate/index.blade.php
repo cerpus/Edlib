@@ -17,6 +17,11 @@
                         @endforeach
                         H5P.EscapeRoom 0.7.x: @if($toLibrary) <a href="{{ route('admin.check-library', [$toLibrary['id']]) }}" target="_blank">{{ $toLibrary->getLibraryString(true) }}</a> @else <code>Not found</code> @endif
                     </div>
+                    @if (!empty($error))
+                        <div class="panel-body">
+                            <div class="alert alert-danger" role="alert">{{ $error }}</div>
+                        </div>
+                    @endif
                     @if ($toLibrary && $fromLibraries->isNotEmpty())
                         @if (count($migrated) > 0)
                             <div class="panel-body">
