@@ -1,2 +1,3 @@
 CREATE DATABASE IF NOT EXISTS edlibcontentauthor;
 CREATE DATABASE IF NOT EXISTS moodle;
+CREATE DATABASE IF NOT EXISTS edlibcontentauthor_test;

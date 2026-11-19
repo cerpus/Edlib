@@ -130,8 +130,8 @@ class H5PViewConfigTest extends TestCase
             ->loadContent($content->id)
             ->getConfig();
 
-        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => 1, 'library_id' => $library->id, 'dependency_type' => 'preloaded']);
-        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => 1, 'library_id' => $dependency->id, 'dependency_type' => 'preloaded']);
+        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => $content->id, 'library_id' => $library->id, 'dependency_type' => 'preloaded']);
+        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => $content->id, 'library_id' => $dependency->id, 'dependency_type' => 'preloaded']);
 
         $this->assertTrue($data->postUserStatistics);
         $this->assertObjectHasProperty('cid-' . $content->id, $data->contents);
