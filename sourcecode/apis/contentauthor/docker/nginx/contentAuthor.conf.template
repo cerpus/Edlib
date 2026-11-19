@@ -6,6 +6,23 @@ log_format healthd '$msec"$uri"'
                 '$status"$request_time"$upstream_response_time"'
                 '$http_x_forwarded_for';
 
+log_format json escape=json '{'
+                '"time":"$time_iso8601",'
+                '"remote_addr":"$remote_addr",'
+                '"x_forwarded_for":"$http_x_forwarded_for",'
+                '"request_id":"$request_id",'
+                '"host":"$host",'
+                '"method":"$request_method",'
+                '"uri":"$request_uri",'
+                '"protocol":"$server_protocol",'
+                '"status":$status,'
+                '"body_bytes_sent":$body_bytes_sent,'
+                '"request_time":$request_time,'
+                '"upstream_response_time":"$upstream_response_time",'
+                '"referer":"$http_referer",'
+                '"user_agent":"$http_user_agent"'
+                '}';
+
 server {
     listen 80;
     index index.php;
@@ -20,7 +37,7 @@ server {
         set $hour $4;
     }
 
-    access_log  /var/log/nginx/access.log  main;
+    access_log /var/log/nginx/access.log ${NGINX_ACCESS_LOG_FORMAT};
     access_log /var/log/nginx/healthd/application.log.$year-$month-$day-$hour healthd;
 
     location / {

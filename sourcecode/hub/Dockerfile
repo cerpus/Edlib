@@ -160,7 +160,8 @@ CMD ["php-fpm"]
 
 FROM nginx:1-alpine AS web
 
-ENV PHP_FPM_HOST "localhost:9000"
+ENV PHP_FPM_HOST="localhost:9000" \
+    NGINX_ACCESS_LOG_FORMAT=main
 
 COPY --from=prod /app/public /app/public
 COPY docker/nginx/server_tokens.conf /etc/nginx/conf.d/
