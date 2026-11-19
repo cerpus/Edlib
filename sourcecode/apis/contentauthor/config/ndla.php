@@ -15,6 +15,7 @@ return [
 
     'image' => [
         'url' => env('NDLA_H5P_IMAGE_URL'),
+        'cdnUrl' => env('NDLA_H5P_IMAGE_CDN_URL', 'https://images.ndla.no'),
         'properties' => [
             'width' => env('NDLA_H5P_IMAGE_PROPERTIES_WIDTH', 2500),
         ],
@@ -23,6 +24,13 @@ return [
             'license' => env('NDLA_H5P_IMAGE_SEARCH_LICENSE', 'all'),
             'pagesize' => env('NDLA_H5P_IMAGE_SEARCH_PAGESIZE', 15),
         ],
+        'modifyDomainPaths' => array_values(
+            array_unique(
+                array_filter(
+                    array_map('trim', explode(',', env('NDLA_H5P_IMAGE_MODIFY_DOMAIN_PATHS', env('NDLA_H5P_IMAGE_URL'))))
+                )
+            )
+        ),
     ],
 
     'audio' => [

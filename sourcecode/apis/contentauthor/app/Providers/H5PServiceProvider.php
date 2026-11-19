@@ -56,7 +56,9 @@ class H5PServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() {}
+    public function boot()
+    {
+    }
 
     public function provides()
     {
@@ -109,6 +111,10 @@ class H5PServiceProvider extends ServiceProvider
         $this->app->when(NdlaImageAdapter::class)
             ->needs('$url')
             ->giveConfig('ndla.image.url');
+
+        $this->app->when(NdlaImageAdapter::class)
+            ->needs('$modifyDomainPaths')
+            ->giveConfig('ndla.image.modifyDomainPaths', []);
 
         $this->app->bind(NdlaImageClient::class, fn() => new NdlaImageClient([
             'base_uri' => config('ndla.image.url'),
