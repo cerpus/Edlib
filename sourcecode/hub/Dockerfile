@@ -4,7 +4,7 @@ RUN apk add --no-cache \
         git \
         unzip
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=mlocati/php-extension-installer:2.13.2 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
         apcu \
@@ -45,7 +45,7 @@ RUN composer install \
     --no-scripts
 
 
-FROM node:20-alpine AS frontend
+FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend
 
 WORKDIR /app
 

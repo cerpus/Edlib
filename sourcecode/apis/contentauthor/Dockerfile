@@ -4,7 +4,7 @@ RUN apk add --no-cache \
         git \
         unzip
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=mlocati/php-extension-installer:2.13.2 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
         bcmath \
@@ -34,11 +34,19 @@ COPY docker/php/startup.sh /usr/local/bin/
 WORKDIR /app
 
 
-FROM base AS composer_deps
+FROM --platform=$BUILDPLATFORM composer:2 AS composer_deps
+
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_HTACCESS_PROTECT=0 \
+    COMPOSER_HOME="/tmp" \
+    COMPOSER_MEMORY_LIMIT=-1
+
+WORKDIR /app
 
 COPY composer.json composer.lock ./
 
 RUN composer install \
+    --ignore-platform-reqs \
     --no-autoloader \
     --no-cache \
     --no-dev \
@@ -46,7 +54,7 @@ RUN composer install \
     --no-scripts
 
 
-FROM node:16-alpine AS frontend
+FROM --platform=$BUILDPLATFORM node:16-alpine AS frontend
 
 WORKDIR /app
 
@@ -67,7 +75,7 @@ RUN set -eux; \
     rm -rf node_modules
 
 
-FROM composer_deps AS prod
+FROM base AS prod
 
 COPY app app
 COPY bootstrap bootstrap
@@ -99,6 +107,7 @@ RUN set -eux; \
     chmod -R o+w \
         bootstrap/cache \
         storage; \
+    composer check-platform-reqs --no-dev; \
     composer dump-autoload --optimize --classmap-authoritative --apcu; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
@@ -107,7 +116,10 @@ RUN set -eux; \
 COPY docker/php/fpm-prod.conf "/usr/local/etc/php-fpm.d/zz-fpm-prod.conf"
 
 
-FROM composer_deps AS test
+FROM base AS test
+
+COPY --from=composer_deps /app/composer.json /app/composer.lock ./
+COPY --from=composer_deps /app/vendor vendor
 
 RUN composer install \
     --no-autoloader \
