@@ -117,8 +117,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: sourcecode/hub
-          cache-from: type=gha,scope=hub
-          cache-to: type=gha,scope=hub,mode=max
+          cache-from: |
+            type=gha,scope=hub-test
+            type=gha,scope=hub-prod
+          cache-to: type=gha,scope=hub-test,mode=max
           load: true
           tags: hub-test
           target: test
@@ -174,8 +176,10 @@ jobs:
       - name: Build PHP image
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=gha,scope=hub
-          cache-to: type=gha,scope=hub,mode=max
+          cache-from: |
+            type=gha,scope=hub-prod
+            type=gha,scope=hub-test
+          cache-to: type=gha,scope=hub-prod,mode=max
           context: sourcecode/hub
           platforms: linux/amd64,linux/arm64
           push: true
@@ -196,7 +200,7 @@ jobs:
       - name: Build web image
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=gha,scope=hub
+          cache-from: type=gha,scope=hub-prod
           context: sourcecode/hub
           platforms: linux/amd64,linux/arm64
           push: true
