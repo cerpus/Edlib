@@ -13,6 +13,8 @@ class EditorConfigObject
 
     public $canList;
     public $useLicense = false;
+    public $showModifyCss = false;
+    public $modifyCss = false;
 
     protected $contentProperties;
 

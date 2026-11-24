@@ -58,47 +58,54 @@ class AdminContentMigrateController extends Controller
                 $migrated = $this->migrate($fromLibraries, $toLibrary, $request->input('content'));
             }
 
-            $leaves = $fromLibraries
-                ->flatMap(function (H5PLibrary $fromLibrary) {
-                    return collect($this->getLeaves($fromLibrary->name))
-                        ->map(fn (array $leaf) => $leaf + ['source_library' => $fromLibrary->name]);
-                })
-                ->values();
             $routePrefix = route('h5p.ltishow', '') . '/';
+            $prefixLength = strlen($routePrefix);
 
-            // Extract H5P IDs from the leaf launch URLs
-            $leafsByH5pId = collect($leaves)
-                ->keyBy(function (array $leaf) use ($routePrefix) {
-                    $url = $leaf['lti_launch_url'];
+            // Extract H5P IDs from the leaf launch URLs, keeping only the fields we need
+            $leafsByH5pId = [];
+            foreach ($fromLibraries as $fromLibrary) {
+                foreach ($this->getLeaves($fromLibrary->name) as $leaf) {
+                    $url = $leaf['lti_launch_url'] ?? '';
                     if (!str_starts_with($url, $routePrefix)) {
-                        return null;
+                        continue;
                     }
-                    $h5pId = substr($url, strlen($routePrefix));
-                    return is_numeric($h5pId) ? (int)$h5pId : null;
-                })
-                ->forget('');
+                    $h5pId = substr($url, $prefixLength);
+                    if (!ctype_digit($h5pId)) {
+                        continue;
+                    }
+                    $leafsByH5pId[(int)$h5pId] = [
+                        'title' => $leaf['title'] ?? '',
+                        'source_library' => $fromLibrary->name,
+                        'content_id' => $leaf['content_id'],
+                        'update_url' => $leaf['update_url'],
+                    ];
+                }
+            }
 
-            // Single query to fetch all matching H5P content
-            $h5pContents = H5PContent::whereIn('library_id', $fromLibraries->pluck('id'))
-                ->whereIn('id', $leafsByH5pId->keys())
-                ->get()
-                ->keyBy('id');
+            if (count($leafsByH5pId) > 0) {
+                // Count and paginate in the database, so only one page of rows is loaded
+                $query = H5PContent::query()
+                    ->toBase()
+                    ->whereIn('library_id', $fromLibraries->pluck('id'))
+                    ->whereIntegerInRaw('id', array_keys($leafsByH5pId));
 
-            // Build list of Hub resources with their CA content
-            $items = $h5pContents->map(function (H5PContent $h5pContent) use ($leafsByH5pId) {
-                $leaf = $leafsByH5pId[$h5pContent->id];
+                $count = (clone $query)->count();
+                $contents = $query
+                    ->orderBy('id')
+                    ->forPage($page, $pageSize)
+                    ->get(['id', 'title'])
+                    ->map(function (object $row) use ($leafsByH5pId) {
+                        $leaf = $leafsByH5pId[(int)$row->id];
 
-                return (object)[
-                    'h5p_id' => $h5pContent->id,
-                    'title' => $leaf['title'] ?: $h5pContent->title,
-                    'source_library' => $leaf['source_library'],
-                    'hub_content_id' => $leaf['content_id'],
-                    'update_url' => $leaf['update_url'],
-                ];
-            })->values();
-
-            $count = $items->count();
-            $contents = $items->slice($pageSize * ($page - 1), $pageSize)->values();
+                        return (object)[
+                            'h5p_id' => (int)$row->id,
+                            'title' => $leaf['title'] ?: $row->title,
+                            'source_library' => $leaf['source_library'],
+                            'hub_content_id' => $leaf['content_id'],
+                            'update_url' => $leaf['update_url'],
+                        ];
+                    });
+            }
         }
 
         return view('admin.migrate.index', [
