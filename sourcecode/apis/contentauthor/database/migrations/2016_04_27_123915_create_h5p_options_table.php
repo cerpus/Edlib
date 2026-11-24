@@ -17,7 +17,7 @@ class CreateH5pOptionsTable extends Migration
                 $table->bigIncrements('option_id')->unsigned();
                 $table->string('option_name', 191)->nullable()->default(null);
                 $table->longText('option_value');
-                $table->string('autoload', 20);
+                $table->string('autoload', 20)->default(0);
             });
         }
     }

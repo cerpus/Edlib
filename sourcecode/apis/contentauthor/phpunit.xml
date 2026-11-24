@@ -33,8 +33,18 @@
         <server name="CACHE_DRIVER" value="array"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="QUEUE_DRIVER" value="sync"/>
-        <server name="DB_CONNECTION" value="sqlite"/>
-        <server name="DB_DATABASE" value=":memory:"/>
+        <!-- Tests run against MariaDB. Override with environment variables, e.g. DB_HOST=127.0.0.1 -->
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_HOST" value="mysql"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_DATABASE" value="edlibcontentauthor_test"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value="mysqlpassword"/>
+        <!-- Used by MigrationsTest to verify migrations on PostgreSQL -->
+        <env name="DB_PGSQL_HOST" value="postgres"/>
+        <env name="DB_PGSQL_PORT" value="5432"/>
+        <env name="DB_PGSQL_USERNAME" value="postgres"/>
+        <env name="DB_PGSQL_PASSWORD" value="thepgpassword"/>
         <server name="ENABLE_LICENSING" value="true"/>
         <server name="FEATURE_CONTENT_LOCKING" value="true"/>
         <server name="FEATURE_CONTEXT_COLLABORATION" value="true"/>
