@@ -38,29 +38,3 @@ jobs:
       enable_latest: true
       deploy: false
     secrets: inherit
-
-  deploy_ndla_test:
-    name: Deploy NDLA test
-    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
-    needs:
-      - get_variables
-      - build_image_hub
-      - build_image_content_author
-    uses: ./.github/workflows/deploy-eb.yaml
-    with:
-      version: ${{ needs.get_variables.outputs.releaseRef }}
-      environment: ndla_test
-    secrets: inherit
-
-  deploy_ndla_staging:
-    name: Deploy NDLA staging
-    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
-    needs:
-      - get_variables
-      - build_image_hub
-      - build_image_content_author
-    uses: ./.github/workflows/deploy-eb.yaml
-    with:
-      version: ${{ needs.get_variables.outputs.releaseRef }}
-      environment: ndla_staging
-    secrets: inherit

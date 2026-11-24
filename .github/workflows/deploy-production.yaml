@@ -28,15 +28,6 @@ jobs:
           echo "Resolved ref '${{ inputs.ref }}' to commit SHA: $sha"
           echo "commitSha=$sha" >> $GITHUB_OUTPUT
 
-  deploy_ndla_prod:
-    name: Deploy NDLA prod
-    needs: resolve_version
-    uses: ./.github/workflows/deploy-eb.yaml
-    with:
-      version: ${{ needs.resolve_version.outputs.commitSha }}
-      environment: ndla_prod
-    secrets: inherit
-
   deploy_prod:
     name: Deploy prod
     needs: resolve_version
